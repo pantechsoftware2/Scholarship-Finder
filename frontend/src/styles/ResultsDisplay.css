@@ -1,0 +1,394 @@
+/* Results Display Styles */
+.results-container {
+  width: 100%;
+  max-width: 800px;
+  background: white;
+  border-radius: 24px;
+  box-shadow: var(--shadow-lg);
+  padding: 40px;
+  animation: slideInUp 0.4s ease-out;
+}
+
+.results-header {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.results-header h1 {
+  font-size: 1.9rem;
+  color: var(--success);
+  margin-bottom: 20px;
+}
+
+/* Probability Badge */
+.probability-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  padding: 20px;
+  border-radius: 16px;
+  gap: 8px;
+}
+
+.probability-badge .label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.probability-badge .value {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--success);
+}
+
+/* Scholarship Card */
+.scholarship-card {
+  background: white;
+  border: 2px solid #E8E8F0;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.scholarship-card:hover:not(.locked-card) {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+}
+
+/* Top Pick Card */
+.top-pick-card {
+  border: 3px solid #FFD700;
+  background: linear-gradient(135deg, #fffef5 0%, #fffef0 100%);
+  box-shadow: 0 4px 20px rgba(255, 215, 0, 0.2);
+}
+
+.top-pick-badge {
+  position: absolute;
+  top: -12px;
+  left: 24px;
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  color: #333;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+/* Card Content */
+.card-content {
+  padding-top: 8px;
+}
+
+.scholarship-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+}
+
+.card-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #E8E8F0;
+}
+
+.amount {
+  font-weight: 600;
+  color: var(--success);
+  font-size: 1.1rem;
+}
+
+.deadline {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+/* Match Score Large */
+.match-score-large {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.match-score-large .score {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.match-score-large .label {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.reason {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.reason strong {
+  color: var(--text-primary);
+}
+
+/* Locked Section */
+.locked-section {
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 2px solid #E8E8F0;
+}
+
+.locked-label {
+  text-align: center;
+  color: var(--primary);
+  font-weight: 600;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+}
+
+.locked-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  cursor: pointer;
+}
+
+.locked-card {
+  border: 2px dashed #E8E8F0;
+  background: linear-gradient(135deg, #f8f9fa 0%, #f0f1f5 100%);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  filter: blur(5px);
+  transition: all 0.3s ease;
+}
+
+.locked-card:hover {
+  filter: blur(5px);
+  border-color: var(--primary);
+}
+
+.card-blur-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.blurred-text {
+  height: 12px;
+  background: #ccc;
+  border-radius: 6px;
+  width: 100%;
+}
+
+.blurred-text.short {
+  width: 70%;
+}
+
+.match-score-badge {
+  background: var(--primary);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-align: center;
+  width: 100%;
+  filter: blur(0);
+}
+
+.match-score-badge span {
+  filter: blur(0);
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 20px;
+  padding: 40px 30px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+  animation: slideInUp 0.3s ease-out;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  background: #f0f0f0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+  background: #E8E8F0;
+}
+
+.unlock-icon {
+  font-size: 3.5rem;
+  margin-bottom: 16px;
+}
+
+.modal-content h2 {
+  font-size: 1.8rem;
+  margin-bottom: 4px;
+}
+
+.unlock-subtitle {
+  color: var(--primary);
+  font-weight: 600;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+}
+
+.unlock-description {
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.btn-unlock {
+  width: 100%;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 16px;
+}
+
+.btn-unlock:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.modal-footer {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* No More Matches */
+.no-more-matches {
+  text-align: center;
+  padding: 30px;
+  background: var(--success-light);
+  border-radius: 12px;
+  margin-top: 30px;
+  color: #2e7d32;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .results-container {
+    padding: 24px;
+  }
+
+  .results-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .scholarship-name {
+    font-size: 1.2rem;
+  }
+
+  .match-score-large .score {
+    font-size: 1.6rem;
+  }
+
+  .locked-cards-container {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-content {
+    padding: 30px 20px;
+    max-width: 90vw;
+  }
+}
+
+@media (max-width: 480px) {
+  .results-container {
+    padding: 20px;
+    border-radius: 16px;
+  }
+
+  .results-header {
+    margin-bottom: 24px;
+  }
+
+  .results-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .probability-badge {
+    padding: 16px;
+  }
+
+  .probability-badge .value {
+    font-size: 2.2rem;
+  }
+
+  .scholarship-card {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .scholarship-name {
+    font-size: 1.1rem;
+  }
+
+  .card-meta {
+    gap: 12px;
+    font-size: 0.85rem;
+  }
+
+  .match-score-large .score {
+    font-size: 1.4rem;
+  }
+}

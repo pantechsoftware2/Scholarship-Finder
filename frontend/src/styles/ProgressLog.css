@@ -1,0 +1,133 @@
+/* Progress Log Styles */
+.progress-log-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  padding: 40px 20px;
+  text-align: center;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(102, 126, 234, 0.2);
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.progress-log-container h2 {
+  color: var(--text-primary);
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+
+.progress-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+.step.current {
+  opacity: 1;
+}
+
+.step.completed {
+  opacity: 1;
+  color: var(--success);
+}
+
+.step-indicator {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #E8E8F0;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.step.completed .step-indicator {
+  background-color: var(--success);
+  color: white;
+}
+
+.step.current .step-indicator {
+  background-color: var(--primary);
+  color: white;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.checkmark {
+  font-size: 1.2rem;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background-color: currentColor;
+  border-radius: 50%;
+}
+
+.step-text {
+  font-weight: 500;
+  color: var(--text-primary);
+  text-align: left;
+}
+
+.progress-bar-container {
+  width: 100%;
+  max-width: 400px;
+  height: 6px;
+  background-color: #E8E8F0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 480px) {
+  .progress-log-container {
+    gap: 20px;
+    padding: 30px 15px;
+  }
+
+  .progress-log-container h2 {
+    font-size: 1.5rem;
+  }
+
+  .step-text {
+    font-size: 0.9rem;
+  }
+}
