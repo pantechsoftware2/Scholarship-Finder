@@ -44,7 +44,7 @@ function ThankYou() {
 
         <div className="cta-section">
           <p className="cta-text">Need help with your applications?</p>
-          <a href="https://wa.me/1234567890" className="btn-contact">
+          <a href="https://wa.me/+917044490574" className="btn-contact">
             Chat on WhatsApp 💬
           </a>
         </div>

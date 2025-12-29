@@ -20,7 +20,7 @@ function App() {
 
     try {
       const response = await fetch(
-        'https://scholarship-finder2-seven.vercel.app/api/calculate-scholarships',
+        `${process.env.REACT_APP_API_URL}/api/calculate-scholarships`,
         {
           method: 'POST',
           headers: {
