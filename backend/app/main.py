@@ -20,9 +20,9 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         settings.frontend_url,
-        "http://localhost:3000",
-        "http://localhost:5000"
-        # "https://scholarship-finder-frontend-gemini.vercel.app",  # Frontend Vercel deployment
+        # "http://localhost:3000",
+        # "http://localhost:5000"
+        # "https://scholarship-finder-rouge.vercel.app",  # Frontend Vercel deployment
         # "https://scholarship-finder2-seven.vercel.app"  # Backend Vercel deployment
     ],
     allow_credentials=True,

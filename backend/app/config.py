@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     # Server Configuration
     port: int = 5000
     node_env: str = "development"
-    frontend_url: str = "http://localhost:3000"
+    frontend_url: str = "https://scholarship-finder-rouge.vercel.app"
     
     model_config = ConfigDict(env_file=".env", case_sensitive=False, extra="ignore")
 
