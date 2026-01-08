@@ -22,8 +22,8 @@ app.add_middleware(
         settings.frontend_url,
         # "http://localhost:3000",
         # "http://localhost:5000"
-        # "https://scholarship-finder-rouge.vercel.app",  # Frontend Vercel deployment
-        # "https://scholarship-finder2-seven.vercel.app"  # Backend Vercel deployment
+        "https://scholarship-finder-rouge.vercel.app",  # Frontend Vercel deployment
+        "https://scholarship-finder-backend-seven.vercel.app"  # Backend Vercel deployment
     ],
     allow_credentials=True,
     allow_methods=["*"],
