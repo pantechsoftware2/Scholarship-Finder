@@ -20,10 +20,12 @@ class SheetsService:
     def __init__(self):
         """Initialize Google Sheets connection"""
         # Google Apps Script Web App URL (from environment variable)
-        self.web_app_url = os.getenv(
-            "GOOGLE_APPS_SCRIPT_URL",
-            "https://script.google.com/macros/s/AKfycbwf6kDzsLDZu8oqBih_QAPuNm1McG4O0P0LBb5k2Mvmf5gtUDa8RwgAOQ7XEQogrTLS/exec"
-        )
+        self.web_app_url = os.getenv("GOOGLE_APPS_SCRIPT_URL")
+        
+        if not self.web_app_url:
+            logger.warning("⚠️  GOOGLE_APPS_SCRIPT_URL not set in environment variables!")
+            logger.warning("Please add GOOGLE_APPS_SCRIPT_URL to your .env file or Vercel environment settings")
+        
         self.storage_file = Path(__file__).parent.parent / "data" / "leads.json"
     
     @staticmethod
@@ -41,6 +43,20 @@ class SheetsService:
         
         try:
             logger.info(f"📝 Processing lead: {lead.email}")
+            
+            # Check if Apps Script URL is configured
+            if not service.web_app_url:
+                logger.error("❌ GOOGLE_APPS_SCRIPT_URL not configured in environment")
+                logger.warning("⚠️  Lead will be saved locally as fallback")
+                # Save locally as fallback
+                await service._save_locally({
+                    "name": lead.name,
+                    "email": lead.email,
+                    "phone": lead.phone,
+                    "timestamp": datetime.now().isoformat(),
+                    "error": "GOOGLE_APPS_SCRIPT_URL not configured"
+                })
+                return False
             
             # Format test scores
             test_scores = lead.user_profile.test_scores or {}
@@ -88,36 +104,45 @@ class SheetsService:
             
             # Send to Apps Script
             async with httpx.AsyncClient(timeout=30, follow_redirects=True) as client:
-                response = await client.post(
-                    service.web_app_url,
-                    json=payload,
-                    headers={"Content-Type": "application/json"}
-                )
-                
-                logger.info(f"📥 Apps Script Response Status: {response.status_code}")
-                logger.info(f"📥 Apps Script Response Body: {response.text}")
-                
-                if response.status_code == 200:
-                    try:
-                        result = response.json()
-                        if result.get("success"):
-                            logger.info(f"✅ Lead successfully saved to Google Sheets: {lead.email}")
-                            # Also save locally as backup
-                            await service._save_locally(payload)
-                            return True
-                        else:
-                            logger.error(f"❌ Apps Script error: {result.get('error', 'Unknown error')}")
+                try:
+                    response = await client.post(
+                        service.web_app_url,
+                        json=payload,
+                        headers={"Content-Type": "application/json"}
+                    )
+                    
+                    logger.info(f"📥 Apps Script Response Status: {response.status_code}")
+                    logger.info(f"📥 Apps Script Response Body: {response.text}")
+                    
+                    if response.status_code == 200:
+                        try:
+                            result = response.json()
+                            if result.get("success"):
+                                logger.info(f"✅ Lead successfully saved to Google Sheets: {lead.email}")
+                                # Also save locally as backup
+                                await service._save_locally(payload)
+                                return True
+                            else:
+                                logger.error(f"❌ Apps Script error: {result.get('error', 'Unknown error')}")
+                                # Save locally as fallback
+                                await service._save_locally(payload)
+                                return False
+                        except json.JSONDecodeError:
+                            logger.warning(f"⚠️ Apps Script returned non-JSON response (may still be success)")
                             # Save locally as fallback
                             await service._save_locally(payload)
-                            return False
-                    except json.JSONDecodeError:
-                        logger.warning(f"⚠️ Apps Script returned non-JSON response (may still be success)")
+                            return True
+                    else:
+                        logger.error(f"❌ HTTP Error {response.status_code}: {response.text}")
                         # Save locally as fallback
                         await service._save_locally(payload)
-                        return True
-                else:
-                    logger.error(f"❌ HTTP Error {response.status_code}: {response.text}")
-                    # Save locally as fallback
+                        return False
+                except httpx.TimeoutException:
+                    logger.error(f"❌ Apps Script request timed out")
+                    await service._save_locally(payload)
+                    return False
+                except httpx.RequestError as e:
+                    logger.error(f"❌ Apps Script request error: {e}")
                     await service._save_locally(payload)
                     return False
             

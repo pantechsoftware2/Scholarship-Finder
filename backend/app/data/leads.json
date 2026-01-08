@@ -404,5 +404,67 @@
       }
     ],
     "local_backup_time": "2026-01-08T12:09:27.074986"
+  },
+  {
+    "timestamp": "2026-01-08 14:44:39",
+    "name": "arka",
+    "email": "arkaghosh592@gmail.com",
+    "phone": "9382628050",
+    "target_degree": "Masters",
+    "gpa": "8.49",
+    "countries": [
+      "USA"
+    ],
+    "major": "computer science ",
+    "work_experience": "4",
+    "profile_highlight": "lhjgcfc",
+    "test_scores_provided": "No",
+    "gre": "",
+    "gmat": "",
+    "ielts": "",
+    "ai_summary_probability": 75,
+    "scholarships": [
+      {
+        "name": "Fulbright Foreign Student Program",
+        "amount": "Varies",
+        "deadline": "2024-10-15",
+        "match_score": 85,
+        "one_liner_reason": "Highly prestigious scholarship open to Indian graduate students in Computer Science pursuing studies in the USA.",
+        "strategy_tip": "Emphasize your leadership skills and commitment to contributing to India upon your return. Highlight any research experience and how it aligns with US research priorities. Obtain strong letters of recommendation from professors who can attest to your academic abilities and potential."
+      },
+      {
+        "name": "Inlaks Shivdasani Foundation Scholarships",
+        "amount": "Up to $100,000",
+        "deadline": "2025-03-31",
+        "match_score": 70,
+        "one_liner_reason": "Supports Indian students with strong academic backgrounds pursuing Masters degrees at top universities in the USA.",
+        "strategy_tip": "Focus on showcasing your unique skills and how your computer science studies will contribute to innovation. Clearly articulate your career goals and how the scholarship will help you achieve them. Since it's merit-based, highlight your GPA and any significant projects or publications."
+      },
+      {
+        "name": "Tata Scholarship at Cornell University",
+        "amount": "Varies (partial to full tuition)",
+        "deadline": "Varies by program (check Cornell's website)",
+        "match_score": 65,
+        "one_liner_reason": "Specifically for Indian students pursuing undergraduate or graduate studies at Cornell University.",
+        "strategy_tip": "Apply to a Computer Science program at Cornell University. Demonstrate financial need and a strong academic record. Highlight any extracurricular activities or leadership roles that showcase your well-roundedness."
+      },
+      {
+        "name": "Ritchie-Jennings Memorial Scholarship Program",
+        "amount": "$2,500 - $10,000",
+        "deadline": "2025-01-31",
+        "match_score": 55,
+        "one_liner_reason": "While primarily for fraud examination, relevant for Computer Science students with a focus on cybersecurity or data integrity.",
+        "strategy_tip": "Tailor your application to highlight any coursework or experience related to cybersecurity, data analysis, or fraud prevention. Emphasize your interest in ethical practices and protecting data integrity. A strong essay demonstrating your understanding of fraud-related issues is crucial."
+      },
+      {
+        "name": " AAUW International Fellowships",
+        "amount": "$20,000 - $50,000",
+        "deadline": "2024-11-15",
+        "match_score": 60,
+        "one_liner_reason": "Supports women pursuing full-time graduate or postgraduate studies in the United States.",
+        "strategy_tip": "As a female applicant, emphasize your commitment to advancing women in STEM fields. Highlight any leadership roles or mentorship activities you've undertaken to support other women in computer science. Clearly articulate your research goals and how they will contribute to your field."
+      }
+    ],
+    "local_backup_time": "2026-01-08T14:44:42.893585"
   }
 ]
