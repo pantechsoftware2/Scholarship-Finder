@@ -12,7 +12,7 @@ export default function Home() {
       </p>
 
       <Link
-        href="/hunt"
+        href="/flow"
         className="px-8 py-4 rounded-full bg-gradient-to-r from-pink-500 to-cyan-400 text-black font-semibold animate-pulse"
       >
         Start the Hunt 🔥

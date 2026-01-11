@@ -24,3 +24,79 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@keyframes radar-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes radar-parallax-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+@keyframes radar-pulse {
+  0% {
+    transform: scale(0.4);
+    opacity: 0.8;
+  }
+  60% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.1);
+    opacity: 0;
+  }
+}
+
+@keyframes radar-dot-blink {
+  0%, 55%, 100% { opacity: 0.15; transform: scale(0.9); }
+  10% { opacity: 1; transform: scale(1.1); }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-60%); }
+  100% { transform: translateX(220%); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.radar-sweep {
+  animation: radar-spin 3s linear infinite;
+}
+
+.radar-parallax {
+  animation: radar-parallax-spin 18s linear infinite;
+}
+
+.radar-pulse {
+  width: 130%;
+  height: 130%;
+  border-radius: 9999px;
+  border: 1px solid rgba(34, 211, 238, 0.4);
+  box-shadow: 0 0 35px rgba(34, 211, 238, 0.5);
+  animation: radar-pulse 2.6s ease-out infinite;
+}
+
+.radar-dot {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background: rgba(56, 189, 248, 0.95);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 1);
+  animation: radar-dot-blink 2.8s infinite;
+}
+
+.shimmer-bar {
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.28s ease-out;
+}
+
