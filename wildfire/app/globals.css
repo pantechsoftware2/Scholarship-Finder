@@ -100,3 +100,133 @@ body {
   animation: fade-in 0.28s ease-out;
 }
 
+/* ✅ MOBILE OPTIMIZATION */
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Touch-friendly tap targets */
+button, a, input {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Mobile viewport */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+
+  body {
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  /* Safe area for notch phones */
+  main {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Bottom sheet animation */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+.sheet-open {
+  animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.sheet-close {
+  animation: slideDown 0.3s ease-in forwards;
+}
+
+/* Mobile touch feedback */
+button:active {
+  transform: scale(0.98);
+}
+
+input:active {
+  transform: scale(1.01);
+}
+
+/* Prevent zoom on input focus (iOS) */
+input,
+textarea,
+select {
+  font-size: 16px;
+}
+
+/* Smooth transitions */
+* {
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Mobile form styling */
+@media (max-width: 640px) {
+  .form-container {
+    border-radius: 16px;
+    margin: 0 12px;
+  }
+
+  button {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+
+  input {
+    font-size: 16px;
+    padding: 12px 14px;
+  }
+}
+
+/* Responsive typography */
+@media (max-width: 640px) {
+  h1 {
+    font-size: 24px;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+
+  p {
+    font-size: 13px;
+  }
+}
+
+/* Mobile navbar safe area */
+nav {
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Bottom sheet safe area */
+@media (max-width: 768px) {
+  .bottom-sheet {
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+  }
+}
