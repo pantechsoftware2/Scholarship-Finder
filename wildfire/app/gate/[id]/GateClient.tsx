@@ -2,13 +2,11 @@
 
 import UnlockForm from "@/app/hunt/UnlockForm";
 
-export default function GateClient({ reportId }: { reportId: string }) {
-  // ✅ REQUIRED shape for UnlockForm
-  const scholarship = {
-    id: reportId,
-    title: "High-Probability Scholarship Matches",
-  };
+type GateClientProps = {
+  reportId: string;
+};
 
+export default function GateClient({ reportId }: GateClientProps) {
   return (
     <div
       className="relative z-10 w-full max-w-md p-6 rounded-3xl
@@ -20,7 +18,8 @@ export default function GateClient({ reportId }: { reportId: string }) {
       </h2>
 
       <UnlockForm
-        scholarship={scholarship}
+        reportId={reportId}
+        scholarshipTitle="High-Probability Scholarship Matches"
         onClose={() => {}}
       />
     </div>

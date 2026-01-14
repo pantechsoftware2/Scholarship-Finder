@@ -1,20 +1,26 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { useSearchParams } from "next/navigation";
 import UnlockForm from "./UnlockForm";
 
 type Scholarship = {
-  id: string;
-  title: string;
+  name: string;
   country: string;
-  funding_amount: number;
-  benefits: string;
+  amount: string;
   deadline: string;
+  benefits?: string;
+};
+
+type ReportPayload = {
+  id: string;
+  scholarships: Scholarship[];
 };
 
 export default function HuntPage() {
-  const [data, setData] = useState<Scholarship[]>([]);
+  const searchParams = useSearchParams();
+
+  const [report, setReport] = useState<ReportPayload | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -23,43 +29,63 @@ export default function HuntPage() {
   const [showUnlock, setShowUnlock] = useState(false);
 
   useEffect(() => {
-    async function fetchScholarships() {
+    async function startHunt() {
       try {
         setLoading(true);
-        const { data: scholarships, error: supabaseError } = await supabase
-          .from("scholarships")
-          .select("*");
 
-        if (supabaseError) throw supabaseError;
-        setData((scholarships as Scholarship[]) || []);
+        const res = await fetch("/api/start-hunt", {
+          method: "POST",
+        });
+
+        if (!res.ok) {
+          const body = await res.text();
+          console.error("start-hunt failed:", res.status, body);
+          throw new Error("Search failed");
+        }
+
+        const { reportId } = await res.json();
+
+        const repRes = await fetch(`/api/report?id=${reportId}`);
+        if (!repRes.ok) {
+          const body = await repRes.text();
+          console.error("report fetch failed:", repRes.status, body);
+          throw new Error("Report fetch failed");
+        }
+
+        const repJson = (await repRes.json()) as ReportPayload;
+        repJson.id = reportId;
+        setReport(repJson);
       } catch (err: any) {
-        console.error("Fetch error:", err.message);
+        console.error("Hunt error:", err);
         setError("Error loading scholarships");
       } finally {
         setLoading(false);
       }
     }
 
-    fetchScholarships();
-  }, []);
+    startHunt();
+  }, [searchParams]);
 
   if (loading) {
     return (
       <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#1e293b,_#020617)] text-white flex items-center justify-center">
-        <p className="text-sm text-slate-300">Mapping your funding universe…</p>
+        <p className="text-sm text-slate-300">
+          Mapping your funding universe…
+        </p>
       </main>
     );
   }
 
-  if (error) {
+  if (error || !report) {
     return (
       <main className="min-h-screen bg-black text-red-400 flex items-center justify-center">
-        {error}
+        {error || "Something went wrong"}
       </main>
     );
   }
 
-  const totalMatches = data.length || 6;
+  const data = report.scholarships || [];
+  const totalMatches = data.length;
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#0f172a,_#020617)] text-white px-4 py-10 flex justify-center">
@@ -68,7 +94,7 @@ export default function HuntPage() {
         <div className="pointer-events-none absolute -top-32 -left-32 h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-40 -right-32 h-80 w-80 rounded-full bg-fuchsia-500/15 blur-3xl" />
 
-        {/* header strip */}
+        {/* header */}
         <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 relative z-10">
           <div>
             <p className="text-xs uppercase tracking-[0.2em] text-slate-400 mb-1">
@@ -78,7 +104,8 @@ export default function HuntPage() {
               Your high‑probability matches.
             </h1>
             <p className="text-xs md:text-sm text-slate-400 mt-2 max-w-md">
-              You&apos;re seeing **real** scholarships calibrated to your GPA, country choices and powers.
+              You&apos;re seeing real scholarships calibrated to your academic
+              profile and study‑abroad dream.
             </p>
           </div>
 
@@ -90,12 +117,12 @@ export default function HuntPage() {
               </span>
             </div>
             <p className="text-[0.65rem] text-slate-500">
-              Top 2 are fully visible. The rest are blurred until you unlock.
+              Top 2 are fully visible. The rest stay blurred until you unlock.
             </p>
           </div>
         </header>
 
-        {/* list container */}
+        {/* list */}
         <section className="relative z-10">
           <div className="rounded-3xl border border-cyan-400/15 bg-slate-950/70 backdrop-blur-2xl shadow-[0_0_40px_rgba(15,23,42,0.9)] px-4 py-6 md:px-6 md:py-7">
             <div className="grid gap-5 md:grid-cols-2">
@@ -104,17 +131,16 @@ export default function HuntPage() {
 
                 return (
                   <div
-                    key={s.id}
+                    key={`${s.name}-${index}`}
                     className="relative group rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-xl p-5 overflow-hidden transition-all duration-200 hover:border-cyan-400/60 hover:-translate-y-0.5"
                   >
-                    {/* subtle card glow */}
+                    {/* hover glow */}
                     <div className="pointer-events-none absolute -inset-10 opacity-0 group-hover:opacity-100 bg-gradient-to-br from-cyan-500/10 via-sky-500/5 to-fuchsia-500/10 blur-2xl transition-opacity" />
 
                     {/* content */}
                     <div
                       className={
-                        "relative space-y-3 " +
-                        (locked ? "select-none" : "")
+                        "relative space-y-3 " + (locked ? "select-none" : "")
                       }
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -124,7 +150,7 @@ export default function HuntPage() {
                             (locked ? "blur-sm" : "")
                           }
                         >
-                          {s.title}
+                          {s.name}
                         </h2>
                         <span className="rounded-full bg-emerald-500/10 border border-emerald-400/40 text-emerald-300 text-[0.65rem] px-2 py-1 uppercase tracking-[0.14em]">
                           Match #{index + 1}
@@ -139,7 +165,7 @@ export default function HuntPage() {
                           </span>
                         </span>
                         <span className="text-emerald-400 font-semibold text-sm">
-                          ₹{Number(s.funding_amount).toLocaleString("en-IN")}
+                          {s.amount}
                         </span>
                       </div>
 
@@ -148,7 +174,8 @@ export default function HuntPage() {
                           Benefits snapshot
                         </p>
                         <p className={locked ? "blur-[2px]" : ""}>
-                          {s.benefits}
+                          {s.benefits ??
+                            "Tuition support + stipend + additional perks based on profile fit."}
                         </p>
                       </div>
 
@@ -160,7 +187,7 @@ export default function HuntPage() {
                       </p>
                     </div>
 
-                    {/* locked overlay for items >=3 */}
+                    {/* lock overlay */}
                     {locked && (
                       <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 backdrop-blur-md">
                         <div className="relative w-full max-w-xs rounded-2xl border border-cyan-400/40 bg-slate-950/90 px-5 py-4 text-center shadow-[0_0_30px_rgba(56,189,248,0.5)]">
@@ -171,7 +198,7 @@ export default function HuntPage() {
                             We found more matches like this.
                           </p>
                           <p className="text-[0.7rem] text-slate-400 mb-4">
-                            Unlock the full report to reveal names, deadlines,
+                            Unlock the full roadmap to reveal names, deadlines,
                             and best‑fit notes.
                           </p>
 
@@ -196,7 +223,8 @@ export default function HuntPage() {
 
         {showUnlock && selectedScholarship && (
           <UnlockForm
-            scholarship={selectedScholarship}
+            reportId={report.id}
+            scholarshipTitle={selectedScholarship.name}
             onClose={() => {
               setShowUnlock(false);
               setSelectedScholarship(null);

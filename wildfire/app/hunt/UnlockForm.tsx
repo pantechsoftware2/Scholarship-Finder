@@ -1,20 +1,24 @@
+// app/hunt/UnlockForm.tsx
 "use client";
 
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { BottomSheet, useIsMobile } from "@/app/components/MobileOptimized";
+import { BottomSheet } from "@/app/components/MobileOptimized";
+
+type UnlockFormProps = {
+  reportId: string;
+  scholarshipTitle: string;
+  onClose: () => void;
+};
 
 export default function UnlockForm({
-  scholarship,
+  reportId,
+  scholarshipTitle,
   onClose,
-}: {
-  scholarship: any;
-  onClose: () => void;
-}) {
+}: UnlockFormProps) {
   const router = useRouter();
-  const isMobile = useIsMobile();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -54,40 +58,24 @@ export default function UnlockForm({
     try {
       setLoading(true);
 
-      console.log("🔍 Form data:", {
-        name,
-        email,
-        whatsapp,
-        scholarship_id: scholarship.id,
+      const { error: insertError } = await supabase.from("leads").insert({
+        name: name.trim(),
+        email: email.trim(),
+        whatsapp: whatsapp.trim(),
+        report_id: reportId,
       });
 
-      // 1️⃣ SAVE TO SUPABASE
-      const { data, error: insertError } = await supabase
-        .from("leads")
-        .insert({
-          name: name.trim(),
-          email: email.trim(),
-          whatsapp: whatsapp.trim(),
-          scholarship_id: scholarship.id,
-        })
-        .select()
-        .single();
-
       if (insertError) {
-        console.error("❌ Insert error:", insertError);
+        console.error("Lead insert error:", insertError);
         throw insertError;
       }
 
-      console.log("✅ Lead saved:", data);
+      const baseUrl =
+        process.env.NEXT_PUBLIC_BASE_URL ??
+        (typeof window !== "undefined" ? window.location.origin : "");
+      const reportLink = `${baseUrl}/report/${reportId}`;
 
-      const reportLink =
-        typeof window !== "undefined"
-          ? `${window.location.origin}/report/${scholarship.id}`
-          : "";
-
-      // 2️⃣ SEND EMAIL
-      console.log("📧 Sending email...");
-      const emailRes = await fetch("/api/notifications/send", {
+      await fetch("/api/notifications/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -98,16 +86,11 @@ export default function UnlockForm({
         }),
       });
 
-      if (emailRes.ok) {
-        console.log("✅ Email sent!");
-      }
-
-      // 3️⃣ REDIRECT
       setTimeout(() => {
-        router.push(`/report/${scholarship.id}`);
-      }, 800);
+        router.push(`/report/${reportId}`);
+      }, 700);
     } catch (err: any) {
-      console.error("💥 Error:", err);
+      console.error("Unlock error:", err);
       setError(err.message || "Something went wrong");
     } finally {
       setLoading(false);
@@ -122,14 +105,14 @@ export default function UnlockForm({
           We found matches
         </p>
         <h2 className="text-lg md:text-2xl font-semibold">
-          We found <span className="text-cyan-300">6 matches</span>
+          Get your <span className="text-cyan-300">Funding Roadmap</span>
         </h2>
         <p className="text-xs text-slate-400">
-          Send report for{" "}
+          Send full report for{" "}
           <span className="text-cyan-200 font-medium">
-            {scholarship?.title}
+            {scholarshipTitle}
           </span>{" "}
-          to your inbox.
+          to your inbox and WhatsApp.
         </p>
       </div>
 
@@ -142,7 +125,7 @@ export default function UnlockForm({
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="John wick"
+            placeholder="Priya Sharma"
             disabled={loading}
             whileFocus={{ scale: 1.02 }}
             className="w-full rounded-2xl bg-slate-950/80 border border-slate-700 px-3.5 py-3 text-sm md:text-base text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-400"
@@ -176,7 +159,7 @@ export default function UnlockForm({
             className="w-full rounded-2xl bg-slate-950/80 border border-slate-700 px-3.5 py-3 text-sm md:text-base text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-400"
           />
           <p className="text-[0.65rem] text-slate-500">
-            Auto‑validated for +91. No spam, only this report & updates.
+            Auto‑validated for +91. No spam, only this report & key updates.
           </p>
         </div>
 
