@@ -2,6 +2,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 
+// Optional: keep normalization on the read side too, in case old data exists
+function normalizeDeadline(raw: string | null | undefined): string {
+  if (!raw) return "Deadline unknown";
+
+  const lower = raw.toLowerCase();
+
+  if (lower.includes("passed")) return "Deadline passed";
+  if (lower.includes("unknown")) return "Deadline unknown";
+
+  // Changed text here to match start-hunt
+  if (lower.includes("application deadline for admission")) {
+    return "Check official website for deadline";
+  }
+
+  const d = new Date(raw);
+  if (!Number.isNaN(d.getTime())) {
+    return d.toISOString().slice(0, 10);
+  }
+
+  return raw;
+}
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -22,10 +44,18 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 
-    // Transform data to include user_name from input
+    // Normalize deadlines on the way out (defensive in case older rows are messy)
+    const scholarshipsWithCleanDeadlines = Array.isArray(data.scholarships)
+      ? data.scholarships.map((s: any) => ({
+          ...s,
+          deadline: normalizeDeadline(s.deadline),
+        }))
+      : [];
+
     const transformedData = {
       ...data,
-      user_name: data.input?.name || data.input?.name || undefined,
+      scholarships: scholarshipsWithCleanDeadlines,
+      user_name: data.input?.name || undefined,
     };
 
     return NextResponse.json(transformedData);
@@ -33,7 +63,7 @@ export async function GET(request: NextRequest) {
     console.error("💥 /api/report error:", err);
     return NextResponse.json(
       { error: err?.message || "Unexpected error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

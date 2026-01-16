@@ -14,12 +14,34 @@ type ClientPayload = {
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
+// Normalize deadline BEFORE saving to Supabase, so DB is always clean
+function normalizeDeadline(raw: string | null | undefined): string {
+  if (!raw) return "Deadline unknown";
+
+  const lower = raw.toLowerCase();
+
+  if (lower.includes("passed")) return "Deadline passed";
+  if (lower.includes("unknown")) return "Deadline unknown";
+
+  // Changed text here
+  if (lower.includes("application deadline for admission")) {
+    return "Check official website for deadline";
+  }
+
+  const d = new Date(raw);
+  if (!Number.isNaN(d.getTime())) {
+    return d.toISOString().slice(0, 10);
+  }
+
+  return raw;
+}
+
 export async function POST(request: NextRequest) {
   const contentType = request.headers.get("content-type");
   if (!contentType?.includes("application/json")) {
     return NextResponse.json(
       { error: "Content-Type must be application/json" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -29,18 +51,11 @@ export async function POST(request: NextRequest) {
   } catch {
     return NextResponse.json(
       { error: "Invalid or empty JSON body" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
-  const {
-    targetCountries,
-    major,
-    gpa,
-    specialPowers,
-    name,
-    gradYear,
-  } = body;
+  const { targetCountries, major, gpa, specialPowers, name, gradYear } = body;
 
   if (!targetCountries?.length || !major || gpa === undefined || gpa === null) {
     return NextResponse.json(
@@ -48,7 +63,7 @@ export async function POST(request: NextRequest) {
         error:
           "Missing required fields: targetCountries, major, and gpa are required",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -98,9 +113,19 @@ Return ONLY valid JSON in this format:
       console.error("Gemini returned non‑JSON:", text);
       return NextResponse.json(
         { error: "AI returned invalid JSON" },
-        { status: 500 }
+        { status: 500 },
       );
     }
+
+    // Defensive: ensure scholarships is an array
+    const scholarshipsRaw = Array.isArray(parsed.scholarships)
+      ? parsed.scholarships
+      : [];
+
+    const scholarships = scholarshipsRaw.map((s: any) => ({
+      ...s,
+      deadline: normalizeDeadline(s.deadline),
+    }));
 
     const { data, error } = await supabaseAdmin
       .from("reports")
@@ -110,8 +135,8 @@ Return ONLY valid JSON in this format:
           name: name || "Anonymous",
           gradYear: gradYear || "Not specified",
         },
-        total_value_found: parsed.total_value_found,
-        scholarships: parsed.scholarships,
+        total_value_found: parsed.total_value_found ?? 0,
+        scholarships,
       })
       .select("id")
       .single();
@@ -120,19 +145,20 @@ Return ONLY valid JSON in this format:
       console.error("Supabase error:", error);
       return NextResponse.json(
         { error: "Database insert failed" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
     return NextResponse.json({
       reportId: data.id,
-      ...parsed,
+      total_value_found: parsed.total_value_found ?? 0,
+      scholarships,
     });
   } catch (err: any) {
     console.error("API Error:", err);
     return NextResponse.json(
       { error: "Scholarship hunt failed" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

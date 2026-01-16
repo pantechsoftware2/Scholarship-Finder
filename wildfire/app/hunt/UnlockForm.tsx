@@ -2,7 +2,6 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { BottomSheet } from "@/app/components/MobileOptimized";
@@ -11,12 +10,14 @@ type UnlockFormProps = {
   reportId: string;
   scholarshipTitle: string;
   onClose: () => void;
+  onUnlocked: () => void;
 };
 
 export default function UnlockForm({
   reportId,
   scholarshipTitle,
   onClose,
+  onUnlocked,
 }: UnlockFormProps) {
   const router = useRouter();
 
@@ -44,12 +45,10 @@ export default function UnlockForm({
       setError("Please enter your name");
       return;
     }
-
     if (!isValidEmail(email)) {
       setError("Please enter a valid email address");
       return;
     }
-
     if (!isValidWhatsapp(whatsapp)) {
       setError("Enter valid WhatsApp: +91 + 10 digits");
       return;
@@ -58,37 +57,31 @@ export default function UnlockForm({
     try {
       setLoading(true);
 
-      const { error: insertError } = await supabase.from("leads").insert({
-        name: name.trim(),
-        email: email.trim(),
-        whatsapp: whatsapp.trim(),
-        report_id: reportId,
-      });
-
-      if (insertError) {
-        console.error("Lead insert error:", insertError);
-        throw insertError;
-      }
-
-      const baseUrl =
-        process.env.NEXT_PUBLIC_BASE_URL ??
-        (typeof window !== "undefined" ? window.location.origin : "");
-      const reportLink = `${baseUrl}/report/${reportId}`;
-
-      await fetch("/api/notifications/send", {
+      const res = await fetch("/api/unlock-report", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          type: "welcome",
-          email,
-          name,
-          reportLink,
+          reportId,
+          name: name.trim(),
+          email: email.trim(),
+          whatsapp: whatsapp.trim(),
         }),
       });
 
+      if (!res.ok) {
+        const body = await res.text();
+        console.error("unlock-report failed:", res.status, body);
+        throw new Error("Failed to save your details. Try again.");
+      }
+
+      const { magicLink } = await res.json();
+
+      onUnlocked();
+
+      // redirect to magic link report page
       setTimeout(() => {
-        router.push(`/report/${reportId}`);
-      }, 700);
+        router.push(magicLink);
+      }, 500);
     } catch (err: any) {
       console.error("Unlock error:", err);
       setError(err.message || "Something went wrong");
@@ -118,7 +111,6 @@ export default function UnlockForm({
 
       {/* Form */}
       <form onSubmit={handleUnlock} className="space-y-3">
-        {/* Name */}
         <div className="space-y-1.5">
           <label className="text-xs text-slate-300">Full Name</label>
           <motion.input
@@ -132,7 +124,6 @@ export default function UnlockForm({
           />
         </div>
 
-        {/* Email */}
         <div className="space-y-1.5">
           <label className="text-xs text-slate-300">Email</label>
           <motion.input
@@ -146,7 +137,6 @@ export default function UnlockForm({
           />
         </div>
 
-        {/* WhatsApp */}
         <div className="space-y-1.5">
           <label className="text-xs text-slate-300">WhatsApp</label>
           <motion.input
@@ -163,7 +153,6 @@ export default function UnlockForm({
           </p>
         </div>
 
-        {/* Error */}
         {error && (
           <motion.p
             initial={{ opacity: 0, y: -10 }}
@@ -174,7 +163,6 @@ export default function UnlockForm({
           </motion.p>
         )}
 
-        {/* Button */}
         <motion.button
           type="submit"
           disabled={loading}
@@ -198,7 +186,6 @@ export default function UnlockForm({
         </motion.button>
       </form>
 
-      {/* Footer */}
       <p className="text-[0.65rem] text-slate-500 text-center">
         By unlocking, you agree to receive this report on email and WhatsApp.
       </p>

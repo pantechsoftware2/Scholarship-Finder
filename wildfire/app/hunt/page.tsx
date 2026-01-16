@@ -1,3 +1,4 @@
+// app/hunt/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -27,15 +28,14 @@ export default function HuntPage() {
   const [selectedScholarship, setSelectedScholarship] =
     useState<Scholarship | null>(null);
   const [showUnlock, setShowUnlock] = useState(false);
+  const [unlocked, setUnlocked] = useState(false);
 
   useEffect(() => {
     async function loadReport() {
       try {
         setLoading(true);
 
-        // Get reportId from query params or sessionStorage
         let reportId = searchParams.get("id");
-        
         if (!reportId && typeof window !== "undefined") {
           reportId = sessionStorage.getItem("lastReportId");
         }
@@ -53,21 +53,38 @@ export default function HuntPage() {
         }
 
         const repData = await repRes.json();
-        
-        // Transform the data structure to match what the page expects
+
         const scholarships = (repData.scholarships || []).map((s: any) => ({
           name: s.name || "",
           country: s.country || "",
-          amount: typeof s.amount === "number" ? s.amount.toString() : (s.amount || ""),
+          amount:
+            typeof s.amount === "number"
+              ? s.amount.toString()
+              : s.amount || "",
           deadline: s.deadline || "",
-          benefits: s.description || s.benefits || "Tuition support + stipend + additional perks based on profile fit.",
+          benefits:
+            s.description ||
+            s.benefits ||
+            "Tuition support + stipend + additional perks based on profile fit.",
         }));
+
+        // Optional: ensure some locked cards exist in dev
+        while (scholarships.length < 4) {
+          scholarships.push({
+            name: `Demo Scholarship ${scholarships.length + 1}`,
+            country: "Canada",
+            amount: "5000",
+            deadline: "Varies",
+            benefits:
+              "Demo scholarship used to visualize locked cards and unlock flow.",
+          });
+        }
 
         const repJson: ReportPayload = {
           id: reportId,
-          scholarships: scholarships,
+          scholarships,
         };
-        
+
         setReport(repJson);
       } catch (err: any) {
         console.error("Hunt error:", err);
@@ -141,7 +158,7 @@ export default function HuntPage() {
           <div className="rounded-3xl border border-cyan-400/15 bg-slate-950/70 backdrop-blur-2xl shadow-[0_0_40px_rgba(15,23,42,0.9)] px-4 py-6 md:px-6 md:py-7">
             <div className="grid gap-5 md:grid-cols-2">
               {data.map((s, index) => {
-                const locked = index >= 2;
+                const locked = !unlocked && index >= 2;
 
                 return (
                   <div
@@ -240,6 +257,11 @@ export default function HuntPage() {
             reportId={report.id}
             scholarshipTitle={selectedScholarship.name}
             onClose={() => {
+              setShowUnlock(false);
+              setSelectedScholarship(null);
+            }}
+            onUnlocked={() => {
+              setUnlocked(true);
               setShowUnlock(false);
               setSelectedScholarship(null);
             }}

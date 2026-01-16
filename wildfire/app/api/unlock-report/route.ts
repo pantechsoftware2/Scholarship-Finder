@@ -1,8 +1,8 @@
 // app/api/unlock-report/route.ts
-import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabaseClient";
+import { NextRequest, NextResponse } from "next/server";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { reportId, name, email, whatsapp } = body;
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("leads")
       .insert({
         report_id: reportId,
@@ -33,8 +33,10 @@ export async function POST(req: Request) {
       );
     }
 
-    // You can customize the magic-link path
-    const magicLink = `/report/${reportId}`;
+    const baseUrl =
+      process.env.BASE_URL ??
+      (typeof window === "undefined" ? "" : window.location.origin);
+    const magicLink = `${baseUrl}/report/${reportId}`;
 
     return NextResponse.json({ leadId: data.id, magicLink });
   } catch (err: any) {
