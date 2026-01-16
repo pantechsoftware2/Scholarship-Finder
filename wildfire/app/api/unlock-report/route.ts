@@ -1,35 +1,46 @@
 // app/api/unlock-report/route.ts
-import { NextRequest, NextResponse } from "next/server";
-import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import { NextResponse } from "next/server";
+import { supabase } from "@/lib/supabaseClient";
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const { reportId, name, email, whatsapp } = await req.json();
+    const body = await req.json();
+    const { reportId, name, email, whatsapp } = body;
 
     if (!reportId || !name || !email || !whatsapp) {
       return NextResponse.json(
-        { error: "Missing reportId, name, email or whatsapp" },
+        { error: "Missing required fields" },
         { status: 400 }
       );
     }
 
-    const { data, error } = await supabaseAdmin
-      .from("reports")
-      .update({ name, email, whatsapp })
-      .eq("id", reportId)
+    const { data, error } = await supabase
+      .from("leads")
+      .insert({
+        report_id: reportId,
+        name,
+        email,
+        whatsapp,
+      })
       .select("id")
       .single();
 
     if (error || !data) {
-      console.error("Supabase update error:", error);
-      return NextResponse.json({ error: "DB error" }, { status: 500 });
+      console.error("Leads insert error:", error);
+      return NextResponse.json(
+        { error: "Failed to save lead" },
+        { status: 500 }
+      );
     }
 
-    return NextResponse.json({ ok: true });
-  } catch (e: any) {
-    console.error("unlock-report error:", e.message);
+    // You can customize the magic-link path
+    const magicLink = `/report/${reportId}`;
+
+    return NextResponse.json({ leadId: data.id, magicLink });
+  } catch (err: any) {
+    console.error("unlock-report route error:", err);
     return NextResponse.json(
-      { error: "Server error" },
+      { error: err.message || "Internal error" },
       { status: 500 }
     );
   }

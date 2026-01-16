@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/Lenovo/Documents/GitHub/Scholarship-Finder/wildfire/app/providers.tsx"],"sourcesContent":["\"use client\";\r\n\r\nimport { AnimatePresence, motion } from \"framer-motion\";\r\nimport { usePathname } from \"next/navigation\";\r\n\r\nexport default function Providers({\r\n  children,\r\n}: {\r\n  children: React.ReactNode;\r\n}) {\r\n  const pathname = usePathname();\r\n\r\n  return (\r\n    <AnimatePresence mode=\"wait\">\r\n      <motion.div\r\n        key={pathname}\r\n        initial={{ opacity: 0, y: 20 }}\r\n        animate={{ opacity: 1, y: 0 }}\r\n        exit={{ opacity: 0, y: -20 }}\r\n        transition={{ duration: 0.4, ease: \"easeOut\" }}\r\n      >\r\n        {children}\r\n      </motion.div>\r\n    </AnimatePresence>\r\n  );\r\n}\r\n"],"names":[],"mappings":";;;;;AAEA;AAAA;AACA;;;AAHA;;;AAKe,SAAS,UAAU,EAChC,QAAQ,EAGT;;IACC,MAAM,WAAW,IAAA,gKAAW;IAE5B,qBACE,yMAAC,2NAAe;QAAC,MAAK;kBACpB,cAAA,yMAAC,mNAAM,CAAC,GAAG;YAET,SAAS;gBAAE,SAAS;gBAAG,GAAG;YAAG;YAC7B,SAAS;gBAAE,SAAS;gBAAG,GAAG;YAAE;YAC5B,MAAM;gBAAE,SAAS;gBAAG,GAAG,CAAC;YAAG;YAC3B,YAAY;gBAAE,UAAU;gBAAK,MAAM;YAAU;sBAE5C;WANI;;;;;;;;;;AAUb;GApBwB;;QAKL,gKAAW;;;KALN"}}]
+}

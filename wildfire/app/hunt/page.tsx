@@ -29,21 +29,21 @@ export default function HuntPage() {
   const [showUnlock, setShowUnlock] = useState(false);
 
   useEffect(() => {
-    async function startHunt() {
+    async function loadReport() {
       try {
         setLoading(true);
 
-        const res = await fetch("/api/start-hunt", {
-          method: "POST",
-        });
-
-        if (!res.ok) {
-          const body = await res.text();
-          console.error("start-hunt failed:", res.status, body);
-          throw new Error("Search failed");
+        // Get reportId from query params or sessionStorage
+        let reportId = searchParams.get("id");
+        
+        if (!reportId && typeof window !== "undefined") {
+          reportId = sessionStorage.getItem("lastReportId");
         }
 
-        const { reportId } = await res.json();
+        if (!reportId) {
+          setError("No report ID provided. Please start a new search.");
+          return;
+        }
 
         const repRes = await fetch(`/api/report?id=${reportId}`);
         if (!repRes.ok) {
@@ -52,8 +52,22 @@ export default function HuntPage() {
           throw new Error("Report fetch failed");
         }
 
-        const repJson = (await repRes.json()) as ReportPayload;
-        repJson.id = reportId;
+        const repData = await repRes.json();
+        
+        // Transform the data structure to match what the page expects
+        const scholarships = (repData.scholarships || []).map((s: any) => ({
+          name: s.name || "",
+          country: s.country || "",
+          amount: typeof s.amount === "number" ? s.amount.toString() : (s.amount || ""),
+          deadline: s.deadline || "",
+          benefits: s.description || s.benefits || "Tuition support + stipend + additional perks based on profile fit.",
+        }));
+
+        const repJson: ReportPayload = {
+          id: reportId,
+          scholarships: scholarships,
+        };
+        
         setReport(repJson);
       } catch (err: any) {
         console.error("Hunt error:", err);
@@ -63,7 +77,7 @@ export default function HuntPage() {
       }
     }
 
-    startHunt();
+    loadReport();
   }, [searchParams]);
 
   if (loading) {
@@ -189,8 +203,8 @@ export default function HuntPage() {
 
                     {/* lock overlay */}
                     {locked && (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 backdrop-blur-md">
-                        <div className="relative w-full max-w-xs rounded-2xl border border-cyan-400/40 bg-slate-950/90 px-5 py-4 text-center shadow-[0_0_30px_rgba(56,189,248,0.5)]">
+                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-md z-10 rounded-2xl">
+                        <div className="relative w-full max-w-xs rounded-2xl border border-cyan-400/40 bg-slate-950/95 px-5 py-4 text-center shadow-[0_0_30px_rgba(56,189,248,0.5)]">
                           <p className="text-xs uppercase tracking-[0.2em] text-slate-400 mb-1">
                             Locked insight
                           </p>
@@ -207,7 +221,7 @@ export default function HuntPage() {
                               setSelectedScholarship(s);
                               setShowUnlock(true);
                             }}
-                            className="w-full bg-gradient-to-r from-cyan-400 to-fuchsia-500 text-black text-xs font-semibold py-2.5 rounded-full shadow-[0_0_24px_rgba(236,72,153,0.6)] hover:brightness-110 transition-all"
+                            className="w-full bg-gradient-to-r from-cyan-400 to-fuchsia-500 text-black text-xs font-semibold py-2.5 rounded-full shadow-[0_0_24px_rgba(236,72,153,0.6)] hover:brightness-110 transition-all cursor-pointer"
                           >
                             Unlock Report 🔓
                           </button>
