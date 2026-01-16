@@ -62,7 +62,10 @@ export async function POST(request: NextRequest) {
       } catch (emailError: any) {
         console.error("❌ sendWelcomeEmail threw error:", emailError);
         return NextResponse.json(
-          { success: false, error: `Email send error: ${emailError.message}` },
+          {
+            success: false,
+            error: `Email send error: ${emailError.message}`,
+          },
           { status: 500 }
         );
       }

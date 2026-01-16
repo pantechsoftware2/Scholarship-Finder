@@ -671,6 +671,10 @@
     max-height: calc(var(--spacing) * 40);
   }
 
+  .max-h-44 {
+    max-height: calc(var(--spacing) * 44);
+  }
+
   .max-h-\[90vh\] {
     max-height: 90vh;
   }
@@ -1169,6 +1173,16 @@
   @supports (color: color-mix(in lab, red, red)) {
     .bg-cyan-400\/40 {
       background-color: color-mix(in oklab, var(--color-cyan-400) 40%, transparent);
+    }
+  }
+
+  .bg-cyan-500\/10 {
+    background-color: #00b7d71a;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .bg-cyan-500\/10 {
+      background-color: color-mix(in oklab, var(--color-cyan-500) 10%, transparent);
     }
   }
 
@@ -2056,6 +2070,18 @@
   @media (hover: hover) {
     .hover\:bg-slate-700:hover {
       background-color: var(--color-slate-700);
+    }
+  }
+
+  @media (hover: hover) {
+    .hover\:bg-slate-800\/70:hover {
+      background-color: #1d293db3;
+    }
+
+    @supports (color: color-mix(in lab, red, red)) {
+      .hover\:bg-slate-800\/70:hover {
+        background-color: color-mix(in oklab, var(--color-slate-800) 70%, transparent);
+      }
     }
   }
 

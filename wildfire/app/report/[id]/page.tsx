@@ -8,135 +8,142 @@ type Scholarship = {
   id?: string;
   name: string;
   country: string;
-  amount: number | string;
-  deadline: string;
-  description?: string;
-  match_score?: number;
-  why_it_fits?: string;
-  strategy_tip?: string;
+  amount: string; // now always string from backend, e.g. "$20,000" or "CHF 12,000"
+  deadline: string; // "YYYY-MM-DD" or "Deadline unknown"
+  description?: string; // optional if Gemini still sends it
+  match_score: number;
+  why_it_fits: string;
+  strategy_tip: string;
+};
+
+type ReportInput = {
+  name?: string;
+  major?: string;
+  gpa?: number;
+  specialPowers?: string[];
+  targetCountries?: string[];
 };
 
 type ReportPayload = {
   id: string;
-  input?: {
-    name?: string;
-    major?: string;
-    gpa?: number;
-    specialPowers?: string[];
-    targetCountries?: string[];
-  };
-  total_value_found?: number;
+  input?: ReportInput;
+  total_value_found: string; // "₹45 Lakhs"
   scholarships: Scholarship[];
 };
 
 function getFlag(country: string) {
   const countryLower = country.toLowerCase();
-  if (countryLower.includes("uk") || countryLower.includes("united kingdom")) return "🇬🇧";
-  if (countryLower.includes("usa") || countryLower.includes("united states") || countryLower.includes("us")) return "🇺🇸";
+  if (countryLower.includes("uk") || countryLower.includes("united kingdom"))
+    return "🇬🇧";
+  if (
+    countryLower.includes("usa") ||
+    countryLower.includes("united states") ||
+    countryLower.includes("us")
+  )
+    return "🇺🇸";
   if (countryLower.includes("canada")) return "🇨🇦";
   if (countryLower.includes("germany")) return "🇩🇪";
   if (countryLower.includes("australia")) return "🇦🇺";
   if (countryLower.includes("india")) return "🇮🇳";
-  if (countryLower.includes("eu") || countryLower.includes("europe")) return "🇪🇺";
+  if (countryLower.includes("eu") || countryLower.includes("europe"))
+    return "🇪🇺";
+  if (countryLower.includes("switzerland")) return "🇨🇭";
   return "🎓";
 }
 
-// Convert USD/GBP/CAD to INR and return in Lakhs
-function convertToINRLakhs(amount: number | string, country: string): number {
-  const numAmount = typeof amount === "string" ? parseFloat(amount.replace(/[^\d.]/g, "")) : amount;
+// Parse a currency string like "$20,000" or "CHF 12,000" to a number
+function parseAmountToNumber(amount: string): number {
+  if (!amount) return 0;
+  const cleaned = amount.replace(/[^0-9.]/g, "");
+  const num = parseFloat(cleaned);
+  return Number.isFinite(num) ? num : 0;
+}
+
+// Convert foreign currency to INR and return in Lakhs
+function convertToINRLakhs(amount: string, country: string): number {
+  const numAmount = parseAmountToNumber(amount);
   if (!Number.isFinite(numAmount) || numAmount <= 0) return 0;
 
   const countryLower = country.toLowerCase();
   let inrAmount = numAmount;
 
-  // Convert to INR based on country
   if (countryLower.includes("uk") || countryLower.includes("united kingdom")) {
     inrAmount = numAmount * 105; // GBP to INR
-  } else if (countryLower.includes("usa") || countryLower.includes("united states") || countryLower.includes("us")) {
+  } else if (
+    countryLower.includes("usa") ||
+    countryLower.includes("united states") ||
+    countryLower.includes("us")
+  ) {
     inrAmount = numAmount * 83; // USD to INR
   } else if (countryLower.includes("canada")) {
     inrAmount = numAmount * 61; // CAD to INR
   } else if (countryLower.includes("australia")) {
     inrAmount = numAmount * 54; // AUD to INR
-  } else if (countryLower.includes("europe") || countryLower.includes("eu") || countryLower.includes("germany")) {
+  } else if (
+    countryLower.includes("europe") ||
+    countryLower.includes("eu") ||
+    countryLower.includes("germany")
+  ) {
     inrAmount = numAmount * 90; // EUR to INR
+  } else if (countryLower.includes("switzerland")) {
+    inrAmount = numAmount * 95; // CHF to INR (approx)
   }
-  // If already in INR or unknown, use as is
 
-  return inrAmount / 100000; // Convert to Lakhs
+  return inrAmount / 100000; // lakhs
 }
 
-// Format amount display
-function formatAmount(amount: number | string, country: string): string {
-  const numAmount = typeof amount === "string" ? parseFloat(amount.replace(/[^\d.]/g, "")) : amount;
+// Keep original formatted amount from AI, but backfill if it’s missing
+function formatAmountDisplay(amount: string, country: string): string {
+  if (!amount) return "Amount varies";
+  // If AI already sent a nice string like "CHF 12,000 per semester", just show it
+  if (/[A-Za-z₹$€£]/.test(amount)) return amount;
+
+  const numAmount = parseAmountToNumber(amount);
   if (!Number.isFinite(numAmount) || numAmount <= 0) return "Amount varies";
 
   const countryLower = country.toLowerCase();
-  
-  // For large amounts, show "Fully Funded + Stipend"
+
   if (numAmount >= 20000) {
     return "Fully Funded + Stipend";
   }
-  
-  // Format based on country
+
   if (countryLower.includes("uk") || countryLower.includes("united kingdom")) {
     return `£${numAmount.toLocaleString()}`;
-  } else if (countryLower.includes("usa") || countryLower.includes("united states") || countryLower.includes("us")) {
+  } else if (
+    countryLower.includes("usa") ||
+    countryLower.includes("united states") ||
+    countryLower.includes("us")
+  ) {
     return `$${numAmount.toLocaleString()}`;
   } else if (countryLower.includes("canada")) {
     return `C$${numAmount.toLocaleString()}`;
   } else if (countryLower.includes("australia")) {
     return `A$${numAmount.toLocaleString()}`;
-  } else if (countryLower.includes("europe") || countryLower.includes("eu") || countryLower.includes("germany")) {
+  } else if (
+    countryLower.includes("europe") ||
+    countryLower.includes("eu") ||
+    countryLower.includes("germany")
+  ) {
     return `€${numAmount.toLocaleString()}`;
+  } else if (countryLower.includes("switzerland")) {
+    return `CHF ${numAmount.toLocaleString()}`;
   }
-  
+
   return `₹${numAmount.toLocaleString()}`;
 }
 
-// Calculate match score (85-98%)
-function calculateMatchScore(index: number, total: number): number {
+// Use AI-provided match_score if present; fallback (rare) if 0
+function calculateFallbackMatchScore(index: number, total: number): number {
   const baseScore = 85;
   const maxScore = 98;
   const range = maxScore - baseScore;
-  // Higher index = slightly lower score, but still high
-  const score = baseScore + (range * (1 - index / total));
+  const score = baseScore + range * (1 - index / total);
   return Math.round(score);
 }
 
-// Generate "Desi" context - why it fits
-function generateDesiContext(scholarship: Scholarship, userProfile: ReportPayload["input"]): string {
-  const parts: string[] = [];
-  
-  if (userProfile?.specialPowers?.length && !userProfile.specialPowers.includes("None")) {
-    const powers = userProfile.specialPowers;
-    if (powers.includes("ResearchPaper")) {
-      parts.push("Your research paper experience makes you stand out");
-    }
-    if (powers.includes("Sports")) {
-      parts.push("Your state-level sports achievements add a unique dimension");
-    }
-    if (powers.includes("NGO_Work")) {
-      parts.push("Your NGO work demonstrates the social impact they're looking for");
-    }
-  }
-  
-  if (userProfile?.gpa && userProfile.gpa >= 8.5) {
-    parts.push("your strong academic record (GPA " + userProfile.gpa.toFixed(1) + ") aligns perfectly");
-  }
-  
-  if (userProfile?.major) {
-    parts.push("your " + userProfile.major + " background matches their requirements");
-  }
-  
-  if (parts.length === 0) {
-    return "Your profile aligns well with the scholarship criteria and eligibility requirements.";
-  }
-  
-  return parts.join(", ") + ".";
-}
-
 function getCountdown(deadline: string) {
+  if (!deadline || deadline === "Deadline unknown") return "Deadline unknown";
+
   const target = new Date(deadline);
   if (Number.isNaN(target.getTime())) return "Deadline unknown";
 
@@ -179,18 +186,29 @@ export default function ReportPage() {
           throw new Error("Failed to load report");
         }
         const json = await res.json();
-        
-        // Transform scholarships to add match scores and desi context
-        const transformedScholarships = (json.scholarships || []).map((s: any, index: number) => ({
-          ...s,
-          match_score: calculateMatchScore(index, json.scholarships?.length || 1),
-          why_it_fits: generateDesiContext(s, json.input),
-          amount: s.amount || 0,
-        }));
-        
-        setReport({ 
-          ...json, 
+
+        // Backend already sends match_score, why_it_fits, strategy_tip, amount as string
+        const transformedScholarships: Scholarship[] = (json.scholarships || []).map(
+          (s: any, index: number) => ({
+            id: s.id ?? `sch-${index}`,
+            name: s.name,
+            country: s.country,
+            amount: String(s.amount ?? ""),
+            deadline: s.deadline,
+            description: s.description || "",
+            match_score:
+              typeof s.match_score === "number" && s.match_score > 0
+                ? s.match_score
+                : calculateFallbackMatchScore(index, json.scholarships?.length || 1),
+            why_it_fits: s.why_it_fits || "",
+            strategy_tip: s.strategy_tip || "",
+          })
+        );
+
+        setReport({
           id: reportId,
+          input: json.input,
+          total_value_found: json.total_value_found,
           scholarships: transformedScholarships,
         });
       } catch (e: any) {
@@ -204,18 +222,10 @@ export default function ReportPage() {
     loadReport();
   }, [reportId]);
 
-  const totalLakhs = useMemo(() => {
-    if (!report?.scholarships?.length) return null;
-    
-    let totalINR = 0;
-    for (const s of report.scholarships) {
-      const lakhs = convertToINRLakhs(s.amount, s.country);
-      totalINR += lakhs * 100000; // Convert back to INR for total
-    }
-    
-    if (!totalINR) return null;
-    const totalLakhs = totalINR / 100000;
-    return `We found ₹${totalLakhs.toFixed(1)} Lakhs in total funding`;
+  const totalLakhsHeader = useMemo(() => {
+    if (!report?.total_value_found) return null;
+    // Backend already sends "₹65 Lakhs"
+    return `We found ${report.total_value_found} in total funding`;
   }, [report]);
 
   function toggle(id: string) {
@@ -229,8 +239,7 @@ export default function ReportPage() {
         ? `${window.location.origin}/report/${reportId}`
         : "";
     const country = report?.scholarships?.[0]?.country || "the UK";
-    const text =
-      `Papa, check this out - I found a full scholarship for ${country} based on my profile. Read this report: ${url}`;
+    const text = `Papa, check this out - I found a full scholarship for ${country} based on my profile. Read this report: ${url}`;
     const encoded = encodeURIComponent(text);
     const whatsappUrl =
       typeof window !== "undefined" && /Android|iPhone/i.test(navigator.userAgent)
@@ -246,11 +255,9 @@ export default function ReportPage() {
         ? `${window.location.origin}/report/${reportId}`
         : "";
     const scholarshipName = report?.scholarships?.[0]?.name || "a scholarship";
-    const text =
-      `Hey, I just saw my scholarship report (ID: ${reportId}). I want to target ${scholarshipName}. Can you help me? ${url}`;
+    const text = `Hey, I just saw my scholarship report (ID: ${reportId}). I want to target ${scholarshipName}. Can you help me? ${url}`;
     const encoded = encodeURIComponent(text);
-    // Use wa.me format with phone number
-    const phoneNumber = "919999999999"; // Replace with actual mentor number
+    const phoneNumber = "919999999999"; // Replace with real mentor number
     const whatsappUrl =
       typeof window !== "undefined" && /Android|iPhone/i.test(navigator.userAgent)
         ? `whatsapp://send?phone=${phoneNumber}&text=${encoded}`
@@ -299,8 +306,10 @@ export default function ReportPage() {
           <h1 className="text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-cyan-300 via-sky-400 to-purple-400 bg-clip-text text-transparent">
             Funding Roadmap for {name}
           </h1>
-          {totalLakhs && (
-            <p className="text-sm text-slate-300 font-medium">{totalLakhs}</p>
+          {totalLakhsHeader && (
+            <p className="text-sm text-slate-300 font-medium">
+              {totalLakhsHeader}
+            </p>
           )}
           <p className="text-xs text-slate-400 max-w-xl">
             These matches are tuned to your profile. Tap any card to see why it
@@ -315,8 +324,10 @@ export default function ReportPage() {
             const isOpen = openId === id;
             const flag = getFlag(s.country);
             const countdown = getCountdown(s.deadline);
-            const formattedAmount = formatAmount(s.amount, s.country);
-            const matchScore = s.match_score || calculateMatchScore(index, scholarships.length);
+            const formattedAmount = formatAmountDisplay(s.amount, s.country);
+            const matchScore =
+              s.match_score ||
+              calculateFallbackMatchScore(index, scholarships.length);
 
             return (
               <div
@@ -392,7 +403,7 @@ export default function ReportPage() {
                       transition={{ duration: 0.2 }}
                       className="px-4 pb-4 pt-1 space-y-3 text-sm text-slate-300 border-t border-slate-800"
                     >
-                      {/* Desi Context - Why it fits */}
+                      {/* Desi Context */}
                       {s.why_it_fits && (
                         <div className="bg-slate-900/50 rounded-xl p-3 border border-cyan-500/20">
                           <p className="font-semibold text-cyan-300 mb-1 text-xs uppercase tracking-wide">
@@ -456,7 +467,7 @@ export default function ReportPage() {
           </div>
         </div>
 
-        {/* Floating Share with Dad Button - Bottom Right */}
+        {/* Floating Share with Dad Button */}
         <button
           type="button"
           onClick={handleShareWithDad}

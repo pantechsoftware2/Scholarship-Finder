@@ -2,26 +2,33 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 
-// Optional: keep normalization on the read side too, in case old data exists
+type Scholarship = {
+  name: string;
+  country: string;
+  amount: string;
+  deadline: string;
+  match_score: number;
+  why_it_fits: string;
+  strategy_tip: string;
+};
+
+type ReportRow = {
+  id: string;
+  input: any;
+  total_value_found: string;
+  scholarships: Scholarship[];
+  created_at: string;
+};
+
 function normalizeDeadline(raw: string | null | undefined): string {
   if (!raw) return "Deadline unknown";
-
-  const lower = raw.toLowerCase();
-
-  if (lower.includes("passed")) return "Deadline passed";
-  if (lower.includes("unknown")) return "Deadline unknown";
-
-  // Changed text here to match start-hunt
-  if (lower.includes("application deadline for admission")) {
-    return "Check official website for deadline";
-  }
 
   const d = new Date(raw);
   if (!Number.isNaN(d.getTime())) {
     return d.toISOString().slice(0, 10);
   }
 
-  return raw;
+  return "Deadline unknown";
 }
 
 export async function GET(request: NextRequest) {
@@ -44,18 +51,19 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 
-    // Normalize deadlines on the way out (defensive in case older rows are messy)
-    const scholarshipsWithCleanDeadlines = Array.isArray(data.scholarships)
-      ? data.scholarships.map((s: any) => ({
+    const row = data as ReportRow;
+
+    const scholarshipsWithCleanDeadlines = Array.isArray(row.scholarships)
+      ? row.scholarships.map((s) => ({
           ...s,
           deadline: normalizeDeadline(s.deadline),
         }))
       : [];
 
     const transformedData = {
-      ...data,
+      ...row,
       scholarships: scholarshipsWithCleanDeadlines,
-      user_name: data.input?.name || undefined,
+      user_name: row.input?.name || undefined,
     };
 
     return NextResponse.json(transformedData);
@@ -63,7 +71,7 @@ export async function GET(request: NextRequest) {
     console.error("💥 /api/report error:", err);
     return NextResponse.json(
       { error: err?.message || "Unexpected error" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

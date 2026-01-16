@@ -23,7 +23,7 @@ export default function HomePage() {
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
         <section className="max-w-3xl text-center space-y-6">
           <p className="text-[0.7rem] uppercase tracking-[0.3em] text-slate-400">
-            Wildfire · Scholarship Finder 2.0
+            Scholarship Finder 2.0
           </p>
 
           <h1 className="text-3xl md:text-5xl font-extrabold leading-tight bg-gradient-to-r from-cyan-300 via-sky-400 to-purple-400 bg-clip-text text-transparent">
