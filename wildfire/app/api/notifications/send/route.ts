@@ -1,15 +1,22 @@
 // app/api/notifications/send/route.ts
-import { sendWelcomeEmail } from "@/app/lib/notifications";
 import { NextRequest, NextResponse } from "next/server";
+import { sendWelcomeEmail } from "@/app/lib/notifications";
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    console.log("🔔 API received:", body);
+    const body = await request.json().catch(() => null);
+    console.log("🔔 /api/notifications/send received body:", body);
+
+    if (!body) {
+      console.error("❌ Invalid JSON body");
+      return NextResponse.json(
+        { success: false, error: "Invalid JSON body" },
+        { status: 400 }
+      );
+    }
 
     const { type, email, name, reportLink } = body;
 
-    // Validate all required fields
     if (!email) {
       console.error("❌ Missing field: email");
       return NextResponse.json(
@@ -42,33 +49,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log("📧 Sending welcome email to:", email);
+    console.log("📧 Ready to send email:", { type, email, name, reportLink });
 
     if (type === "welcome") {
-      try {
-        const success = await sendWelcomeEmail(email, name, reportLink);
-        console.log("📧 sendWelcomeEmail result:", success);
+      const success = await sendWelcomeEmail(email, name, reportLink);
+      console.log("📧 sendWelcomeEmail returned:", success);
 
-        if (!success) {
-          console.error("❌ sendWelcomeEmail failed (returned false)");
-          return NextResponse.json(
-            { success: false, error: "Failed to send email" },
-            { status: 500 }
-          );
-        }
-
-        console.log("✅ Email sent successfully to:", email);
-        return NextResponse.json({ success: true });
-      } catch (emailError: any) {
-        console.error("❌ sendWelcomeEmail threw error:", emailError);
+      if (!success) {
         return NextResponse.json(
-          {
-            success: false,
-            error: `Email send error: ${emailError.message}`,
-          },
+          { success: false, error: "Failed to send email" },
           { status: 500 }
         );
       }
+
+      return NextResponse.json({ success: true });
     }
 
     console.error("❌ Unknown email type:", type);
@@ -77,9 +71,9 @@ export async function POST(request: NextRequest) {
       { status: 400 }
     );
   } catch (error: any) {
-    console.error("💥 API Error:", error);
+    console.error("💥 API Error in /api/notifications/send:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Internal server error" },
+      { success: false, error: error?.message || "Internal server error" },
       { status: 500 }
     );
   }

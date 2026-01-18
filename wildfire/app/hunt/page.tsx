@@ -2,8 +2,50 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import UnlockForm from "./UnlockForm";
+import Flags from "country-flag-icons/react/3x2";
+import SiteFooter from "@/app/components/SiteFooter";
+import { EXTRA_COUNTRIES } from "@/app/lib/countries";
+
+// Tiny flag component
+function FlagIcon({ code, size = 14 }: { code: string; size?: number }) {
+  const upper = code.toUpperCase();
+  const Flag =
+    (Flags as Record<string, React.ComponentType<any>>)[upper] || null;
+  if (!Flag) return null;
+  return (
+    <span className="inline-block align-middle" style={{ height: size }}>
+      <Flag
+        title={upper}
+        style={{
+          height: size,
+          width: (size * 3) / 2,
+          borderRadius: 2,
+          display: "block",
+        }}
+      />
+    </span>
+  );
+}
+
+// Reusable country → code using EXTRA_COUNTRIES
+function countryToCode(country: string): string | null {
+  if (!country) return null;
+  const normalized = country.replace(/\(.*\)/, "").trim();
+
+  if (normalized === "USA") return "US";
+  if (normalized === "UK") return "GB";
+  if (normalized.toLowerCase() === "europe") return null;
+
+  const exact = EXTRA_COUNTRIES.find((c) => c.name === normalized);
+  if (exact) return exact.code;
+
+  const ci = EXTRA_COUNTRIES.find(
+    (c) => c.name.toLowerCase() === normalized.toLowerCase()
+  );
+  return ci ? ci.code : null;
+}
 
 type Scholarship = {
   name: string;
@@ -20,6 +62,7 @@ type ReportPayload = {
 
 export default function HuntPage() {
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const [report, setReport] = useState<ReportPayload | null>(null);
   const [loading, setLoading] = useState(true);
@@ -30,6 +73,19 @@ export default function HuntPage() {
   const [showUnlock, setShowUnlock] = useState(false);
   const [unlocked, setUnlocked] = useState(false);
 
+  const [userName, setUserName] = useState<string>("Anonymous");
+
+  // load stored name
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedName = window.localStorage.getItem("userName");
+      if (storedName && storedName.trim().length > 0) {
+        setUserName(storedName.trim());
+      }
+    }
+  }, []);
+
+  // load report
   useEffect(() => {
     async function loadReport() {
       try {
@@ -68,12 +124,12 @@ export default function HuntPage() {
             "Tuition support + stipend + additional perks based on profile fit.",
         }));
 
-        // Optional: ensure some locked cards exist in dev
+        // pad to 4 with demo
         while (scholarships.length < 4) {
           scholarships.push({
             name: `Demo Scholarship ${scholarships.length + 1}`,
             country: "Canada",
-            amount: "5000",
+            amount: "500000",
             deadline: "Varies",
             benefits:
               "Demo scholarship used to visualize locked cards and unlock flow.",
@@ -86,6 +142,11 @@ export default function HuntPage() {
         };
 
         setReport(repJson);
+
+        // remember last report id for /hunt and /hunt/[index]
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem("lastReportId", reportId);
+        }
       } catch (err: any) {
         console.error("Hunt error:", err);
         setError("Error loading scholarships");
@@ -118,6 +179,23 @@ export default function HuntPage() {
   const data = report.scholarships || [];
   const totalMatches = data.length;
 
+  // Sum & lakhs
+  function parseAmountToNumber(amount: string): number {
+    if (!amount) return 0;
+    const cleaned = amount.replace(/[^0-9.]/g, "");
+    const n = parseFloat(cleaned);
+    if (Number.isNaN(n)) return 0;
+    return n;
+  }
+
+  const totalAmount = data.reduce(
+    (sum, s) => sum + parseAmountToNumber(s.amount),
+    0
+  );
+  const totalLakhs = totalAmount / 100000;
+  const formattedLakhs =
+    totalLakhs >= 1 ? `${totalLakhs.toFixed(1)} Lakhs` : "Under 1 Lakh";
+
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#0f172a,_#020617)] text-white px-4 py-10 flex justify-center">
       <div className="w-full max-w-5xl space-y-8 relative">
@@ -129,7 +207,7 @@ export default function HuntPage() {
         <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 relative z-10">
           <div>
             <p className="text-xs uppercase tracking-[0.2em] text-slate-400 mb-1">
-              Funding Roadmap
+              Funding Roadmap for you!
             </p>
             <h1 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-cyan-300 via-sky-400 to-purple-400 bg-clip-text text-transparent">
               Your high‑probability matches.
@@ -144,31 +222,30 @@ export default function HuntPage() {
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/70 border border-cyan-400/30 backdrop-blur-xl text-xs">
               <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
               <span className="uppercase tracking-[0.16em] text-slate-300">
-                {totalMatches} high‑probability matches
+                ₹{formattedLakhs} found · {totalMatches} matches
               </span>
             </div>
             <p className="text-[0.65rem] text-slate-500">
-              Top 2 are fully visible. The rest stay blurred until you unlock.
+              Tap any card to see why it fits and how to play it like a desi.
             </p>
           </div>
         </header>
 
-        {/* list */}
+        {/* cards section */}
         <section className="relative z-10">
           <div className="rounded-3xl border border-cyan-400/15 bg-slate-950/70 backdrop-blur-2xl shadow-[0_0_40px_rgba(15,23,42,0.9)] px-4 py-6 md:px-6 md:py-7">
             <div className="grid gap-5 md:grid-cols-2">
               {data.map((s, index) => {
                 const locked = !unlocked && index >= 2;
+                const code = countryToCode(s.country);
 
                 return (
                   <div
                     key={`${s.name}-${index}`}
                     className="relative group rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-xl p-5 overflow-hidden transition-all duration-200 hover:border-cyan-400/60 hover:-translate-y-0.5"
                   >
-                    {/* hover glow */}
                     <div className="pointer-events-none absolute -inset-10 opacity-0 group-hover:opacity-100 bg-gradient-to-br from-cyan-500/10 via-sky-500/5 to-fuchsia-500/10 blur-2xl transition-opacity" />
 
-                    {/* content */}
                     <div
                       className={
                         "relative space-y-3 " + (locked ? "select-none" : "")
@@ -190,6 +267,9 @@ export default function HuntPage() {
 
                       <div className="flex items-center justify-between text-xs text-slate-400">
                         <span className="flex items-center gap-1.5">
+                          {code && !locked && (
+                            <FlagIcon code={code} size={14} />
+                          )}
                           <span>📍</span>
                           <span className={locked ? "blur-[2px]" : ""}>
                             {s.country}
@@ -218,7 +298,7 @@ export default function HuntPage() {
                       </p>
                     </div>
 
-                    {/* lock overlay */}
+                    {/* overlay for locked cards */}
                     {locked && (
                       <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-md z-10 rounded-2xl">
                         <div className="relative w-full max-w-xs rounded-2xl border border-cyan-400/40 bg-slate-950/95 px-5 py-4 text-center shadow-[0_0_30px_rgba(56,189,248,0.5)]">
@@ -245,6 +325,19 @@ export default function HuntPage() {
                         </div>
                       </div>
                     )}
+
+                    {/* click handler for unlocked cards → /hunt/[index]?id=REPORT_ID */}
+                    {!locked && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!report) return;
+                          router.push(`/hunt/${index}?id=${report.id}`);
+                        }}
+                        className="absolute inset-0 z-0"
+                        aria-label={`Open details for ${s.name}`}
+                      />
+                    )}
                   </div>
                 );
               })}
@@ -260,13 +353,44 @@ export default function HuntPage() {
               setShowUnlock(false);
               setSelectedScholarship(null);
             }}
-            onUnlocked={() => {
+            onUnlocked={async ({ email, name }) => {
               setUnlocked(true);
               setShowUnlock(false);
               setSelectedScholarship(null);
+
+              const baseUrl =
+                typeof window !== "undefined"
+                  ? window.location.origin
+                  : process.env.NEXT_PUBLIC_BASE_URL || "";
+
+              const reportLink = `${baseUrl}/hunt?id=${report.id}`;
+
+              try {
+                const res = await fetch("/api/notifications/send", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    type: "welcome",
+                    email,
+                    name,
+                    reportLink,
+                  }),
+                });
+
+                const json = await res.json();
+                console.log(
+                  "📧 /api/notifications/send response:",
+                  res.status,
+                  json
+                );
+              } catch (e) {
+                console.error("❌ Failed to trigger email:", e);
+              }
             }}
           />
         )}
+
+        <SiteFooter />
       </div>
     </main>
   );
