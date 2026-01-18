@@ -58,6 +58,8 @@ type Scholarship = {
 type ReportPayload = {
   id: string;
   scholarships: Scholarship[];
+  total_value_found?: string;
+  user_name?: string;
 };
 
 export default function HuntPage() {
@@ -121,31 +123,28 @@ export default function HuntPage() {
           benefits:
             s.description ||
             s.benefits ||
+            s.why_it_fits ||
             "Tuition support + stipend + additional perks based on profile fit.",
         }));
 
-        // pad to 4 with demo
-        while (scholarships.length < 4) {
-          scholarships.push({
-            name: `Demo Scholarship ${scholarships.length + 1}`,
-            country: "Canada",
-            amount: "500000",
-            deadline: "Varies",
-            benefits:
-              "Demo scholarship used to visualize locked cards and unlock flow.",
-          });
-        }
-
         const repJson: ReportPayload = {
-          id: reportId,
+          id: repData.id || reportId,
           scholarships,
+          total_value_found: repData.total_value_found,
+          user_name: repData.user_name,
         };
 
         setReport(repJson);
 
-        // remember last report id for /hunt and /hunt/[index]
+        if (repJson.user_name && repJson.user_name.trim().length > 0) {
+          setUserName(repJson.user_name.trim());
+          if (typeof window !== "undefined") {
+            window.localStorage.setItem("userName", repJson.user_name.trim());
+          }
+        }
+
         if (typeof window !== "undefined") {
-          sessionStorage.setItem("lastReportId", reportId);
+          sessionStorage.setItem("lastReportId", repJson.id);
         }
       } catch (err: any) {
         console.error("Hunt error:", err);
@@ -179,7 +178,6 @@ export default function HuntPage() {
   const data = report.scholarships || [];
   const totalMatches = data.length;
 
-  // Sum & lakhs
   function parseAmountToNumber(amount: string): number {
     if (!amount) return 0;
     const cleaned = amount.replace(/[^0-9.]/g, "");
@@ -199,22 +197,21 @@ export default function HuntPage() {
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#0f172a,_#020617)] text-white px-4 py-10 flex justify-center">
       <div className="w-full max-w-5xl space-y-8 relative">
-        {/* glows */}
         <div className="pointer-events-none absolute -top-32 -left-32 h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-40 -right-32 h-80 w-80 rounded-full bg-fuchsia-500/15 blur-3xl" />
 
-        {/* header */}
+        {/* Header */}
         <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 relative z-10">
           <div>
             <p className="text-xs uppercase tracking-[0.2em] text-slate-400 mb-1">
-              Funding Roadmap for you!
+              Funding Roadmap for {userName}
             </p>
             <h1 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-cyan-300 via-sky-400 to-purple-400 bg-clip-text text-transparent">
               Your high‑probability matches.
             </h1>
             <p className="text-xs md:text-sm text-slate-400 mt-2 max-w-md">
-              You&apos;re seeing real scholarships calibrated to your academic
-              profile and study‑abroad dream.
+              These matches are tuned to your profile. Tap any card to see why
+              it fits and exactly how to play it like a desi.
             </p>
           </div>
 
@@ -226,12 +223,13 @@ export default function HuntPage() {
               </span>
             </div>
             <p className="text-[0.65rem] text-slate-500">
-              Tap any card to see why it fits and how to play it like a desi.
+              Amounts may be in $, £ or €. Total shown here is converted to INR
+              so it makes sense in one number.
             </p>
           </div>
         </header>
 
-        {/* cards section */}
+        {/* Cards grid */}
         <section className="relative z-10">
           <div className="rounded-3xl border border-cyan-400/15 bg-slate-950/70 backdrop-blur-2xl shadow-[0_0_40px_rgba(15,23,42,0.9)] px-4 py-6 md:px-6 md:py-7">
             <div className="grid gap-5 md:grid-cols-2">
@@ -251,26 +249,27 @@ export default function HuntPage() {
                         "relative space-y-3 " + (locked ? "select-none" : "")
                       }
                     >
+                      {/* Top row: title + match */}
                       <div className="flex items-start justify-between gap-3">
-                        <h2
-                          className={
-                            "text-lg font-semibold leading-snug " +
-                            (locked ? "blur-sm" : "")
-                          }
-                        >
-                          {s.name}
-                        </h2>
+                        <div className="space-y-1 flex-1">
+                          <h2
+                            className={
+                              "text-lg font-semibold leading-snug " +
+                              (locked ? "blur-sm" : "")
+                            }
+                          >
+                            {s.name}
+                          </h2>
+                        </div>
                         <span className="rounded-full bg-emerald-500/10 border border-emerald-400/40 text-emerald-300 text-[0.65rem] px-2 py-1 uppercase tracking-[0.14em]">
                           Match #{index + 1}
                         </span>
                       </div>
 
+                      {/* Flag + country name (left) and amount (right) */}
                       <div className="flex items-center justify-between text-xs text-slate-400">
-                        <span className="flex items-center gap-1.5">
-                          {code && !locked && (
-                            <FlagIcon code={code} size={14} />
-                          )}
-                          <span>📍</span>
+                        <span className="flex items-center gap-2">
+                          {code && !locked && <FlagIcon code={code} size={16} />}
                           <span className={locked ? "blur-[2px]" : ""}>
                             {s.country}
                           </span>
@@ -280,6 +279,7 @@ export default function HuntPage() {
                         </span>
                       </div>
 
+                      {/* Benefits snapshot */}
                       <div className="bg-slate-950/70 p-3 rounded-xl text-xs text-slate-200 border border-slate-800/80">
                         <p className="font-semibold text-[0.7rem] uppercase tracking-[0.16em] text-slate-400 mb-1">
                           Benefits snapshot
@@ -290,6 +290,7 @@ export default function HuntPage() {
                         </p>
                       </div>
 
+                      {/* Deadline */}
                       <p className="text-[0.7rem] text-amber-300 font-semibold flex items-center gap-1">
                         <span>📅 Deadline:</span>
                         <span className={locked ? "blur-[2px]" : ""}>
@@ -298,7 +299,7 @@ export default function HuntPage() {
                       </p>
                     </div>
 
-                    {/* overlay for locked cards */}
+                    {/* Locked overlay */}
                     {locked && (
                       <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-md z-10 rounded-2xl">
                         <div className="relative w-full max-w-xs rounded-2xl border border-cyan-400/40 bg-slate-950/95 px-5 py-4 text-center shadow-[0_0_30px_rgba(56,189,248,0.5)]">
@@ -326,7 +327,7 @@ export default function HuntPage() {
                       </div>
                     )}
 
-                    {/* click handler for unlocked cards → /hunt/[index]?id=REPORT_ID */}
+                    {/* Clickable area if unlocked */}
                     {!locked && (
                       <button
                         type="button"

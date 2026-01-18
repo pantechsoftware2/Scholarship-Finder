@@ -1,4 +1,3 @@
-// app/hunt/UnlockForm.tsx
 "use client";
 
 import { useState } from "react";
@@ -109,9 +108,7 @@ export default function UnlockForm({
         </h2>
         <p className="text-xs text-slate-400">
           {isDemo ? (
-            <>
-              Send your full scholarship report to your inbox and WhatsApp.
-            </>
+            <>Send your full scholarship report to your inbox and WhatsApp.</>
           ) : (
             <>
               Send full report for{" "}

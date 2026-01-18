@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Flags from "country-flag-icons/react/3x2";
 import SiteFooter from "@/app/components/SiteFooter";
+import { EXTRA_COUNTRIES } from "@/app/lib/countries";
 
 // Small flag component (emoji-like size)
 function FlagIcon({ code, size = 14 }: { code: string; size?: number }) {
@@ -72,127 +73,6 @@ const majorsList = [
   "Journalism",
   "Environmental Science",
   "Materials Science",
-];
-
-// many countries with ISO 3166‑1 alpha‑2 codes
-const EXTRA_COUNTRIES = [
-  { name: "Afghanistan", code: "AF" },
-  { name: "Albania", code: "AL" },
-  { name: "Algeria", code: "DZ" },
-  { name: "Andorra", code: "AD" },
-  { name: "Angola", code: "AO" },
-  { name: "Argentina", code: "AR" },
-  { name: "Armenia", code: "AM" },
-  { name: "Australia", code: "AU" },
-  { name: "Austria", code: "AT" },
-  { name: "Azerbaijan", code: "AZ" },
-  { name: "Bangladesh", code: "BD" },
-  { name: "Belarus", code: "BY" },
-  { name: "Belgium", code: "BE" },
-  { name: "Bhutan", code: "BT" },
-  { name: "Bolivia", code: "BO" },
-  { name: "Bosnia and Herzegovina", code: "BA" },
-  { name: "Botswana", code: "BW" },
-  { name: "Brazil", code: "BR" },
-  { name: "Bulgaria", code: "BG" },
-  { name: "Cambodia", code: "KH" },
-  { name: "Cameroon", code: "CM" },
-  { name: "Canada", code: "CA" },
-  { name: "Chile", code: "CL" },
-  { name: "China", code: "CN" },
-  { name: "Colombia", code: "CO" },
-  { name: "Costa Rica", code: "CR" },
-  { name: "Croatia", code: "HR" },
-  { name: "Czechia", code: "CZ" },
-  { name: "Denmark", code: "DK" },
-  { name: "Dominican Republic", code: "DO" },
-  { name: "Ecuador", code: "EC" },
-  { name: "Egypt", code: "EG" },
-  { name: "Estonia", code: "EE" },
-  { name: "Ethiopia", code: "ET" },
-  { name: "Finland", code: "FI" },
-  { name: "France", code: "FR" },
-  { name: "Georgia", code: "GE" },
-  { name: "Germany", code: "DE" },
-  { name: "Ghana", code: "GH" },
-  { name: "Greece", code: "GR" },
-  { name: "Hong Kong", code: "HK" },
-  { name: "Hungary", code: "HU" },
-  { name: "Iceland", code: "IS" },
-  { name: "India", code: "IN" },
-  { name: "Indonesia", code: "ID" },
-  { name: "Iran", code: "IR" },
-  { name: "Iraq", code: "IQ" },
-  { name: "Ireland", code: "IE" },
-  { name: "Israel", code: "IL" },
-  { name: "Italy", code: "IT" },
-  { name: "Jamaica", code: "JM" },
-  { name: "Japan", code: "JP" },
-  { name: "Jordan", code: "JO" },
-  { name: "Kenya", code: "KE" },
-  { name: "Kuwait", code: "KW" },
-  { name: "Laos", code: "LA" },
-  { name: "Latvia", code: "LV" },
-  { name: "Lebanon", code: "LB" },
-  { name: "Lithuania", code: "LT" },
-  { name: "Luxembourg", code: "LU" },
-  { name: "Madagascar", code: "MG" },
-  { name: "Malaysia", code: "MY" },
-  { name: "Maldives", code: "MV" },
-  { name: "Malta", code: "MT" },
-  { name: "Mexico", code: "MX" },
-  { name: "Moldova", code: "MD" },
-  { name: "Monaco", code: "MC" },
-  { name: "Mongolia", code: "MN" },
-  { name: "Morocco", code: "MA" },
-  { name: "Mozambique", code: "MZ" },
-  { name: "Myanmar", code: "MM" },
-  { name: "Namibia", code: "NA" },
-  { name: "Nepal", code: "NP" },
-  { name: "Netherlands", code: "NL" },
-  { name: "New Zealand", code: "NZ" },
-  { name: "Nigeria", code: "NG" },
-  { name: "North Korea", code: "KP" },
-  { name: "Norway", code: "NO" },
-  { name: "Oman", code: "OM" },
-  { name: "Pakistan", code: "PK" },
-  { name: "Panama", code: "PA" },
-  { name: "Peru", code: "PE" },
-  { name: "Philippines", code: "PH" },
-  { name: "Poland", code: "PL" },
-  { name: "Portugal", code: "PT" },
-  { name: "Qatar", code: "QA" },
-  { name: "Romania", code: "RO" },
-  { name: "Russia", code: "RU" },
-  { name: "Saudi Arabia", code: "SA" },
-  { name: "Senegal", code: "SN" },
-  { name: "Serbia", code: "RS" },
-  { name: "Singapore", code: "SG" },
-  { name: "Slovakia", code: "SK" },
-  { name: "Slovenia", code: "SI" },
-  { name: "South Africa", code: "ZA" },
-  { name: "South Korea", code: "KR" },
-  { name: "Spain", code: "ES" },
-  { name: "Sri Lanka", code: "LK" },
-  { name: "Sweden", code: "SE" },
-  { name: "Switzerland", code: "CH" },
-  { name: "Taiwan", code: "TW" },
-  { name: "Tanzania", code: "TZ" },
-  { name: "Thailand", code: "TH" },
-  { name: "Tunisia", code: "TN" },
-  { name: "Turkey", code: "TR" },
-  { name: "Uganda", code: "UG" },
-  { name: "Ukraine", code: "UA" },
-  { name: "United Arab Emirates", code: "AE" },
-  { name: "United Kingdom", code: "GB" },
-  { name: "United States", code: "US" },
-  { name: "Uruguay", code: "UY" },
-  { name: "Uzbekistan", code: "UZ" },
-  { name: "Venezuela", code: "VE" },
-  { name: "Vietnam", code: "VN" },
-  { name: "Yemen", code: "YE" },
-  { name: "Zambia", code: "ZM" },
-  { name: "Zimbabwe", code: "ZW" },
 ];
 
 type FormState = {
@@ -366,13 +246,13 @@ export default function FlowPage() {
   };
 
   return (
-    <main className="relative min-h-screen bg-[radial-gradient(circle_at_top,_#020617,_#000000)] text-white flex flex-col">
+    <main className="relative flex flex-col min-h-screen bg-[radial-gradient(circle_at_top,_#020617,_#000000)] text-white">
       {/* background */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.15),_transparent_55%)] opacity-70" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(148,163,184,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.08)_1px,transparent_1px)] bg-[size:32px_32px]" />
 
-      {/* centered card area */}
-      <div className="relative flex-1 flex items-center justify-center px-4">
+      {/* centered card with empty space at top */}
+      <div className="relative flex-1 flex items-center justify-center px-4 pt-20 pb-10">
         <div className="relative w-full max-w-md rounded-[28px] border border-slate-800/80 bg-slate-950/75 backdrop-blur-2xl shadow-[0_0_40px_rgba(15,23,42,0.9)] p-6 space-y-6">
           <div className="pointer-events-none absolute -top-24 -left-20 h-40 w-40 rounded-full bg-cyan-500/25 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-24 -right-16 h-40 w-40 rounded-full bg-fuchsia-500/25 blur-3xl" />
@@ -676,13 +556,13 @@ export default function FlowPage() {
       </div>
 
       {/* footer at bottom, appears after scroll when content taller */}
-      <div className="relative z-10 px-4 py-4 mt-auto">
-        <div className="max-w-5xl mx-auto">
+      <div className="relative z-10 border-t border-slate-800 bg-black/90 mt-auto">
+        <div className="max-w-5xl mx-auto px-4 py-4">
           <SiteFooter />
         </div>
       </div>
 
-      {/* global loading overlay */}
+      {/* global loading overlay with radar */}
       <AnimatePresence>
         {loading && (
           <motion.div
@@ -693,7 +573,7 @@ export default function FlowPage() {
           >
             <div className="relative w-40 h-40 sm:w-44 sm:h-44 mb-6 flex items-center justify-center">
               <div className="radar-parallax absolute inset-[-10%] rounded-full border border-cyan-500/20" />
-              <div className="relative w-32 h-32 sm:w-36 h-36 rounded-full border border-cyan-400/40 bg-slate-950/80 overflow-hidden flex items-center justify-center">
+              <div className="relative w-32 h-32 sm:w-36 sm:h-36 rounded-full border border-cyan-400/40 bg-slate-950/80 overflow-hidden flex items-center justify-center">
                 <div className="radar-pulse absolute inset-[-15%]" />
                 <div className="absolute inset-4 rounded-full border border-cyan-500/20" />
                 <div className="absolute inset-8 rounded-full border border-cyan-500/25" />

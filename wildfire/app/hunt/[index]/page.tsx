@@ -155,6 +155,7 @@ export default function ScholarshipDetailsPage() {
     typeof window !== "undefined" ? window.location.origin : "";
   const detailsUrl = `${baseUrl}/hunt/${index}?id=${report.id}`;
 
+  // Single Share with Dad (floating bottom-right)
   const shareText = `Papa, check this out - I found a scholarship based on my profile. Read this: ${detailsUrl}`;
   const shareLink = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
 
@@ -171,7 +172,7 @@ export default function ScholarshipDetailsPage() {
         <div className="pointer-events-none absolute -top-24 -left-24 h-56 w-56 rounded-full bg-cyan-500/20 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-32 -right-24 h-64 w-64 rounded-full bg-fuchsia-500/20 blur-3xl" />
 
-        {/* back + top share */}
+        {/* back only */}
         <div className="relative z-10 flex items-center justify-between mb-2">
           <button
             onClick={() => router.back()}
@@ -179,21 +180,11 @@ export default function ScholarshipDetailsPage() {
           >
             ← Back to matches
           </button>
-
-          <a
-            href={shareLink}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1.5 text-[0.7rem] font-semibold rounded-full bg-slate-900 border border-slate-700 px-3 py-1.5 hover:border-cyan-400 hover:text-cyan-200 transition-colors"
-          >
-            <span>📲</span>
-            <span>Share with Dad</span>
-          </a>
         </div>
 
         {/* main card */}
         <section className="relative z-10 rounded-3xl border border-cyan-400/25 bg-slate-950/80 backdrop-blur-2xl p-5 md:p-7 shadow-[0_0_40px_rgba(15,23,42,0.9)] space-y-5">
-          {/* tiny funding header like old design */}
+          {/* tiny funding header */}
           <div className="flex items-center justify-between gap-3 text-[0.7rem] text-slate-400">
             <div className="uppercase tracking-[0.18em] flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -206,9 +197,10 @@ export default function ScholarshipDetailsPage() {
               {scholarship.name}
             </h1>
             <div className="flex flex-wrap items-center gap-3 text-xs text-slate-300">
+              {/* UPDATED: flag + country name only */}
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-900/80 border border-slate-700">
                 {code && <FlagIcon code={code} size={14} />}
-                <span>📍 {scholarship.country}</span>
+                <span>{scholarship.country}</span>
               </span>
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-400/50 text-emerald-300">
                 🎓 Funding: {scholarship.amount}
@@ -258,7 +250,7 @@ export default function ScholarshipDetailsPage() {
           </div>
         </section>
 
-        {/* bottom fixed CTA bar with mentor copy */}
+        {/* Wildfire CTA (no Share with Dad inside) */}
         <div className="fixed inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/90 via-black/80 to-transparent px-4 pb-4 pt-3">
           <div className="mx-auto w-full max-w-3xl flex flex-col gap-2">
             <div className="text-[0.75rem] text-slate-200 font-medium">
@@ -267,26 +259,28 @@ export default function ScholarshipDetailsPage() {
             <div className="text-[0.7rem] text-slate-400">
               Get personalized guidance from our mentors.
             </div>
-            <div className="grid grid-cols-2 gap-2 mt-1">
+            <div className="mt-1">
               <a
                 href={mentorLink}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center justify-center gap-2 text-xs font-semibold rounded-full bg-emerald-500 text-black px-4 py-2.5 hover:brightness-110 transition-all"
+                className="flex items-center justify-center gap-2 text-xs font-semibold rounded-full bg-emerald-500 text-black px-4 py-2.5 hover:brightness-110 transition-all w-full"
               >
                 💬 Chat with a Mentor on WhatsApp
-              </a>
-              <a
-                href={shareLink}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center justify-center gap-2 text-xs font-semibold rounded-full bg-slate-900 border border-slate-700 text-slate-100 px-4 py-2.5 hover:border-cyan-400 hover:text-cyan-200 transition-colors"
-              >
-                📲 Share with Dad
               </a>
             </div>
           </div>
         </div>
+
+        {/* SINGLE floating Share with Dad button at bottom-right */}
+        <a
+          href={shareLink}
+          target="_blank"
+          rel="noreferrer"
+          className="fixed bottom-4 right-4 z-30 inline-flex items-center gap-2 rounded-full bg-slate-900 border border-slate-700 text-slate-100 text-xs font-semibold px-4 py-2.5 shadow-lg hover:border-cyan-400 hover:text-cyan-200 transition-colors"
+        >
+          📲 Share with Dad
+        </a>
       </div>
     </main>
   );
