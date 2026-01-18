@@ -119,7 +119,7 @@ function countryToCode(country: string): string | null {
 type Scholarship = {
   name: string;
   country: string;
-  amount: string;       // may be $, £, €, CHF, ₹
+  amount: string; // may be $, £, €, CHF, ₹
   amountInInr?: number; // numeric INR (derived)
   deadline: string;
   benefits?: string;
@@ -131,6 +131,9 @@ type ReportPayload = {
   total_value_found?: number; // stored in INR
   user_name?: string;
 };
+
+// Number of free scholarships before lock
+const MAX_FREE = 2;
 
 export default function HuntPage() {
   const searchParams = useSearchParams();
@@ -155,6 +158,13 @@ export default function HuntPage() {
         setUserName(storedName.trim());
       }
     }
+  }, []);
+
+  // load unlock flag (persists between visits)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const flag = window.localStorage.getItem("reportUnlocked");
+    setUnlocked(flag === "true");
   }, []);
 
   // load report
@@ -350,7 +360,7 @@ export default function HuntPage() {
           <div className="rounded-3xl border border-cyan-400/15 bg-slate-950/70 backdrop-blur-2xl shadow-[0_0_40px_rgba(15,23,42,0.9)] px-4 py-6 md:px-6 md:py-7">
             <div className="grid gap-5 md:grid-cols-2">
               {data.map((s, index) => {
-                const locked = !unlocked && index >= 2;
+                const locked = !unlocked && index >= MAX_FREE;
                 const code = countryToCode(s.country);
                 const countdown = getCountdown(s.deadline);
 
@@ -399,9 +409,9 @@ export default function HuntPage() {
                             s.amountInInr > 0 && (
                               <span className="text-[0.65rem] text-slate-400">
                                 (~₹
-                                {Math.round(s.amountInInr).toLocaleString(
-                                  "en-IN"
-                                )}
+                                {Math.round(
+                                  s.amountInInr
+                                ).toLocaleString("en-IN")}
                                 )
                               </span>
                             )}
@@ -494,6 +504,10 @@ export default function HuntPage() {
               setUnlocked(true);
               setShowUnlock(false);
               setSelectedScholarship(null);
+
+              if (typeof window !== "undefined") {
+                window.localStorage.setItem("reportUnlocked", "true");
+              }
 
               const baseUrl =
                 process.env.NEXT_PUBLIC_SITE_URL ||

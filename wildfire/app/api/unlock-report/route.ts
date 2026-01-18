@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 🔴 CHANGE HERE: send user to the matches list, not a specific scholarship
+    // Send user to the matches list (/hunt) instead of a single scholarship page
     const baseUrl =
       process.env.NEXT_PUBLIC_BASE_URL ||
       process.env.BASE_URL ||
