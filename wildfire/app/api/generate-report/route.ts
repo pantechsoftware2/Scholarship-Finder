@@ -1,6 +1,7 @@
 // app/api/generate-report/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 type GeneratePayload = {
   targetCountries: string[];
@@ -28,14 +29,23 @@ function isFutureOrToday(deadline: string, now: Date) {
   if (!deadline) return false;
   const d = new Date(deadline);
   if (Number.isNaN(d.getTime())) return false;
-  return d >= new Date(now.toISOString().slice(0, 10));
+  const today = new Date(now.toISOString().slice(0, 10));
+  return d >= today;
 }
 
-// TODO: replace with real LLM client
+// ---------- REAL GEMINI CALL ----------
+
+const apiKey = process.env.GEMINI_API_KEY;
+const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
+
 async function callLLMForScholarships(
   user: GeneratePayload,
   now: Date
 ): Promise<LLMResponse> {
+  if (!genAI) {
+    throw new Error("GEMINI_API_KEY not configured");
+  }
+
   const currentDate = now.toISOString().slice(0, 10);
   const targetCountriesJson = JSON.stringify(user.targetCountries);
   const userProfileJson = JSON.stringify({
@@ -75,37 +85,51 @@ OUTPUT FORMAT (JSON ONLY):
     }
   ]
 }
-`;
+`.trim();
 
-  // Dummy data for dev
-  return {
-    total_value_found: "₹40 Lakhs",
-    scholarships: [
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.0-flash",
+    tools: [{ googleSearch: {} }],
+  });
+
+  const result = await model.generateContent({
+    contents: [
       {
-        name: "Commonwealth Master's Scholarship",
-        country: "UK",
-        amount: "£15,000",
-        deadline: `${now.getFullYear()}-12-15`,
-        match_score: 94,
-        why_it_fits:
-          "Your academic record and interest in research align with this award.",
-        strategy_tip:
-          "Highlight any independent research and leadership activities. Focus on how your work benefits India post-graduation.",
-      },
-      {
-        name: "ASU Global Excellence Scholarship",
-        country: "USA",
-        amount: "$25,000",
-        deadline: `${now.getFullYear()}-11-30`,
-        match_score: 89,
-        why_it_fits:
-          "Your GPA and STEM background make you competitive for merit-based funding.",
-        strategy_tip:
-          "Emphasize your projects and internships with quantifiable impact. Show long-term clarity on your career path.",
+        role: "user",
+        parts: [{ text: systemPrompt }],
       },
     ],
+  });
+
+  const rawText = result.response.text().trim();
+
+  let parsed: any;
+  try {
+    parsed = JSON.parse(rawText);
+  } catch {
+    const cleaned = rawText
+      .replace(/```json/gi, "")
+      .replace(/```/g, "")
+      .trim();
+    parsed = JSON.parse(cleaned);
+  }
+
+  const scholarships: ScholarshipLLM[] = Array.isArray(parsed.scholarships)
+    ? parsed.scholarships
+    : [];
+
+  const total_value_found: string =
+    typeof parsed.total_value_found === "string"
+      ? parsed.total_value_found
+      : "";
+
+  return {
+    total_value_found,
+    scholarships,
   };
 }
+
+// ---------- ROUTE HANDLER ----------
 
 export async function POST(req: NextRequest) {
   try {
@@ -160,8 +184,8 @@ export async function POST(req: NextRequest) {
     const baseUrl =
       process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
-    // IMPORTANT: first landing = locked view
-    const magicLink = `${baseUrl}/hunt?id=${reportId}`;
+    const cleanBase = baseUrl.replace(/\/$/, "");
+    const magicLink = `${cleanBase}/hunt?id=${reportId}`;
 
     return NextResponse.json({ reportId, magicLink }, { status: 201 });
   } catch (err: any) {

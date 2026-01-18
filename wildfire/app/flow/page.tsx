@@ -252,7 +252,7 @@ export default function FlowPage() {
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(148,163,184,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.08)_1px,transparent_1px)] bg-[size:32px_32px]" />
 
       {/* centered card with empty space at top */}
-      <div className="relative flex-1 flex items-center justify-center px-4 pt-20 pb-10">
+      <div className="relative flex-1 flex items-start justify-center px-4 pt-24 pb-10">
         <div className="relative w-full max-w-md rounded-[28px] border border-slate-800/80 bg-slate-950/75 backdrop-blur-2xl shadow-[0_0_40px_rgba(15,23,42,0.9)] p-6 space-y-6">
           <div className="pointer-events-none absolute -top-24 -left-20 h-40 w-40 rounded-full bg-cyan-500/25 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-24 -right-16 h-40 w-40 rounded-full bg-fuchsia-500/25 blur-3xl" />

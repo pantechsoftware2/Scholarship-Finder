@@ -6,10 +6,55 @@ import { useParams, useSearchParams, useRouter } from "next/navigation";
 import Flags from "country-flag-icons/react/3x2";
 import { EXTRA_COUNTRIES } from "@/app/lib/countries";
 
+// ---------- FX + helper (same logic as list page) ----------
+const FX_TO_INR: Record<string, number> = {
+  INR: 1,
+  USD: 83,
+  EUR: 90,
+  GBP: 105,
+  CHF: 95,
+  CAD: 62,
+};
+
+function parseCurrencyToInr(amount: string): number {
+  if (!amount) return 0;
+
+  let val = amount.trim();
+  let currency = "INR";
+
+  if (/^\$/.test(val)) {
+    currency = "USD";
+    val = val.replace(/^\$/, "");
+  } else if (/^£/.test(val)) {
+    currency = "GBP";
+    val = val.replace(/^£/, "");
+  } else if (/^€/.test(val)) {
+    currency = "EUR";
+    val = val.replace(/^€/, "");
+  } else if (/^CHF/i.test(val)) {
+    currency = "CHF";
+    val = val.replace(/^CHF\s*/i, "");
+  } else if (/^CAD/i.test(val)) {
+    currency = "CAD";
+    val = val.replace(/^CAD\s*/i, "");
+  } else if (/^₹/.test(val)) {
+    currency = "INR";
+    val = val.replace(/^₹/, "");
+  }
+
+  const numeric = parseFloat(val.replace(/[^0-9.]/g, ""));
+  if (Number.isNaN(numeric)) return 0;
+
+  const rate = FX_TO_INR[currency] ?? 1;
+  return numeric * rate;
+}
+
+// ---------- Types ----------
 type Scholarship = {
   name: string;
   country: string;
   amount: string;
+  amountInInr?: number;
   deadline: string;
   benefits?: string;
   why_it_fits?: string;
@@ -95,21 +140,32 @@ export default function ScholarshipDetailsPage() {
 
         const data = await res.json();
         const scholarships: Scholarship[] = (data.scholarships || []).map(
-          (s: any) => ({
-            name: s.name || "",
-            country: s.country || "",
-            amount:
+          (s: any) => {
+            const amt =
               typeof s.amount === "number"
                 ? s.amount.toString()
-                : s.amount || "",
-            deadline: s.deadline || "",
-            benefits:
-              s.description ||
-              s.benefits ||
-              "Tuition support + stipend + additional perks based on profile fit.",
-            why_it_fits: s.why_it_fits || s.whyItFits || "",
-            strategy_tip: s.strategy_tip || s.strategyTip || "",
-          })
+                : s.amount || "";
+
+            const amountInInr =
+              typeof s.amount_in_inr === "number" &&
+              !Number.isNaN(s.amount_in_inr)
+                ? s.amount_in_inr
+                : parseCurrencyToInr(amt);
+
+            return {
+              name: s.name || "",
+              country: s.country || "",
+              amount: amt,
+              amountInInr,
+              deadline: s.deadline || "",
+              benefits:
+                s.description ||
+                s.benefits ||
+                "Tuition support + stipend + additional perks based on profile fit.",
+              why_it_fits: s.why_it_fits || s.whyItFits || "",
+              strategy_tip: s.strategy_tip || s.strategyTip || "",
+            };
+          }
         );
 
         setReport({ id: reportId, scholarships });
@@ -197,13 +253,24 @@ export default function ScholarshipDetailsPage() {
               {scholarship.name}
             </h1>
             <div className="flex flex-wrap items-center gap-3 text-xs text-slate-300">
-              {/* UPDATED: flag + country name only */}
+              {/* flag + country */}
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-900/80 border border-slate-700">
                 {code && <FlagIcon code={code} size={14} />}
                 <span>{scholarship.country}</span>
               </span>
+              {/* funding with INR */}
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-400/50 text-emerald-300">
                 🎓 Funding: {scholarship.amount}
+                {typeof scholarship.amountInInr === "number" &&
+                  scholarship.amountInInr > 0 && (
+                    <span className="text-[0.65rem] text-emerald-200 ml-1">
+                      (~₹
+                      {Math.round(
+                        scholarship.amountInInr
+                      ).toLocaleString("en-IN")}
+                      )
+                    </span>
+                  )}
               </span>
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-400/50 text-amber-200">
                 📅 Deadline: {scholarship.deadline || "Varies"}
@@ -250,7 +317,7 @@ export default function ScholarshipDetailsPage() {
           </div>
         </section>
 
-        {/* Wildfire CTA (no Share with Dad inside) */}
+        {/* Wildfire CTA */}
         <div className="fixed inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/90 via-black/80 to-transparent px-4 pb-4 pt-3">
           <div className="mx-auto w-full max-w-3xl flex flex-col gap-2">
             <div className="text-[0.75rem] text-slate-200 font-medium">
@@ -272,7 +339,7 @@ export default function ScholarshipDetailsPage() {
           </div>
         </div>
 
-        {/* SINGLE floating Share with Dad button at bottom-right */}
+        {/* SINGLE floating Share with Dad button */}
         <a
           href={shareLink}
           target="_blank"

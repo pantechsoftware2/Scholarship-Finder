@@ -5,7 +5,12 @@ import { supabaseAdmin } from "@/lib/supabaseAdmin";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { reportId, name, email, whatsapp } = body;
+    const { reportId, name, email, whatsapp } = body as {
+      reportId: string;
+      name: string;
+      email: string;
+      whatsapp: string;
+    };
 
     if (!reportId || !name || !email || !whatsapp) {
       return NextResponse.json(
@@ -33,10 +38,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // 🔴 CHANGE HERE: send user to the matches list, not a specific scholarship
     const baseUrl =
-      process.env.BASE_URL ??
-      (typeof window === "undefined" ? "" : window.location.origin);
-    const magicLink = `${baseUrl}/report/${reportId}`;
+      process.env.NEXT_PUBLIC_BASE_URL ||
+      process.env.BASE_URL ||
+      "http://localhost:3000";
+
+    const cleanBase = baseUrl.replace(/\/$/, "");
+    const magicLink = `${cleanBase}/hunt?id=${reportId}`;
 
     return NextResponse.json({ leadId: data.id, magicLink });
   } catch (err: any) {

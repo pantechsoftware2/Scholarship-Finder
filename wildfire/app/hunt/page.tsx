@@ -8,7 +8,74 @@ import Flags from "country-flag-icons/react/3x2";
 import SiteFooter from "@/app/components/SiteFooter";
 import { EXTRA_COUNTRIES } from "@/app/lib/countries";
 
-// Tiny flag component
+// ---------- FX + helpers ----------
+
+// Approx FX rates to INR (can later be replaced by live API)
+const FX_TO_INR: Record<string, number> = {
+  INR: 1,
+  USD: 83,
+  EUR: 90,
+  GBP: 105,
+  CHF: 95,
+  CAD: 62,
+};
+
+// Parse mixed currency string -> approximate INR
+function parseCurrencyToInr(amount: string): number {
+  if (!amount) return 0;
+
+  let val = amount.trim();
+  let currency = "INR";
+
+  if (/^\$/.test(val)) {
+    currency = "USD";
+    val = val.replace(/^\$/, "");
+  } else if (/^£/.test(val)) {
+    currency = "GBP";
+    val = val.replace(/^£/, "");
+  } else if (/^€/.test(val)) {
+    currency = "EUR";
+    val = val.replace(/^€/, "");
+  } else if (/^CHF/i.test(val)) {
+    currency = "CHF";
+    val = val.replace(/^CHF\s*/i, "");
+  } else if (/^CAD/i.test(val)) {
+    currency = "CAD";
+    val = val.replace(/^CAD\s*/i, "");
+  } else if (/^₹/.test(val)) {
+    currency = "INR";
+    val = val.replace(/^₹/, "");
+  }
+
+  const numeric = parseFloat(val.replace(/[^0-9.]/g, ""));
+  if (Number.isNaN(numeric)) return 0;
+
+  const rate = FX_TO_INR[currency] ?? 1;
+  return numeric * rate;
+}
+
+// Countdown from deadline
+function getCountdown(deadline: string): string {
+  if (!deadline) return "";
+  const target = new Date(deadline);
+  if (isNaN(target.getTime())) return "";
+
+  const now = new Date();
+  const diffMs = target.getTime() - now.getTime();
+  if (diffMs <= 0) return "Deadline passed";
+
+  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const hours = Math.floor(
+    (diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+  );
+
+  if (days === 0 && hours === 0) return "Less than 1 hour left";
+  if (days === 0) return `${hours}h left`;
+  return `${days}d ${hours}h left`;
+}
+
+// ---------- Flags ----------
+
 function FlagIcon({ code, size = 14 }: { code: string; size?: number }) {
   const upper = code.toUpperCase();
   const Flag =
@@ -47,10 +114,13 @@ function countryToCode(country: string): string | null {
   return ci ? ci.code : null;
 }
 
+// ---------- Types ----------
+
 type Scholarship = {
   name: string;
   country: string;
-  amount: string;
+  amount: string;       // may be $, £, €, CHF, ₹
+  amountInInr?: number; // numeric INR (derived)
   deadline: string;
   benefits?: string;
 };
@@ -58,7 +128,7 @@ type Scholarship = {
 type ReportPayload = {
   id: string;
   scholarships: Scholarship[];
-  total_value_found?: string;
+  total_value_found?: number; // stored in INR
   user_name?: string;
 };
 
@@ -112,25 +182,62 @@ export default function HuntPage() {
 
         const repData = await repRes.json();
 
-        const scholarships = (repData.scholarships || []).map((s: any) => ({
-          name: s.name || "",
-          country: s.country || "",
-          amount:
-            typeof s.amount === "number"
-              ? s.amount.toString()
-              : s.amount || "",
-          deadline: s.deadline || "",
-          benefits:
-            s.description ||
-            s.benefits ||
-            s.why_it_fits ||
-            "Tuition support + stipend + additional perks based on profile fit.",
-        }));
+        // compute INR for each scholarship
+        const scholarships: Scholarship[] = (repData.scholarships || []).map(
+          (s: any) => {
+            const amt =
+              typeof s.amount === "number"
+                ? s.amount.toString()
+                : s.amount || "";
+
+            const amountInInr =
+              typeof s.amount_in_inr === "number" &&
+              !Number.isNaN(s.amount_in_inr)
+                ? s.amount_in_inr
+                : parseCurrencyToInr(amt);
+
+            return {
+              name: s.name || "",
+              country: s.country || "",
+              amount: amt,
+              amountInInr,
+              deadline: s.deadline || "",
+              benefits:
+                s.description ||
+                s.benefits ||
+                s.why_it_fits ||
+                "Tuition support + stipend + additional perks based on profile fit.",
+            };
+          }
+        );
+
+        // Aggregate INR total_value_found
+        let total_value_found: number | undefined;
+        if (
+          typeof repData.total_value_found === "number" &&
+          !Number.isNaN(repData.total_value_found)
+        ) {
+          total_value_found = repData.total_value_found;
+        } else if (
+          typeof repData.total_value_found === "string" &&
+          repData.total_value_found.trim() !== ""
+        ) {
+          const parsed = Number(repData.total_value_found);
+          if (!Number.isNaN(parsed)) total_value_found = parsed;
+        } else {
+          total_value_found = scholarships.reduce(
+            (sum, s) =>
+              typeof s.amountInInr === "number" && !Number.isNaN(s.amountInInr)
+                ? sum + s.amountInInr
+                : sum,
+            0
+          );
+        }
 
         const repJson: ReportPayload = {
           id: repData.id || reportId,
           scholarships,
-          total_value_found: repData.total_value_found,
+          total_value_found,
           user_name: repData.user_name,
         };
 
@@ -178,21 +285,30 @@ export default function HuntPage() {
   const data = report.scholarships || [];
   const totalMatches = data.length;
 
-  function parseAmountToNumber(amount: string): number {
-    if (!amount) return 0;
-    const cleaned = amount.replace(/[^0-9.]/g, "");
-    const n = parseFloat(cleaned);
-    if (Number.isNaN(n)) return 0;
-    return n;
+  // Compute Lakhs for header from INR total
+  let totalInInr = 0;
+  if (
+    typeof report.total_value_found === "number" &&
+    !Number.isNaN(report.total_value_found) &&
+    report.total_value_found > 0
+  ) {
+    totalInInr = report.total_value_found;
+  } else {
+    totalInInr = data.reduce(
+      (sum, s) =>
+        typeof s.amountInInr === "number" && !Number.isNaN(s.amountInInr)
+          ? sum + s.amountInInr
+          : sum,
+      0
+    );
   }
 
-  const totalAmount = data.reduce(
-    (sum, s) => sum + parseAmountToNumber(s.amount),
-    0
-  );
-  const totalLakhs = totalAmount / 100000;
-  const formattedLakhs =
-    totalLakhs >= 1 ? `${totalLakhs.toFixed(1)} Lakhs` : "Under 1 Lakh";
+  let headerLakhsLabel = "Under 1 Lakh";
+  if (totalInInr > 0) {
+    const lakhs = totalInInr / 100000;
+    headerLakhsLabel =
+      lakhs >= 1 ? `${lakhs.toFixed(1)} Lakhs` : "Under 1 Lakh";
+  }
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#0f172a,_#020617)] text-white px-4 py-10 flex justify-center">
@@ -219,12 +335,12 @@ export default function HuntPage() {
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/70 border border-cyan-400/30 backdrop-blur-xl text-xs">
               <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
               <span className="uppercase tracking-[0.16em] text-slate-300">
-                ₹{formattedLakhs} found · {totalMatches} matches
+                ₹{headerLakhsLabel} found · {totalMatches} matches
               </span>
             </div>
             <p className="text-[0.65rem] text-slate-500">
-              Amounts may be in $, £ or €. Total shown here is converted to INR
-              so it makes sense in one number.
+              Some scholarships pay in foreign currency; this total is
+              converted into approximate INR so everything lives in one number.
             </p>
           </div>
         </header>
@@ -236,6 +352,7 @@ export default function HuntPage() {
               {data.map((s, index) => {
                 const locked = !unlocked && index >= 2;
                 const code = countryToCode(s.country);
+                const countdown = getCountdown(s.deadline);
 
                 return (
                   <div
@@ -266,7 +383,7 @@ export default function HuntPage() {
                         </span>
                       </div>
 
-                      {/* Flag + country name (left) and amount (right) */}
+                      {/* Flag + country + amount + INR */}
                       <div className="flex items-center justify-between text-xs text-slate-400">
                         <span className="flex items-center gap-2">
                           {code && !locked && <FlagIcon code={code} size={16} />}
@@ -274,8 +391,20 @@ export default function HuntPage() {
                             {s.country}
                           </span>
                         </span>
-                        <span className="text-emerald-400 font-semibold text-sm">
-                          {s.amount}
+                        <span className="flex flex-col items-end">
+                          <span className="text-emerald-400 font-semibold text-sm">
+                            {s.amount}
+                          </span>
+                          {typeof s.amountInInr === "number" &&
+                            s.amountInInr > 0 && (
+                              <span className="text-[0.65rem] text-slate-400">
+                                (~₹
+                                {Math.round(s.amountInInr).toLocaleString(
+                                  "en-IN"
+                                )}
+                                )
+                              </span>
+                            )}
                         </span>
                       </div>
 
@@ -290,13 +419,20 @@ export default function HuntPage() {
                         </p>
                       </div>
 
-                      {/* Deadline */}
-                      <p className="text-[0.7rem] text-amber-300 font-semibold flex items-center gap-1">
-                        <span>📅 Deadline:</span>
-                        <span className={locked ? "blur-[2px]" : ""}>
-                          {s.deadline}
-                        </span>
-                      </p>
+                      {/* Deadline + countdown */}
+                      <div className="flex items-center justify-between text-[0.7rem]">
+                        <p className="text-amber-300 font-semibold flex items-center gap-1">
+                          <span>📅 Deadline:</span>
+                          <span className={locked ? "blur-[2px]" : ""}>
+                            {s.deadline}
+                          </span>
+                        </p>
+                        {countdown && (
+                          <p className="text-[0.7rem] text-sky-300">
+                            {countdown}
+                          </p>
+                        )}
+                      </div>
                     </div>
 
                     {/* Locked overlay */}
@@ -360,11 +496,14 @@ export default function HuntPage() {
               setSelectedScholarship(null);
 
               const baseUrl =
-                typeof window !== "undefined"
+                process.env.NEXT_PUBLIC_SITE_URL ||
+                process.env.NEXT_PUBLIC_BASE_URL ||
+                (typeof window !== "undefined"
                   ? window.location.origin
-                  : process.env.NEXT_PUBLIC_BASE_URL || "";
+                  : "");
 
-              const reportLink = `${baseUrl}/hunt?id=${report.id}`;
+              const cleanBase = baseUrl.replace(/\/$/, "");
+              const reportLink = `${cleanBase}/hunt?id=${report.id}`;
 
               try {
                 const res = await fetch("/api/notifications/send", {
