@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import Flags from "country-flag-icons/react/3x2";
+import * as Flags from "country-flag-icons/react/3x2";
 import SiteFooter from "@/app/components/SiteFooter";
 import { EXTRA_COUNTRIES } from "@/app/lib/countries";
 

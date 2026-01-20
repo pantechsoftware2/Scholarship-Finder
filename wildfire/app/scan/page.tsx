@@ -1,24 +1,33 @@
+// app/scan/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
 const messages = [
   "Scanning 450+ University Endowments...",
   "Filtering for Indian Citizen eligibility...",
   "Removing expired deadlines...",
-  "Verifying GRE waivers..."
+  "Verifying GRE waivers...",
 ];
 
 export default function ScanPage() {
   const router = useRouter();
-  const params = useSearchParams();
-  const reportId = params.get("rid");
   const [index, setIndex] = useState(0);
+  const [reportId, setReportId] = useState<string | null>(null);
+
+  // Read rid from the URL query string on the client, no useSearchParams
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const url = new URL(window.location.href);
+    const rid = url.searchParams.get("rid");
+    setReportId(rid);
+  }, []);
 
   useEffect(() => {
-    // change text every second
+    // rotate message text every second
     const interval = setInterval(
       () => setIndex((i) => (i + 1) % messages.length),
       1000

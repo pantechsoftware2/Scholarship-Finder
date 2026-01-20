@@ -32,13 +32,30 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 function normalizeDeadline(raw: string | null | undefined): string {
   if (!raw) return "Deadline unknown";
 
-  // Expect strict YYYY-MM-DD but be defensive
   const d = new Date(raw);
   if (!Number.isNaN(d.getTime())) {
     return d.toISOString().slice(0, 10);
   }
 
   return "Deadline unknown";
+}
+
+async function callModel(systemPrompt: string): Promise<ModelResponse | null> {
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.0-flash",
+  });
+
+  const result = await model.generateContent(systemPrompt);
+  const text = result.response.text();
+
+  try {
+    const cleanJson = text.replace(/```json|```/g, "").trim();
+    const parsed = JSON.parse(cleanJson) as ModelResponse;
+    return parsed;
+  } catch {
+    console.error("Gemini returned non‑JSON:", text);
+    return null;
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -78,7 +95,7 @@ export async function POST(request: NextRequest) {
     : specialPowers || "None";
 
   const currentDate = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-  const targetYear = new Date().getFullYear() + 1; // e.g. next intake year
+  const targetYear = new Date().getFullYear() + 1; // next intake year
 
   const systemPrompt = `
 You are an expert Study Abroad Counselor for Indian students.
@@ -101,8 +118,12 @@ CRITICAL RULES:
 3. MULTI-REGION LOGIC: If multiple countries are selected, find the best options for EACH country. Do not limit results to just one region.
 4. CONTEXTUALIZE: For the "strategy_tip" field, write specific advice connecting the user's background to the scholarship.
 5. CURRENCY: Keep the "amount" field in the original currency (USD/GBP/EUR) but ensure the "total_value_found" is estimated in INR.
+6. RESULT COUNT (VERY IMPORTANT): 
+   - Return AT LEAST 5 scholarships.
+   - If you can, return between 5 and 8 high‑quality scholarships.
+   - Distribute them across the selected target countries (ideally 2–3 per country where possible).
 
-OUTPUT FORMAT (JSON ONLY):
+OUTPUT FORMAT (JSON ONLY, NO EXTRA TEXT):
 {
   "total_value_found": "string (e.g. ₹45 Lakhs)",
   "scholarships": [
@@ -117,32 +138,30 @@ OUTPUT FORMAT (JSON ONLY):
     }
   ]
 }
+
+DO NOT return fewer than 5 scholarships unless it is absolutely impossible to find them.
 `.trim();
 
   try {
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash",
-      // could be extended with structured output config later [web:632][web:372]
-    });
+    // First attempt
+    let parsed = await callModel(systemPrompt);
 
-    const result = await model.generateContent(systemPrompt);
-    const text = result.response.text();
+    // If parsing failed or too few scholarships, try once more
+    if (!parsed || !Array.isArray(parsed.scholarships) || parsed.scholarships.length < 5) {
+      console.warn(
+        "First Gemini response invalid or <5 scholarships, retrying once..."
+      );
+      parsed = await callModel(systemPrompt);
+    }
 
-    let parsed: ModelResponse;
-    try {
-      const cleanJson = text.replace(/```json|```/g, "").trim();
-      parsed = JSON.parse(cleanJson) as ModelResponse;
-    } catch {
-      console.error("Gemini returned non‑JSON:", text);
+    if (!parsed || !Array.isArray(parsed.scholarships) || parsed.scholarships.length === 0) {
       return NextResponse.json(
-        { error: "AI returned invalid JSON" },
+        { error: "AI could not find valid scholarships" },
         { status: 500 }
       );
     }
 
-    const scholarshipsRaw = Array.isArray(parsed.scholarships)
-      ? parsed.scholarships
-      : [];
+    const scholarshipsRaw = parsed.scholarships;
 
     const scholarships: Scholarship[] = scholarshipsRaw.map((s: any) => ({
       name: s.name,

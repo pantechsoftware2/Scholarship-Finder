@@ -168,7 +168,7 @@ export default function GatePage() {
             </p>
           </div>
 
-          {/* unlock panel using existing UnlockForm */}
+          {/* unlock panel */}
           <div className="relative">
             <div className="pointer-events-none absolute -top-10 -right-10 h-32 w-32 rounded-full bg-cyan-500/30 blur-3xl" />
             <div className="relative rounded-3xl border border-cyan-400/40 bg-slate-950/90 px-5 py-5 shadow-[0_0_26px_rgba(56,189,248,0.6)] space-y-3">
@@ -190,6 +190,7 @@ export default function GatePage() {
                   // after successful unlock, send to magic-link report page
                   router.push(`/report/${report.id}`);
                 }}
+                onUnlocked={() => {}}
               />
             </div>
           </div>

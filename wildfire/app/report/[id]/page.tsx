@@ -175,11 +175,13 @@ export default function ReportPage() {
       return;
     }
 
+    const id = reportId; // now treated as definite string inside this effect
+
     async function loadReport() {
       try {
         setLoading(true);
         setError("");
-        const res = await fetch(`/api/report?id=${reportId}`);
+        const res = await fetch(`/api/report?id=${id}`);
         if (!res.ok) {
           const body = await res.text();
           console.error("report fetch failed:", res.status, body);
@@ -206,7 +208,7 @@ export default function ReportPage() {
         );
 
         setReport({
-          id: reportId,
+          id,
           input: json.input,
           total_value_found: json.total_value_found,
           scholarships: transformedScholarships,

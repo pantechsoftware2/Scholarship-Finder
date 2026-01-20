@@ -21,6 +21,7 @@ export default function GateClient({ reportId }: GateClientProps) {
         reportId={reportId}
         scholarshipTitle="High-Probability Scholarship Matches"
         onClose={() => {}}
+        onUnlocked={() => {}}
       />
     </div>
   );

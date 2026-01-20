@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
-import Flags from "country-flag-icons/react/3x2";
+import * as Flags from "country-flag-icons/react/3x2";
 import { EXTRA_COUNTRIES } from "@/app/lib/countries";
 
 // ---------- FX + helper (same logic as list page) ----------

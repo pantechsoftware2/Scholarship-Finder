@@ -4,13 +4,11 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import UnlockForm from "./UnlockForm";
-import Flags from "country-flag-icons/react/3x2";
+import * as Flags from "country-flag-icons/react/3x2";
 import SiteFooter from "@/app/components/SiteFooter";
 import { EXTRA_COUNTRIES } from "@/app/lib/countries";
 
 // ---------- FX + helpers ----------
-
-// Approx FX rates to INR (can later be replaced by live API)
 const FX_TO_INR: Record<string, number> = {
   INR: 1,
   USD: 83,
@@ -20,7 +18,6 @@ const FX_TO_INR: Record<string, number> = {
   CAD: 62,
 };
 
-// Parse mixed currency string -> approximate INR
 function parseCurrencyToInr(amount: string): number {
   if (!amount) return 0;
 
@@ -54,11 +51,10 @@ function parseCurrencyToInr(amount: string): number {
   return numeric * rate;
 }
 
-// Countdown from deadline
 function getCountdown(deadline: string): string {
   if (!deadline) return "";
   const target = new Date(deadline);
-  if (isNaN(target.getTime())) return "";
+  if (Number.isNaN(target.getTime())) return "";
 
   const now = new Date();
   const diffMs = target.getTime() - now.getTime();
@@ -74,8 +70,7 @@ function getCountdown(deadline: string): string {
   return `${days}d ${hours}h left`;
 }
 
-// ---------- Flags ----------
-
+// ---------- flags ----------
 function FlagIcon({ code, size = 14 }: { code: string; size?: number }) {
   const upper = code.toUpperCase();
   const Flag =
@@ -96,7 +91,6 @@ function FlagIcon({ code, size = 14 }: { code: string; size?: number }) {
   );
 }
 
-// Reusable country → code using EXTRA_COUNTRIES
 function countryToCode(country: string): string | null {
   if (!country) return null;
   const normalized = country.replace(/\(.*\)/, "").trim();
@@ -114,13 +108,12 @@ function countryToCode(country: string): string | null {
   return ci ? ci.code : null;
 }
 
-// ---------- Types ----------
-
+// ---------- types ----------
 type Scholarship = {
   name: string;
   country: string;
-  amount: string; // may be $, £, €, CHF, ₹
-  amountInInr?: number; // numeric INR (derived)
+  amount: string;
+  amountInInr?: number;
   deadline: string;
   benefits?: string;
 };
@@ -128,13 +121,13 @@ type Scholarship = {
 type ReportPayload = {
   id: string;
   scholarships: Scholarship[];
-  total_value_found?: number; // stored in INR
+  total_value_found?: number;
   user_name?: string;
 };
 
-// Number of free scholarships before lock
 const MAX_FREE = 2;
 
+// ---------- page (client) ----------
 export default function HuntPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -142,15 +135,12 @@ export default function HuntPage() {
   const [report, setReport] = useState<ReportPayload | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+  const [unlocked, setUnlocked] = useState(false);
   const [selectedScholarship, setSelectedScholarship] =
     useState<Scholarship | null>(null);
   const [showUnlock, setShowUnlock] = useState(false);
-  const [unlocked, setUnlocked] = useState(false);
+  const [userName, setUserName] = useState("Anonymous");
 
-  const [userName, setUserName] = useState<string>("Anonymous");
-
-  // load stored name
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedName = window.localStorage.getItem("userName");
@@ -160,14 +150,6 @@ export default function HuntPage() {
     }
   }, []);
 
-  // load unlock flag (persists between visits)
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const flag = window.localStorage.getItem("reportUnlocked");
-    setUnlocked(flag === "true");
-  }, []);
-
-  // load report
   useEffect(() => {
     async function loadReport() {
       try {
@@ -180,8 +162,12 @@ export default function HuntPage() {
 
         if (!reportId) {
           setError("No report ID provided. Please start a new search.");
+          setReport(null);
           return;
         }
+
+        // important: clear previous error when we DO have an id
+        setError("");
 
         const repRes = await fetch(`/api/report?id=${reportId}`);
         if (!repRes.ok) {
@@ -192,14 +178,12 @@ export default function HuntPage() {
 
         const repData = await repRes.json();
 
-        // compute INR for each scholarship
         const scholarships: Scholarship[] = (repData.scholarships || []).map(
           (s: any) => {
             const amt =
               typeof s.amount === "number"
                 ? s.amount.toString()
                 : s.amount || "";
-
             const amountInInr =
               typeof s.amount_in_inr === "number" &&
               !Number.isNaN(s.amount_in_inr)
@@ -221,28 +205,18 @@ export default function HuntPage() {
           }
         );
 
-        // Aggregate INR total_value_found
-        let total_value_found: number | undefined;
-        if (
+        const total_value_found: number | undefined =
           typeof repData.total_value_found === "number" &&
           !Number.isNaN(repData.total_value_found)
-        ) {
-          total_value_found = repData.total_value_found;
-        } else if (
-          typeof repData.total_value_found === "string" &&
-          repData.total_value_found.trim() !== ""
-        ) {
-          const parsed = Number(repData.total_value_found);
-          if (!Number.isNaN(parsed)) total_value_found = parsed;
-        } else {
-          total_value_found = scholarships.reduce(
-            (sum, s) =>
-              typeof s.amountInInr === "number" && !Number.isNaN(s.amountInInr)
-                ? sum + s.amountInInr
-                : sum,
-            0
-          );
-        }
+            ? repData.total_value_found
+            : scholarships.reduce(
+                (sum, s) =>
+                  typeof s.amountInInr === "number" &&
+                  !Number.isNaN(s.amountInInr)
+                    ? sum + s.amountInInr
+                    : sum,
+                0
+              );
 
         const repJson: ReportPayload = {
           id: repData.id || reportId,
@@ -253,19 +227,13 @@ export default function HuntPage() {
 
         setReport(repJson);
 
-        if (repJson.user_name && repJson.user_name.trim().length > 0) {
-          setUserName(repJson.user_name.trim());
-          if (typeof window !== "undefined") {
-            window.localStorage.setItem("userName", repJson.user_name.trim());
-          }
-        }
-
         if (typeof window !== "undefined") {
           sessionStorage.setItem("lastReportId", repJson.id);
         }
       } catch (err: any) {
         console.error("Hunt error:", err);
         setError("Error loading scholarships");
+        setReport(null);
       } finally {
         setLoading(false);
       }
@@ -276,17 +244,15 @@ export default function HuntPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#1e293b,_#020617)] text-white flex items-center justify-center">
-        <p className="text-sm text-slate-300">
-          Mapping your funding universe…
-        </p>
+      <main className="min-h-screen bg-slate-950 text-slate-200 flex items-center justify-center">
+        <p className="text-sm md:text-base">Mapping your funding universe…</p>
       </main>
     );
   }
 
   if (error || !report) {
     return (
-      <main className="min-h-screen bg-black text-red-400 flex items-center justify-center">
+      <main className="min-h-screen bg-slate-950 text-red-400 flex items-center justify-center">
         {error || "Something went wrong"}
       </main>
     );
@@ -295,30 +261,34 @@ export default function HuntPage() {
   const data = report.scholarships || [];
   const totalMatches = data.length;
 
-  // Compute Lakhs for header from INR total
-  let totalInInr = 0;
-  if (
-    typeof report.total_value_found === "number" &&
-    !Number.isNaN(report.total_value_found) &&
-    report.total_value_found > 0
-  ) {
-    totalInInr = report.total_value_found;
-  } else {
-    totalInInr = data.reduce(
-      (sum, s) =>
-        typeof s.amountInInr === "number" && !Number.isNaN(s.amountInInr)
-          ? sum + s.amountInInr
-          : sum,
-      0
+  if (totalMatches === 0) {
+    return (
+      <main className="min-h-screen bg-slate-950 text-slate-200 flex items-center justify-center">
+        <p className="text-sm md:text-base">
+          No scholarships found for this report. Try running the hunt again from the flow page.
+        </p>
+      </main>
     );
   }
 
-  let headerLakhsLabel = "Under 1 Lakh";
-  if (totalInInr > 0) {
-    const lakhs = totalInInr / 100000;
-    headerLakhsLabel =
-      lakhs >= 1 ? `${lakhs.toFixed(1)} Lakhs` : "Under 1 Lakh";
-  }
+  const totalInInr =
+    typeof report.total_value_found === "number" &&
+    !Number.isNaN(report.total_value_found) &&
+    report.total_value_found > 0
+      ? report.total_value_found
+      : data.reduce(
+          (sum, s) =>
+            typeof s.amountInInr === "number" && !Number.isNaN(s.amountInInr)
+              ? sum + s.amountInInr
+              : sum,
+          0
+        );
+
+  const lakhs = totalInInr / 100000;
+  const headerLakhsLabel =
+    lakhs >= 1 ? `${lakhs.toFixed(1)} Lakhs` : "Under 1 Lakh";
+
+  const displayName = report.user_name || userName;
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#0f172a,_#020617)] text-white px-4 py-10 flex justify-center">
@@ -326,11 +296,11 @@ export default function HuntPage() {
         <div className="pointer-events-none absolute -top-32 -left-32 h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-40 -right-32 h-80 w-80 rounded-full bg-fuchsia-500/15 blur-3xl" />
 
-        {/* Header */}
+        {/* header */}
         <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 relative z-10">
           <div>
             <p className="text-xs uppercase tracking-[0.2em] text-slate-400 mb-1">
-              Funding Roadmap for {userName}
+              Funding Roadmap for {displayName}
             </p>
             <h1 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-cyan-300 via-sky-400 to-purple-400 bg-clip-text text-transparent">
               Your high‑probability matches.
@@ -349,13 +319,13 @@ export default function HuntPage() {
               </span>
             </div>
             <p className="text-[0.65rem] text-slate-500">
-              Some scholarships pay in foreign currency; this total is
-              converted into approximate INR so everything lives in one number.
+              Some scholarships pay in foreign currency; this total is converted
+              into approximate INR so everything lives in one number.
             </p>
           </div>
         </header>
 
-        {/* Cards grid */}
+        {/* cards grid */}
         <section className="relative z-10">
           <div className="rounded-3xl border border-cyan-400/15 bg-slate-950/70 backdrop-blur-2xl shadow-[0_0_40px_rgba(15,23,42,0.9)] px-4 py-6 md:px-6 md:py-7">
             <div className="grid gap-5 md:grid-cols-2">
@@ -364,10 +334,20 @@ export default function HuntPage() {
                 const code = countryToCode(s.country);
                 const countdown = getCountdown(s.deadline);
 
+                const handleClick = () => {
+                  if (locked) {
+                    setSelectedScholarship(s);
+                    setShowUnlock(true);
+                    return;
+                  }
+                  router.push(`/hunt/${index}?id=${report.id}`);
+                };
+
                 return (
                   <div
                     key={`${s.name}-${index}`}
-                    className="relative group rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-xl p-5 overflow-hidden transition-all duration-200 hover:border-cyan-400/60 hover:-translate-y-0.5"
+                    onClick={handleClick}
+                    className="relative group rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-xl p-5 overflow-hidden transition-all duration-200 hover:border-cyan-400/60 hover:-translate-y-0.5 cursor-pointer"
                   >
                     <div className="pointer-events-none absolute -inset-10 opacity-0 group-hover:opacity-100 bg-gradient-to-br from-cyan-500/10 via-sky-500/5 to-fuchsia-500/10 blur-2xl transition-opacity" />
 
@@ -376,7 +356,6 @@ export default function HuntPage() {
                         "relative space-y-3 " + (locked ? "select-none" : "")
                       }
                     >
-                      {/* Top row: title + match */}
                       <div className="flex items-start justify-between gap-3">
                         <div className="space-y-1 flex-1">
                           <h2
@@ -393,10 +372,11 @@ export default function HuntPage() {
                         </span>
                       </div>
 
-                      {/* Flag + country + amount + INR */}
                       <div className="flex items-center justify-between text-xs text-slate-400">
                         <span className="flex items-center gap-2">
-                          {code && !locked && <FlagIcon code={code} size={16} />}
+                          {code && !locked && (
+                            <FlagIcon code={code} size={16} />
+                          )}
                           <span className={locked ? "blur-[2px]" : ""}>
                             {s.country}
                           </span>
@@ -418,7 +398,6 @@ export default function HuntPage() {
                         </span>
                       </div>
 
-                      {/* Benefits snapshot */}
                       <div className="bg-slate-950/70 p-3 rounded-xl text-xs text-slate-200 border border-slate-800/80">
                         <p className="font-semibold text-[0.7rem] uppercase tracking-[0.16em] text-slate-400 mb-1">
                           Benefits snapshot
@@ -429,7 +408,6 @@ export default function HuntPage() {
                         </p>
                       </div>
 
-                      {/* Deadline + countdown */}
                       <div className="flex items-center justify-between text-[0.7rem]">
                         <p className="text-amber-300 font-semibold flex items-center gap-1">
                           <span>📅 Deadline:</span>
@@ -444,47 +422,6 @@ export default function HuntPage() {
                         )}
                       </div>
                     </div>
-
-                    {/* Locked overlay */}
-                    {locked && (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-md z-10 rounded-2xl">
-                        <div className="relative w-full max-w-xs rounded-2xl border border-cyan-400/40 bg-slate-950/95 px-5 py-4 text-center shadow-[0_0_30px_rgba(56,189,248,0.5)]">
-                          <p className="text-xs uppercase tracking-[0.2em] text-slate-400 mb-1">
-                            Locked insight
-                          </p>
-                          <p className="text-sm text-slate-100 mb-3 font-medium">
-                            We found more matches like this.
-                          </p>
-                          <p className="text-[0.7rem] text-slate-400 mb-4">
-                            Unlock the full roadmap to reveal names, deadlines,
-                            and best‑fit notes.
-                          </p>
-
-                          <button
-                            onClick={() => {
-                              setSelectedScholarship(s);
-                              setShowUnlock(true);
-                            }}
-                            className="w-full bg-gradient-to-r from-cyan-400 to-fuchsia-500 text-black text-xs font-semibold py-2.5 rounded-full shadow-[0_0_24px_rgba(236,72,153,0.6)] hover:brightness-110 transition-all cursor-pointer"
-                          >
-                            Unlock Report 🔓
-                          </button>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Clickable area if unlocked */}
-                    {!locked && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (!report) return;
-                          router.push(`/hunt/${index}?id=${report.id}`);
-                        }}
-                        className="absolute inset-0 z-0"
-                        aria-label={`Open details for ${s.name}`}
-                      />
-                    )}
                   </div>
                 );
               })}
@@ -492,60 +429,24 @@ export default function HuntPage() {
           </div>
         </section>
 
-        {showUnlock && selectedScholarship && (
-          <UnlockForm
-            reportId={report.id}
-            scholarshipTitle={selectedScholarship.name}
-            onClose={() => {
-              setShowUnlock(false);
-              setSelectedScholarship(null);
-            }}
-            onUnlocked={async ({ email, name }) => {
-              setUnlocked(true);
-              setShowUnlock(false);
-              setSelectedScholarship(null);
-
-              if (typeof window !== "undefined") {
-                window.localStorage.setItem("reportUnlocked", "true");
-              }
-
-              const baseUrl =
-                process.env.NEXT_PUBLIC_SITE_URL ||
-                process.env.NEXT_PUBLIC_BASE_URL ||
-                (typeof window !== "undefined"
-                  ? window.location.origin
-                  : "");
-
-              const cleanBase = baseUrl.replace(/\/$/, "");
-              const reportLink = `${cleanBase}/hunt?id=${report.id}`;
-
-              try {
-                const res = await fetch("/api/notifications/send", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    type: "welcome",
-                    email,
-                    name,
-                    reportLink,
-                  }),
-                });
-
-                const json = await res.json();
-                console.log(
-                  "📧 /api/notifications/send response:",
-                  res.status,
-                  json
-                );
-              } catch (e) {
-                console.error("❌ Failed to trigger email:", e);
-              }
-            }}
-          />
-        )}
-
         <SiteFooter />
       </div>
+
+      {showUnlock && selectedScholarship && report && (
+        <UnlockForm
+          reportId={report.id}
+          scholarshipTitle={selectedScholarship.name}
+          onClose={() => {
+            setShowUnlock(false);
+            setSelectedScholarship(null);
+          }}
+          onUnlocked={() => {
+            setUnlocked(true);
+            setShowUnlock(false);
+            setSelectedScholarship(null);
+          }}
+        />
+      )}
     </main>
   );
 }
