@@ -1,7 +1,13 @@
-import type { NextConfig } from "next";
+// @ts-check
 
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   /* config options here */
+  // example:
+  // reactStrictMode: true,
+  // experimental: {
+  //   typedRoutes: true,
+  // },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
