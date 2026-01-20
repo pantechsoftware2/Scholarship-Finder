@@ -74,7 +74,7 @@ OUTPUT FORMAT (JSON ONLY):
 
   const model = genAI.getGenerativeModel({
     model: "gemini-2.0-flash",
-    tools: [{ googleSearch: {} }],
+   // tools: [{ googleSearch: {} }],
   });
 
   const result = await model.generateContent({
