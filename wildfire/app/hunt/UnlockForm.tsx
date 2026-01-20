@@ -56,6 +56,7 @@ export default function UnlockForm({
     try {
       setLoading(true);
 
+      // 1) Save details + unlock on backend
       const res = await fetch("/api/unlock-report", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -79,8 +80,42 @@ export default function UnlockForm({
         window.localStorage.setItem("userName", name.trim());
       }
 
+      // 2) Build report link for the email
+      let reportLink = "";
+      if (typeof window !== "undefined") {
+        reportLink = `${window.location.origin}/report/${reportId}`;
+      }
+
+      // 3) Trigger welcome email (non-blocking)
+      try {
+        const notifRes = await fetch("/api/notifications/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "welcome",
+            email: email.trim(),
+            name: name.trim(),
+            reportLink,
+          }),
+        });
+
+        if (!notifRes.ok) {
+          const body = await notifRes.text();
+          console.error(
+            "notifications/send failed:",
+            notifRes.status,
+            body
+          );
+          // Optional: you can show a toast here, but don't block unlock
+        }
+      } catch (err) {
+        console.error("notifications/send request error:", err);
+      }
+
+      // 4) Inform parent that unlock succeeded
       onUnlocked({ email: email.trim(), name: name.trim() });
 
+      // 5) Redirect to magic link
       setTimeout(() => {
         router.push(magicLink);
       }, 500);
@@ -120,7 +155,7 @@ export default function UnlockForm({
         </p>
       </div>
 
-      {/* Form only */}
+      {/* Form */}
       <form onSubmit={handleUnlock} className="space-y-3">
         <div className="space-y-1.5">
           <label className="text-xs text-slate-300">Full Name</label>
