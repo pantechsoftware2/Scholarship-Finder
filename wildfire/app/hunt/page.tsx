@@ -1,7 +1,7 @@
 // app/hunt/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import UnlockForm from "./UnlockForm";
 import * as Flags from "country-flag-icons/react/3x2";
@@ -127,8 +127,8 @@ type ReportPayload = {
 
 const MAX_FREE = 2;
 
-// ---------- page (client) ----------
-export default function HuntPage() {
+// ---------- inner content using hooks ----------
+function HuntPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -166,7 +166,6 @@ export default function HuntPage() {
           return;
         }
 
-        // important: clear previous error when we DO have an id
         setError("");
 
         const repRes = await fetch(`/api/report?id=${reportId}`);
@@ -265,7 +264,8 @@ export default function HuntPage() {
     return (
       <main className="min-h-screen bg-slate-950 text-slate-200 flex items-center justify-center">
         <p className="text-sm md:text-base">
-          No scholarships found for this report. Try running the hunt again from the flow page.
+          No scholarships found for this report. Try running the hunt again from
+          the flow page.
         </p>
       </main>
     );
@@ -448,5 +448,20 @@ export default function HuntPage() {
         />
       )}
     </main>
+  );
+}
+
+// ---------- Suspense wrapper ----------
+export default function HuntPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-slate-950 text-slate-200 flex items-center justify-center">
+          <p className="text-sm md:text-base">Loading your scholarships…</p>
+        </main>
+      }
+    >
+      <HuntPageContent />
+    </Suspense>
   );
 }
