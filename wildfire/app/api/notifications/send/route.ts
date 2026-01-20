@@ -1,8 +1,9 @@
 // app/api/notifications/send/route.ts
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { sendWelcomeEmail } from "@/app/lib/notifications";
 
-export async function POST(request: NextRequest) {
+export const POST = async (request: NextRequest) => {
   try {
     const body = await request.json().catch(() => null);
     console.log("🔔 /api/notifications/send received body:", body);
@@ -15,7 +16,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { type, email, name, reportLink } = body;
+    const { type, email, name, reportLink } = body as {
+      type?: string;
+      email?: string;
+      name?: string;
+      reportLink?: string;
+    };
 
     if (!email) {
       console.error("❌ Missing field: email");
@@ -62,7 +68,7 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      return NextResponse.json({ success: true });
+      return NextResponse.json({ success: true }, { status: 200 });
     }
 
     console.error("❌ Unknown email type:", type);
@@ -77,4 +83,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+};
