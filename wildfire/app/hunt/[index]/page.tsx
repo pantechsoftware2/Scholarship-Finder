@@ -6,7 +6,7 @@ import { useParams, useSearchParams, useRouter } from "next/navigation";
 import * as Flags from "country-flag-icons/react/3x2";
 import { EXTRA_COUNTRIES } from "@/app/lib/countries";
 
-// ---------- FX + helper (same logic as list page) ----------
+// ---------- FX + helper ----------
 const FX_TO_INR: Record<string, number> = {
   INR: 1,
   USD: 83,
@@ -211,7 +211,6 @@ export default function ScholarshipDetailsPage() {
     typeof window !== "undefined" ? window.location.origin : "";
   const detailsUrl = `${baseUrl}/hunt/${index}?id=${report.id}`;
 
-  // Single Share with Dad (floating bottom-right)
   const shareText = `Papa, check this out - I found a scholarship based on my profile. Read this: ${detailsUrl}`;
   const shareLink = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
 
@@ -222,7 +221,7 @@ export default function ScholarshipDetailsPage() {
   )}`;
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#0b1120,_#020617)] text-white px-4 py-8 flex justify-center">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#0b1120,_#020617)] text-white px-4 py-8 flex justify-center overflow-x-hidden">
       <div className="w-full max-w-3xl space-y-6 relative pb-24">
         {/* glows */}
         <div className="pointer-events-none absolute -top-24 -left-24 h-56 w-56 rounded-full bg-cyan-500/20 blur-3xl" />
@@ -253,12 +252,10 @@ export default function ScholarshipDetailsPage() {
               {scholarship.name}
             </h1>
             <div className="flex flex-wrap items-center gap-3 text-xs text-slate-300">
-              {/* flag + country */}
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-900/80 border border-slate-700">
                 {code && <FlagIcon code={code} size={14} />}
                 <span>{scholarship.country}</span>
               </span>
-              {/* funding with INR */}
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-400/50 text-emerald-300">
                 🎓 Funding: {scholarship.amount}
                 {typeof scholarship.amountInInr === "number" &&
@@ -279,7 +276,6 @@ export default function ScholarshipDetailsPage() {
           </header>
 
           <div className="space-y-4 text-sm text-slate-200">
-            {/* Why this works for you */}
             {scholarship.why_it_fits && (
               <div className="rounded-2xl border border-sky-500/40 bg-sky-500/5 p-3">
                 <p className="text-[0.7rem] uppercase tracking-[0.16em] text-sky-300 mb-1">
@@ -289,7 +285,6 @@ export default function ScholarshipDetailsPage() {
               </div>
             )}
 
-            {/* Benefits snapshot */}
             <div className="rounded-2xl border border-slate-700 bg-slate-900/70 p-3">
               <p className="text-[0.7rem] uppercase tracking-[0.16em] text-slate-400 mb-1">
                 Benefits snapshot
@@ -297,7 +292,6 @@ export default function ScholarshipDetailsPage() {
               <p>{scholarship.benefits}</p>
             </div>
 
-            {/* Desi strategy to win */}
             {scholarship.strategy_tip && (
               <div className="rounded-2xl border border-emerald-500/40 bg-emerald-500/5 p-3">
                 <p className="text-[0.7rem] uppercase tracking-[0.16em] text-emerald-300 mb-1">
@@ -307,7 +301,6 @@ export default function ScholarshipDetailsPage() {
               </div>
             )}
 
-            {/* Deadline line at bottom of card */}
             <p className="text-[0.75rem] text-amber-200 font-medium">
               Deadline:{" "}
               <span className="text-amber-100">
@@ -317,7 +310,7 @@ export default function ScholarshipDetailsPage() {
           </div>
         </section>
 
-        {/* Wildfire CTA */}
+        {/* Wildfire CTA (bottom bar) */}
         <div className="fixed inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/90 via-black/80 to-transparent px-4 pb-4 pt-3">
           <div className="mx-auto w-full max-w-3xl flex flex-col gap-2">
             <div className="text-[0.75rem] text-slate-200 font-medium">
@@ -339,12 +332,28 @@ export default function ScholarshipDetailsPage() {
           </div>
         </div>
 
-        {/* SINGLE floating Share with Dad button */}
+        {/* Floating Share with Dad – right side, above CTA, slightly transparent */}
         <a
           href={shareLink}
           target="_blank"
           rel="noreferrer"
-          className="fixed bottom-4 right-4 z-30 inline-flex items-center gap-2 rounded-full bg-slate-900 border border-slate-700 text-slate-100 text-xs font-semibold px-4 py-2.5 shadow-lg hover:border-cyan-400 hover:text-cyan-200 transition-colors"
+          className="
+            fixed
+            z-30
+            bottom-24
+            right-4
+            inline-flex items-center gap-2
+            rounded-full
+            bg-slate-900/80
+            border border-slate-700/70
+            text-slate-100
+            text-xs font-semibold
+            px-4 py-2.5
+            shadow-lg
+            hover:border-cyan-400 hover:text-cyan-200
+            transition-colors
+            max-w-[260px]
+          "
         >
           📲 Share with Dad
         </a>
