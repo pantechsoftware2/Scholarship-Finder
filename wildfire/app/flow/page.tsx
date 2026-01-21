@@ -124,27 +124,58 @@ export default function FlowPage() {
     return () => clearInterval(id);
   }, [loading]);
 
+  function validateCountries() {
+    if (form.targetCountries.length === 0) {
+      setError("Pick at least one country.");
+      return false;
+    }
+    setError("");
+    return true;
+  }
+
+  function validateMajor() {
+    if (!form.major.trim()) {
+      setError("Tell me your major.");
+      return false;
+    }
+    setError("");
+    return true;
+  }
+
   function nextStep() {
     const idx = STEPS.indexOf(step);
-    if (idx < STEPS.length - 1) setStep(STEPS[idx + 1]);
+
+    // per-step validation before allowing next
+    if (step === "countries") {
+      if (!validateCountries()) return;
+    }
+    if (step === "major") {
+      if (!validateMajor()) return;
+    }
+
+    if (idx < STEPS.length - 1) {
+      setError("");
+      setStep(STEPS[idx + 1]);
+    }
   }
 
   function prevStep() {
     const idx = STEPS.indexOf(step);
-    if (idx > 0) setStep(STEPS[idx - 1]);
+    if (idx > 0) {
+      setError("");
+      setStep(STEPS[idx - 1]);
+    }
   }
 
   async function handleSubmit() {
     setError("");
 
-    if (form.targetCountries.length === 0) {
+    if (!validateCountries()) {
       setStep("countries");
-      setError("Pick at least one country");
       return;
     }
-    if (!form.major.trim()) {
+    if (!validateMajor()) {
       setStep("major");
-      setError("Tell me your major");
       return;
     }
 
@@ -246,7 +277,7 @@ export default function FlowPage() {
   };
 
   return (
-    <main className="relative flex flex-col min-h-screen bg-[radial-gradient(circle_at_top,_#020617,_#000000)] text-white">
+    <main className="relative flex flex-col min-h-screen bg-[radial-gradient(circle_at_top,_#020617,_#000000)] text-white overflow-x-hidden">
       {/* background */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.15),_transparent_55%)] opacity-70" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(148,163,184,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.08)_1px,transparent_1px)] bg-[size:32px_32px]" />
