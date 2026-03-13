@@ -21,12 +21,15 @@ export async function POST(req: NextRequest) {
 
     const { data, error } = await supabaseAdmin
       .from("leads")
-      .insert({
-        report_id: reportId,
-        name,
-        email,
-        whatsapp,
-      })
+      .upsert(
+        {
+          report_id: reportId,
+          name,
+          email,
+          whatsapp,
+        },
+        { onConflict: "report_id,email" }
+      )
       .select("id")
       .single();
 

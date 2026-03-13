@@ -214,7 +214,7 @@ export default function UnlockForm({
           disabled={loading}
           whileHover={!loading ? { scale: 1.05 } : {}}
           whileTap={!loading ? { scale: 0.95 } : {}}
-          className="w-full min-h-[44px] bg-gradient-to-r from-cyan-400 to-fuchsia-500 text-black py-3 rounded-full text-sm font-semibold shadow-[0_0_28px_rgba(236,72,153,0.6)] disabled:opacity-60 mt-2"
+          className="w-full min-h-[44px] bg-gradient-to-r from-cyan-400 to-fuchsia-500 text-black py-3 rounded-full text-sm font-semibold shadow-[0_0_28px_rgba(236,72,153,0.6)] disabled:opacity-60 disabled:cursor-not-allowed mt-2"
         >
           {loading ? (
             <span className="flex items-center justify-center gap-2">
