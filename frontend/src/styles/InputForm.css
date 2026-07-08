@@ -1,37 +1,113 @@
-/* Input Form Styles */
-.input-form-container {
+/* Input Form & Landing Page Styles */
+.landing-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
   width: 100%;
-  max-width: 640px;
-  animation: fadeIn 0.4s ease-out;
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: flex-start;
+  padding: 40px 0;
+}
+
+/* Hero Section (Left Column) */
+.hero-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  animation: fadeIn 0.6s ease-out forwards;
+  position: sticky;
+  top: 60px;
+  padding-top: 20px;
+}
+
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-dark-secondary);
+  border: 1px solid var(--border-light);
+  padding: 6px 16px;
+  border-radius: 20px;
+  width: fit-content;
+  margin-bottom: 24px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: 24px;
+  color: var(--text-primary);
+}
+
+.text-highlight {
+  color: var(--primary);
+}
+
+.hero-subtitle {
+  font-size: 1.15rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 40px;
+  max-width: 90%;
+}
+
+.feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.05rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* Form Section (Right Column) */
+.form-section {
+  width: 100%;
+  max-width: 560px;
+  justify-self: end;
 }
 
 .form-wrapper {
   background: var(--bg-dark-secondary);
   border: 1px solid var(--border-light);
-  border-radius: var(--border-radius);
+  border-radius: 20px;
   padding: 40px;
+  box-shadow: var(--shadow-lg);
 }
 
-.form-header {
-  text-align: center;
-  margin-bottom: 36px;
+.form-header-small {
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 20px;
 }
 
-.form-header h1 {
-  font-size: 2rem;
+.form-header-small h3 {
+  font-size: 1.4rem;
   color: var(--text-primary);
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
-.form-header p {
-  font-size: 1rem;
+.form-header-small p {
+  font-size: 0.95rem;
   color: var(--text-secondary);
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
 }
 
 /* Form Groups */
@@ -56,13 +132,6 @@
   align-items: center;
 }
 
-.input-icon {
-  position: absolute;
-  left: 14px;
-  color: var(--text-muted);
-  pointer-events: none;
-}
-
 .form-input,
 .form-select,
 .form-textarea {
@@ -72,14 +141,9 @@
   border-radius: 8px;
   font-size: 1rem;
   font-family: inherit;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
   background-color: var(--bg-dark);
   color: var(--text-primary);
-}
-
-.input-with-icon .form-input,
-.input-with-icon .form-select {
-  padding-left: 40px;
 }
 
 .form-input::placeholder,
@@ -97,11 +161,12 @@
 .form-textarea:focus {
   outline: none;
   border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
 .form-textarea {
   resize: vertical;
-  min-height: 100px;
+  min-height: 80px;
 }
 
 /* Form Row for Side-by-Side Layout */
@@ -122,10 +187,10 @@
   padding: 8px 16px;
   border: 1px solid var(--border-light);
   border-radius: 20px;
-  background-color: transparent;
+  background-color: var(--bg-dark);
   cursor: pointer;
   font-size: 0.9rem;
-  font-weight: 400;
+  font-weight: 500;
   transition: all 0.2s ease;
   color: var(--text-secondary);
 }
@@ -139,7 +204,6 @@
   background-color: var(--primary);
   color: var(--bg-dark);
   border-color: var(--primary);
-  font-weight: 500;
 }
 
 /* Toggle Checkbox */
@@ -148,7 +212,7 @@
   align-items: center;
   gap: 10px;
   cursor: pointer;
-  font-weight: 400;
+  font-weight: 500;
   color: var(--text-primary);
   padding: 12px 14px;
   background: var(--bg-dark);
@@ -208,14 +272,14 @@
 /* Calculate Button */
 .btn-calculate {
   padding: 14px 24px;
-  background-color: var(--text-primary);
+  background-color: var(--primary);
   color: var(--bg-dark);
   border: none;
   border-radius: 8px;
   font-size: 1.05rem;
   font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease;
   margin-top: 12px;
   display: flex;
   justify-content: center;
@@ -225,14 +289,38 @@
 
 .btn-calculate:hover {
   opacity: 0.9;
+  transform: translateY(-1px);
 }
 
 .btn-calculate:active {
-  transform: scale(0.99);
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .landing-container {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding: 20px 0;
+  }
+  
+  .hero-section {
+    text-align: center;
+    align-items: center;
+    position: static;
+  }
+  
+  .hero-subtitle {
+    max-width: 100%;
+  }
+
+  .form-section {
+    justify-self: center;
+  }
 }
 
 @media (max-width: 600px) {
   .form-row { grid-template-columns: 1fr; gap: 16px; }
   .form-wrapper { padding: 24px 16px; }
-  .form-header h1 { font-size: 1.6rem; }
+  .hero-title { font-size: 2.5rem; }
 }
