@@ -10,7 +10,8 @@ import {
   Briefcase, 
   Sparkles,
   ArrowRight,
-  CheckCircle2
+  CheckCircle2,
+  AlertCircle
 } from 'lucide-react';
 
 function InputForm({ onCalculate, loading, error }) {
@@ -26,9 +27,10 @@ function InputForm({ onCalculate, loading, error }) {
   });
 
   const [showTestScores, setShowTestScores] = useState(false);
+  const [customCountry, setCustomCountry] = useState('');
 
-  const countries = ['USA', 'UK', 'Canada', 'Australia', 'Germany', 'Anywhere'];
-  const degrees = ['Undergrad', 'Masters', 'PhD', 'MBA'];
+  const popularCountries = ['USA', 'UK', 'Canada', 'Australia', 'Germany'];
+  const degrees = ['High School', 'Undergrad', 'Masters', 'PhD', 'MBA', 'Diploma', 'Post-doc'];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -44,6 +46,27 @@ function InputForm({ onCalculate, loading, error }) {
       target_countries: prev.target_countries.includes(country)
         ? prev.target_countries.filter(c => c !== country)
         : [...prev.target_countries, country]
+    }));
+  };
+
+  const handleCustomCountryKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      const val = customCountry.trim();
+      if (val && !formData.target_countries.includes(val)) {
+        setFormData(prev => ({
+          ...prev,
+          target_countries: [...prev.target_countries, val]
+        }));
+      }
+      setCustomCountry('');
+    }
+  };
+
+  const handleCustomCountryRemove = (country) => {
+    setFormData(prev => ({
+      ...prev,
+      target_countries: prev.target_countries.filter(c => c !== country)
     }));
   };
 
@@ -122,6 +145,7 @@ function InputForm({ onCalculate, loading, error }) {
         <div className="form-wrapper">
           {error && (
             <div className="error-banner">
+              <AlertCircle size={20} />
               <p>{error}</p>
             </div>
           )}
@@ -168,6 +192,7 @@ function InputForm({ onCalculate, loading, error }) {
                       placeholder="e.g., 8.5"
                       value={formData.gpa}
                       onChange={handleInputChange}
+                      onWheel={(e) => e.target.blur()}
                       className="form-input"
                       required
                     />
@@ -213,7 +238,7 @@ function InputForm({ onCalculate, loading, error }) {
               <div className="form-group">
                 <label><MapPin size={16} /> Target Countries *</label>
                 <div className="country-chips">
-                  {countries.map(country => (
+                  {popularCountries.map(country => (
                     <button
                       key={country}
                       type="button"
@@ -223,6 +248,27 @@ function InputForm({ onCalculate, loading, error }) {
                       {country}
                     </button>
                   ))}
+                  {formData.target_countries.filter(c => !popularCountries.includes(c)).map(country => (
+                    <button
+                      key={country}
+                      type="button"
+                      className="chip active custom-chip"
+                      onClick={() => handleCustomCountryRemove(country)}
+                      title="Click to remove"
+                    >
+                      {country} ✕
+                    </button>
+                  ))}
+                </div>
+                <div className="input-with-icon" style={{marginTop: '8px'}}>
+                  <input
+                    type="text"
+                    placeholder="Or type another country and press Enter"
+                    value={customCountry}
+                    onChange={(e) => setCustomCountry(e.target.value)}
+                    onKeyDown={handleCustomCountryKeyDown}
+                    className="form-input"
+                  />
                 </div>
               </div>
 
@@ -253,6 +299,7 @@ function InputForm({ onCalculate, loading, error }) {
                         placeholder="e.g., 320"
                         value={formData.test_scores.gre || ''}
                         onChange={(e) => handleTestScoreChange('gre', e.target.value)}
+                        onWheel={(e) => e.target.blur()}
                         className="form-input"
                       />
                     </div>
@@ -267,6 +314,7 @@ function InputForm({ onCalculate, loading, error }) {
                         placeholder="e.g., 720"
                         value={formData.test_scores.gmat || ''}
                         onChange={(e) => handleTestScoreChange('gmat', e.target.value)}
+                        onWheel={(e) => e.target.blur()}
                         className="form-input"
                       />
                     </div>
@@ -283,6 +331,7 @@ function InputForm({ onCalculate, loading, error }) {
                       placeholder="e.g., 7.5"
                       value={formData.test_scores.ielts || ''}
                       onChange={(e) => handleTestScoreChange('ielts', e.target.value)}
+                      onWheel={(e) => e.target.blur()}
                       className="form-input"
                     />
                   </div>
@@ -301,6 +350,7 @@ function InputForm({ onCalculate, loading, error }) {
                     step="0.5"
                     value={formData.work_experience_years}
                     onChange={handleInputChange}
+                    onWheel={(e) => e.target.blur()}
                     className="form-input"
                   />
                 </div>

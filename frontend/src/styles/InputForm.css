@@ -165,8 +165,19 @@
 }
 
 .form-textarea {
-  resize: vertical;
-  min-height: 80px;
+  resize: none;
+  min-height: 100px;
+}
+
+/* Hide number arrows */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
 }
 
 /* Form Row for Side-by-Side Layout */
@@ -204,6 +215,10 @@
   background-color: var(--primary);
   color: var(--bg-dark);
   border-color: var(--primary);
+}
+
+.chip.custom-chip {
+  padding-right: 12px;
 }
 
 /* Toggle Checkbox */

@@ -42,6 +42,12 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--bg-dark);
+  background-image: 
+    radial-gradient(ellipse at 50% 0%, rgba(16, 185, 129, 0.12), transparent 60%),
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 32px 32px, 32px 32px;
+  background-attachment: fixed;
   min-height: 100vh;
   color: var(--text-primary);
 }
@@ -93,13 +99,28 @@ p {
 }
 
 .error-banner {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid var(--danger);
-  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-dark-secondary);
+  border: 1px solid var(--border-light);
+  border-left: 4px solid var(--danger);
+  padding: 16px;
   border-radius: 8px;
-  margin-bottom: 1.5rem;
-  color: #fca5a5;
-  font-weight: 500;
+  margin-bottom: 24px;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.error-banner p {
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.error-banner svg {
+  color: var(--danger);
+  flex-shrink: 0;
 }
 
 /* Animations (Subtle) */
