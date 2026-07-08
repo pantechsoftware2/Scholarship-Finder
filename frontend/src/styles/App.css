@@ -1,0 +1,23 @@
+/* App Component Styles */
+.app {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: calc(100vh - 80px); /* Account for padding */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Changed from center to allow natural scrolling */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.1rem; }
+  #root { padding: 24px 16px; }
+}
+
+@media (max-width: 480px) {
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.25rem; }
+}

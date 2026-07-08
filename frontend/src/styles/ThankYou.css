@@ -1,0 +1,165 @@
+/* ThankYou.css */
+.thankyou-container {
+  width: 100%;
+  max-width: 560px;
+  animation: slideInUp 0.4s ease-out;
+  margin: 40px auto;
+}
+
+.thankyou-content {
+  background: var(--bg-dark-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  padding: 48px;
+  text-align: center;
+}
+
+.success-animation {
+  width: 64px;
+  height: 64px;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+}
+
+.checkmark {
+  color: var(--success);
+}
+
+.thankyou-content h1 {
+  font-size: 1.75rem;
+  color: var(--text-primary);
+  margin-bottom: 24px;
+}
+
+.message-box {
+  margin-bottom: 32px;
+}
+
+.main-message {
+  font-size: 1.05rem;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.sub-message {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.next-steps {
+  text-align: left;
+  background: var(--bg-dark);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.next-steps h3 {
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.next-steps ol {
+  padding-left: 0;
+  list-style: none;
+  counter-reset: my-awesome-counter;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.next-steps li {
+  counter-increment: my-awesome-counter;
+  position: relative;
+  padding-left: 36px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  font-size: 0.95rem;
+}
+
+.next-steps li::before {
+  content: counter(my-awesome-counter);
+  position: absolute;
+  left: 0;
+  top: -2px;
+  width: 24px;
+  height: 24px;
+  background: var(--border-light);
+  color: var(--text-primary);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.next-steps li strong {
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.cta-section {
+  padding: 24px 0;
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 24px;
+}
+
+.cta-text {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.btn-contact {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  padding: 12px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.btn-contact:hover {
+  background: var(--border-light);
+}
+
+.encouragement {
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.encouragement small {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 600px) {
+  .thankyou-content {
+    padding: 32px 20px;
+  }
+  .thankyou-content h1 {
+    font-size: 1.5rem;
+  }
+  .next-steps {
+    padding: 20px 16px;
+  }
+}

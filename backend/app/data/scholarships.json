@@ -1,0 +1,311 @@
+[
+  {
+    "id": 1,
+    "name": "Chevening Scholarship - UK",
+    "amount": "£18,000-£24,000/year",
+    "currency": "GBP",
+    "deadline": "2025-11-03",
+    "country": "UK",
+    "degreeLevels": ["Masters"],
+    "minGPA": 3.5,
+    "minGPAPercentage": 75,
+    "majors": ["Computer Science", "Engineering", "Business", "Law", "Economics"],
+    "testScores": {
+      "ielts": 6.5,
+      "toefl": 100
+    },
+    "workExperienceRequired": 0,
+    "essayRequired": true,
+    "description": "Prestigious UK government scholarship for postgraduate studies. One of the most competitive and respected awards globally.",
+    "url": "https://www.chevening.org/",
+    "matchFactors": ["academic", "test_scores"]
+  },
+  {
+    "id": 2,
+    "name": "Fulbright Scholarship - USA",
+    "amount": "$15,000-$30,000/year",
+    "currency": "USD",
+    "deadline": "2025-09-15",
+    "country": "USA",
+    "degreeLevels": ["Undergrad", "Masters", "PhD"],
+    "minGPA": 3.3,
+    "minGPAPercentage": 70,
+    "majors": ["Any"],
+    "testScores": {
+      "gre": 310,
+      "gmat": 600
+    },
+    "workExperienceRequired": 0,
+    "essayRequired": true,
+    "description": "US government's premier international exchange program. Covers tuition, health insurance, and living expenses.",
+    "url": "https://fulbright.org/",
+    "matchFactors": ["academic", "essay", "profile"]
+  },
+  {
+    "id": 3,
+    "name": "Rhodes Scholarship",
+    "amount": "Full tuition + allowance",
+    "currency": "GBP",
+    "deadline": "2025-10-31",
+    "country": "UK",
+    "degreeLevels": ["Undergrad", "Masters"],
+    "minGPA": 3.8,
+    "minGPAPercentage": 90,
+    "majors": ["Any"],
+    "testScores": {
+      "sat": 1500,
+      "ielts": 7.0
+    },
+    "workExperienceRequired": 0,
+    "essayRequired": true,
+    "description": "World's most prestigious scholarship. Oxford University. Extremely competitive - for exceptional achievers.",
+    "url": "https://www.rhodeshouse.ox.ac.uk/",
+    "matchFactors": ["academic", "profile", "leadership"]
+  },
+  {
+    "id": 4,
+    "name": "Erasmus Mundus Joint Masters",
+    "amount": "€12,000-€20,000/year",
+    "currency": "EUR",
+    "deadline": "2025-12-15",
+    "country": "Germany",
+    "degreeLevels": ["Masters"],
+    "minGPA": 3.0,
+    "minGPAPercentage": 65,
+    "majors": ["Engineering", "Technology", "Science", "Mathematics"],
+    "testScores": {
+      "ielts": 6.0,
+      "gre": 300
+    },
+    "workExperienceRequired": 0,
+    "essayRequired": true,
+    "description": "European Union's program for master's students. Study in multiple European countries.",
+    "url": "https://erasmus-plus.ec.europa.eu/",
+    "matchFactors": ["academic", "major"]
+  },
+  {
+    "id": 5,
+    "name": "Australia Awards Scholarship",
+    "amount": "AUD $30,000-$40,000/year",
+    "currency": "AUD",
+    "deadline": "2025-08-31",
+    "country": "Australia",
+    "degreeLevels": ["Undergrad", "Masters", "PhD"],
+    "minGPA": 3.2,
+    "minGPAPercentage": 68,
+    "majors": ["Engineering", "Business", "Computer Science", "Medicine"],
+    "testScores": {
+      "ielts": 6.5,
+      "toefl": 100
+    },
+    "workExperienceRequired": 0,
+    "essayRequired": true,
+    "description": "Australian government's flagship scholarship. Covers full tuition and living allowance.",
+    "url": "https://www.dfat.gov.au/people-to-people/Australian-awards",
+    "matchFactors": ["academic", "test_scores", "major"]
+  },
+  {
+    "id": 6,
+    "name": "QS Leaders Scholarship",
+    "amount": "$10,000-$50,000",
+    "currency": "USD",
+    "deadline": "2025-04-30",
+    "country": "Anywhere",
+    "degreeLevels": ["Masters", "PhD"],
+    "minGPA": 3.0,
+    "minGPAPercentage": 65,
+    "majors": ["Any"],
+    "testScores": {
+      "gre": 300,
+      "gmat": 550
+    },
+    "workExperienceRequired": 0,
+    "essayRequired": true,
+    "description": "QS's global scholarship for exceptional students. Partner universities worldwide.",
+    "url": "https://www.qsleadershipscholarship.com/",
+    "matchFactors": ["academic"]
+  },
+  {
+    "id": 7,
+    "name": "IIT Delhi International Merit Scholarship",
+    "amount": "₹5,00,000 - ₹10,00,000",
+    "currency": "INR",
+    "deadline": "2025-06-15",
+    "country": "India",
+    "degreeLevels": ["Masters", "PhD"],
+    "minGPA": 3.2,
+    "minGPAPercentage": 70,
+    "majors": ["Engineering", "Technology", "Science", "Management"],
+    "testScores": {
+      "gre": 310,
+      "jee": 5000
+    },
+    "workExperienceRequired": 0,
+    "essayRequired": false,
+    "description": "India's premier IIT offers scholarships for international/NRI students pursuing postgraduate studies.",
+    "url": "https://www.iitd.ac.in/",
+    "matchFactors": ["academic", "major"]
+  },
+  {
+    "id": 8,
+    "name": "Canada Graduate Scholarships",
+    "amount": "CAD $15,000/year",
+    "currency": "CAD",
+    "deadline": "2025-12-01",
+    "country": "Canada",
+    "degreeLevels": ["Masters", "PhD"],
+    "minGPA": 3.5,
+    "minGPAPercentage": 75,
+    "majors": ["Science", "Engineering", "Technology"],
+    "testScores": {
+      "gre": 320,
+      "ielts": 6.5
+    },
+    "workExperienceRequired": 0,
+    "essayRequired": true,
+    "description": "Canadian government funding for graduate research. Open to international applicants.",
+    "url": "https://www.sshrc-crsh.gc.ca/",
+    "matchFactors": ["academic", "test_scores"]
+  },
+  {
+    "id": 9,
+    "name": "Singapore International Graduate Award",
+    "amount": "SGD $35,000-$45,000/year",
+    "currency": "SGD",
+    "deadline": "2025-07-15",
+    "country": "Singapore",
+    "degreeLevels": ["Masters", "PhD"],
+    "minGPA": 3.7,
+    "minGPAPercentage": 80,
+    "majors": ["Engineering", "Computer Science", "Business", "Science"],
+    "testScores": {
+      "gre": 320,
+      "gmat": 700
+    },
+    "workExperienceRequired": 0,
+    "essayRequired": true,
+    "description": "Highly competitive scholarship from NTU, NUS, and SUTD for top academic performers.",
+    "url": "https://www.ntu.edu.sg/",
+    "matchFactors": ["academic", "test_scores"]
+  },
+  {
+    "id": 10,
+    "name": "DAAD Scholarships - Germany",
+    "amount": "€934/month + benefits",
+    "currency": "EUR",
+    "deadline": "2025-11-15",
+    "country": "Germany",
+    "degreeLevels": ["Masters", "PhD"],
+    "minGPA": 3.2,
+    "minGPAPercentage": 70,
+    "majors": ["Any"],
+    "testScores": {
+      "gre": 300,
+      "ielts": 6.0
+    },
+    "workExperienceRequired": 0,
+    "essayRequired": true,
+    "description": "German government's prestigious scholarship. Covers living costs and health insurance.",
+    "url": "https://www.daad.de/",
+    "matchFactors": ["academic"]
+  },
+  {
+    "id": 11,
+    "name": "Microsoft TEALS Scholarship",
+    "amount": "$5,000-$15,000",
+    "currency": "USD",
+    "deadline": "2025-05-31",
+    "country": "USA",
+    "degreeLevels": ["Undergrad"],
+    "minGPA": 2.8,
+    "minGPAPercentage": 60,
+    "majors": ["Computer Science", "Technology", "Engineering"],
+    "testScores": {
+      "sat": 1200
+    },
+    "workExperienceRequired": 0,
+    "essayRequired": false,
+    "description": "Microsoft scholarship for undergraduates in computer science and tech fields.",
+    "url": "https://www.microsoft.com/",
+    "matchFactors": ["academic", "major"]
+  },
+  {
+    "id": 12,
+    "name": "Golden Key Honor Society Scholarship",
+    "amount": "$1,000-$10,000",
+    "currency": "USD",
+    "deadline": "2025-06-30",
+    "country": "Anywhere",
+    "degreeLevels": ["Undergrad", "Masters"],
+    "minGPA": 3.5,
+    "minGPAPercentage": 75,
+    "majors": ["Any"],
+    "testScores": {},
+    "workExperienceRequired": 0,
+    "essayRequired": true,
+    "description": "International honor society scholarship. Open to top academic performers globally.",
+    "url": "https://www.goldenkey.org/",
+    "matchFactors": ["academic", "profile"]
+  },
+  {
+    "id": 13,
+    "name": "Huawei Seeds for the Future",
+    "amount": "Full training + placement",
+    "currency": "Various",
+    "deadline": "2025-04-15",
+    "country": "Anywhere",
+    "degreeLevels": ["Undergrad"],
+    "minGPA": 3.3,
+    "minGPAPercentage": 72,
+    "majors": ["Engineering", "Computer Science", "Telecommunications"],
+    "testScores": {
+      "sat": 1300
+    },
+    "workExperienceRequired": 0,
+    "essayRequired": true,
+    "description": "Huawei's global scholarship with mentorship and potential job opportunities.",
+    "url": "https://www.huawei.com/",
+    "matchFactors": ["academic", "major"]
+  },
+  {
+    "id": 14,
+    "name": "ADB Japan Scholarship Program",
+    "amount": "USD $10,000-$20,000/year",
+    "currency": "USD",
+    "deadline": "2025-10-15",
+    "country": "Japan",
+    "degreeLevels": ["Masters"],
+    "minGPA": 3.3,
+    "minGPAPercentage": 72,
+    "majors": ["Engineering", "Science", "Economics", "Management"],
+    "testScores": {
+      "gre": 310,
+      "toefl": 95
+    },
+    "workExperienceRequired": 0,
+    "essayRequired": true,
+    "description": "Asian Development Bank scholarship for postgraduate studies in Japan.",
+    "url": "https://www.adb.org/",
+    "matchFactors": ["academic", "test_scores"]
+  },
+  {
+    "id": 15,
+    "name": "European Union Erasmus Mundus PhD",
+    "amount": "€20,000-€30,000/year",
+    "currency": "EUR",
+    "deadline": "2025-01-15",
+    "country": "Germany",
+    "degreeLevels": ["PhD"],
+    "minGPA": 3.6,
+    "minGPAPercentage": 80,
+    "majors": ["Engineering", "Science", "Technology"],
+    "testScores": {
+      "gre": 330
+    },
+    "workExperienceRequired": 0,
+    "essayRequired": true,
+    "description": "PhD-level Erasmus Mundus scholarship across European institutions.",
+    "url": "https://erasmus-plus.ec.europa.eu/",
+    "matchFactors": ["academic", "test_scores"]
+  }
+]

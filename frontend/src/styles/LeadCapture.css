@@ -1,0 +1,244 @@
+/* Lead Capture Styles */
+.lead-capture-container {
+  width: 100%;
+  max-width: 600px;
+  animation: slideInUp 0.4s ease-out;
+}
+
+.capture-wrapper {
+  background: white;
+  border-radius: 24px;
+  box-shadow: var(--shadow-lg);
+  padding: 40px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+}
+
+.capture-header {
+  text-align: center;
+}
+
+.capture-header h2 {
+  font-size: 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+.capture-header p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+/* Capture Form */
+.capture-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.capture-form .form-group {
+  gap: 8px;
+}
+
+.capture-form .form-group label {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.capture-form .form-input {
+  padding: 12px 16px;
+  border: 2px solid #E8E8F0;
+  border-radius: 10px;
+  font-size: 1rem;
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
+}
+
+.capture-form .form-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Submit Button */
+.btn-submit {
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-md);
+  margin-top: 10px;
+}
+
+.btn-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.form-footer {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-top: 8px;
+}
+
+/* Scholarship Preview */
+.scholarship-preview {
+  background: var(--bg-light);
+  border-radius: 12px;
+  padding: 20px;
+  border-left: 4px solid var(--primary);
+}
+
+.scholarship-preview h3 {
+  font-size: 1.1rem;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+.preview-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.preview-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #E8E8F0;
+  transition: all 0.3s ease;
+}
+
+.preview-item:hover {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.item-number {
+  width: 28px;
+  height: 28px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.item-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.item-name {
+  margin: 0;
+  color: var(--text-primary);
+  font-weight: 500;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-score {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .capture-wrapper {
+    padding: 30px 24px;
+    grid-template-columns: 1fr;
+  }
+
+  .capture-header h2 {
+    font-size: 1.6rem;
+  }
+
+  .capture-form {
+    gap: 16px;
+  }
+
+  .scholarship-preview {
+    padding: 16px;
+  }
+
+  .scholarship-preview h3 {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .lead-capture-container {
+    max-width: 100%;
+  }
+
+  .capture-wrapper {
+    padding: 24px 16px;
+    gap: 24px;
+  }
+
+  .capture-header h2 {
+    font-size: 1.4rem;
+  }
+
+  .capture-header p {
+    font-size: 0.9rem;
+  }
+
+  .capture-form {
+    gap: 14px;
+  }
+
+  .capture-form .form-input {
+    padding: 11px 14px;
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+
+  .btn-submit {
+    padding: 12px 20px;
+    font-size: 1rem;
+  }
+
+  .preview-item {
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .item-name {
+    font-size: 0.9rem;
+  }
+
+  .item-score {
+    font-size: 0.8rem;
+  }
+}
