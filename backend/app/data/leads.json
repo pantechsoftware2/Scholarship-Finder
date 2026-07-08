@@ -528,5 +528,209 @@
       }
     ],
     "local_backup_time": "2026-07-08T12:38:40.136697"
+  },
+  {
+    "timestamp": "2026-07-08 14:31:12",
+    "name": "Rupam Das",
+    "email": "rupam.abroadeduversity@gmail.com",
+    "phone": "9876543211",
+    "target_degree": "Undergrad",
+    "gpa": "8.0",
+    "countries": [
+      "USA"
+    ],
+    "major": "management",
+    "work_experience": "2",
+    "profile_highlight": "",
+    "test_scores_provided": "No",
+    "gre": "",
+    "gmat": "",
+    "ielts": "",
+    "ai_summary_probability": 65,
+    "scholarships": [
+      {
+        "name": "University of Minnesota Global Excellence Scholarship",
+        "amount": "Up to $25,000 per year",
+        "deadline": "2026-11-01",
+        "match_score": 80,
+        "one_liner_reason": "Merit scholarship for international undergrads with strong academics (8.0/10) in business fields",
+        "strategy_tip": "Apply Early Action and highlight management coursework and 2 years work experience in essays"
+      },
+      {
+        "name": "Arizona State University New American University Scholarship",
+        "amount": "$8,000-$15,000 per year",
+        "deadline": "2026-11-01",
+        "match_score": 78,
+        "one_liner_reason": "Merit-based for international undergrads; 8.0/10 GPA meets threshold for management applicants",
+        "strategy_tip": "Submit application by priority date and emphasize leadership from work experience"
+      },
+      {
+        "name": "University of Cincinnati Global Scholarship",
+        "amount": "$6,000-$10,000 per year",
+        "deadline": "2026-12-01",
+        "match_score": 75,
+        "one_liner_reason": "Automatic consideration for intl undergrads with GPA above 3.0 equivalent (8.0/10 qualifies)",
+        "strategy_tip": "Apply for Business administration major and note co-op readiness from work history"
+      },
+      {
+        "name": "Iowa State University International Merit Scholarship",
+        "amount": "$2,000-$10,000 per year",
+        "deadline": "2026-12-15",
+        "match_score": 72,
+        "one_liner_reason": "Competitive merit award for intl students in business; 8.0/10 is within range",
+        "strategy_tip": "Write specific statement on management career goals using 2 yrs experience"
+      },
+      {
+        "name": "University of Oregon International Cultural Service Program (ICSP)",
+        "amount": "Tuition waiver $7,500-$30,000 per year",
+        "deadline": "2027-01-15",
+        "match_score": 70,
+        "one_liner_reason": "For intl undergrads with cultural exchange commitment; management students eligible",
+        "strategy_tip": "Show community/cultural engagement plan and connect to professional experience"
+      }
+    ],
+    "local_backup_time": "2026-07-08T14:31:17.771286"
+  },
+  {
+    "timestamp": "2026-07-08 14:47:22",
+    "name": "Rupam Das",
+    "email": "rupam.abroadeduversity@gmail.com",
+    "phone": "1738108040",
+    "target_degree": "Masters",
+    "gpa": "8.0",
+    "countries": [
+      "UK"
+    ],
+    "major": "Computer Science",
+    "work_experience": "2",
+    "profile_highlight": "",
+    "test_scores_provided": "No",
+    "gre": "",
+    "gmat": "",
+    "ielts": "",
+    "test_scores": "",
+    "ai_summary_probability": 75,
+    "scholarships_count": 5,
+    "top_scholarship_name": "University of Manchester Global Futures Scholarship (India)",
+    "top_scholarship_amount": "£6,000 tuition waiver",
+    "top_scholarship_deadline": "2026-08-15",
+    "top_scholarship_match_score": 75,
+    "top_scholarship_reason": "India-specific masters scholarship for CS with academic merit and experience",
+    "top_scholarship_strategy_tip": "Hold offer from Manchester CS masters; submit scholarship statement on impact",
+    "top_scholarships_summary": "University of Manchester Global Futures Scholarship (India) (2026-08-15) | University of Edinburgh Global Masters Scholarship (2026-08-31) | Imperial College London MSc Computer Science Scholarship (Departmental Excellence) (2026-09-30) | Commonwealth Masters Scholarship (2026-10-15) | Chevening Scholarship (2026-11-05)",
+    "scholarships": [
+      {
+        "name": "University of Manchester Global Futures Scholarship (India)",
+        "amount": "£6,000 tuition waiver",
+        "deadline": "2026-08-15",
+        "match_score": 75,
+        "one_liner_reason": "India-specific masters scholarship for CS with academic merit and experience",
+        "strategy_tip": "Hold offer from Manchester CS masters; submit scholarship statement on impact"
+      },
+      {
+        "name": "University of Edinburgh Global Masters Scholarship",
+        "amount": "£5,000 tuition waiver",
+        "deadline": "2026-08-31",
+        "match_score": 70,
+        "one_liner_reason": "Merit-based award for international CS masters applicants with 8.0/10 GPA",
+        "strategy_tip": "Apply to eligible CS programmes first, then submit scholarship form before deadline"
+      },
+      {
+        "name": "Imperial College London MSc Computer Science Scholarship (Departmental Excellence)",
+        "amount": "£10,000 tuition reduction",
+        "deadline": "2026-09-30",
+        "match_score": 65,
+        "one_liner_reason": "CS department funding for strong academic performers with industry experience",
+        "strategy_tip": "Highlight 2 yrs experience and 8.0 GPA; apply early in admissions round"
+      },
+      {
+        "name": "Commonwealth Masters Scholarship",
+        "amount": "Full tuition + stipend + airfare",
+        "deadline": "2026-10-15",
+        "match_score": 80,
+        "one_liner_reason": "Funded UK study for Indian students with relevant academic and work background",
+        "strategy_tip": "Align application to development themes; show how CS solves home-country issues"
+      },
+      {
+        "name": "Chevening Scholarship",
+        "amount": "Full tuition + living stipend + travel",
+        "deadline": "2026-11-05",
+        "match_score": 85,
+        "one_liner_reason": "Indian with 2 yrs work experience in CS eligible for UK leadership scholarship",
+        "strategy_tip": "Emphasize leadership and career impact in essays; secure strong references early"
+      }
+    ],
+    "local_backup_time": "2026-07-08T14:47:26.565079"
+  },
+  {
+    "timestamp": "2026-07-08 14:58:41",
+    "name": "Rupam Das",
+    "email": "rupam.abroadeduversity@gmail.com",
+    "phone": "9296413736",
+    "target_degree": "Diploma",
+    "gpa": "8.0",
+    "countries": [
+      "UK"
+    ],
+    "major": "business",
+    "work_experience": "2",
+    "profile_highlight": "",
+    "test_scores_provided": "No",
+    "gre": "",
+    "gmat": "",
+    "ielts": "",
+    "test_scores": "",
+    "ai_summary_probability": 65,
+    "scholarships_count": 5,
+    "top_scholarship_name": "University of Westminster International Diploma Scholarship",
+    "top_scholarship_amount": "£5,000 tuition award",
+    "top_scholarship_deadline": "2026-08-31",
+    "top_scholarship_match_score": 80,
+    "top_scholarship_reason": "Diploma-level international scholarship for Indian students with strong academics (8.0/10) in business",
+    "top_scholarship_strategy_tip": "Submit portfolio of business work experience alongside academic transcript to boost selection",
+    "top_scholarships_summary": "University of Westminster International Diploma Scholarship (2026-08-31) | GREAT Scholarships (British Council) (2026-09-30) | Kingston University International Scholarship (Undergraduate/Diploma) (2026-10-15) | Chevening Scholarship (2026-11-03) | Commonwealth Scholarship (Shared Scholarship Scheme) (2026-12-15)",
+    "scholarships": [
+      {
+        "name": "University of Westminster International Diploma Scholarship",
+        "amount": "£5,000 tuition award",
+        "deadline": "2026-08-31",
+        "match_score": 80,
+        "one_liner_reason": "Diploma-level international scholarship for Indian students with strong academics (8.0/10) in business",
+        "strategy_tip": "Submit portfolio of business work experience alongside academic transcript to boost selection"
+      },
+      {
+        "name": "GREAT Scholarships (British Council)",
+        "amount": "£10,000 tuition fee reduction",
+        "deadline": "2026-09-30",
+        "match_score": 75,
+        "one_liner_reason": "India-specific UK scholarships for business students at participating universities with rolling admission",
+        "strategy_tip": "Apply early to participating UK university business diploma/top-up programs and cite academic merit (8.0/10)"
+      },
+      {
+        "name": "Kingston University International Scholarship (Undergraduate/Diploma)",
+        "amount": "£4,000 per year",
+        "deadline": "2026-10-15",
+        "match_score": 78,
+        "one_liner_reason": "Automatic consideration for Indian diploma entrants to business courses with 8.0/10 GPA",
+        "strategy_tip": "Apply via direct entry to business diploma and ensure personal statement notes 2 years industry exposure"
+      },
+      {
+        "name": "Chevening Scholarship",
+        "amount": "Full tuition + living stipend",
+        "deadline": "2026-11-03",
+        "match_score": 70,
+        "one_liner_reason": "Indian diploma holder with 2 years work experience in business eligible for UK master's pathway via Chevening",
+        "strategy_tip": "Emphasize leadership and career impact from your 2 years business experience in the application essays"
+      },
+      {
+        "name": "Commonwealth Scholarship (Shared Scholarship Scheme)",
+        "amount": "Full tuition + airfare + stipend",
+        "deadline": "2026-12-15",
+        "match_score": 60,
+        "one_liner_reason": "Open to Indian nationals with prior qualification and work experience for UK study in business-related fields",
+        "strategy_tip": "Highlight how your diploma and work contribute to development goals in your home community"
+      }
+    ],
+    "local_backup_time": "2026-07-08T14:58:46.224467"
   }
 ]

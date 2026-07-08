@@ -6,21 +6,16 @@ import { DollarSign, Calendar, Lock, Unlock, Zap, Target, ArrowLeft } from 'luci
 function ResultsDisplay({ scholarshipResults, userProfile, onUnlock, onBack }) {
   const [showUnlockModal, setShowUnlockModal] = useState(false);
   const [showLeadModal, setShowLeadModal] = useState(false);
-  const [modalTriggered, setModalTriggered] = useState(false);
 
   const handleLockedCardInteraction = (e) => {
-    if (!modalTriggered) {
-      if (e && e.preventDefault) { e.preventDefault(); }
-      if (e && e.stopPropagation) { e.stopPropagation(); }
-      setShowUnlockModal(true);
-      setModalTriggered(true);
-    }
+    if (e && e.preventDefault) { e.preventDefault(); }
+    if (e && e.stopPropagation) { e.stopPropagation(); }
+    setShowUnlockModal(true);
   };
 
   const handleScrollTrigger = () => {
-    if (!modalTriggered) {
+    if (!showUnlockModal && !showLeadModal) {
       setShowUnlockModal(true);
-      setModalTriggered(true);
     }
   };
 
@@ -107,7 +102,11 @@ function ResultsDisplay({ scholarshipResults, userProfile, onUnlock, onBack }) {
                 className="scholarship-card locked-card"
                 onClick={handleLockedCardInteraction}
               >
+                <div className="locked-card-overlay">
+                  <span className="locked-preview-chip">Preview Locked</span>
+                </div>
                 <div className="card-blur-content">
+                  <div className="blurred-text shimmer"></div>
                   <div className="blurred-text"></div>
                   <div className="blurred-text short"></div>
                   <div className="match-score-badge">

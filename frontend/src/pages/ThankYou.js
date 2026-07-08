@@ -1,8 +1,8 @@
 import React from 'react';
 import '../styles/ThankYou.css';
-import { Check, MessageCircle, List, Brain, MousePointer, CalendarCheck } from 'lucide-react';
+import { Check, MessageCircle, List, Home } from 'lucide-react';
 
-function ThankYou() {
+function ThankYou({ onGoHome }) {
   return (
     <div className="thankyou-container">
       <div className="thankyou-content">
@@ -42,9 +42,14 @@ function ThankYou() {
 
         <div className="cta-section">
           <p className="cta-text">Need help with your applications?</p>
-          <a href="https://wa.me/+917044490574" className="btn-contact">
+          <div className="cta-actions">
+            <button type="button" className="btn-home" onClick={onGoHome}>
+              <Home size={18} /> Back to Home
+            </button>
+            <a href="https://wa.me/+917044490574" className="btn-contact" target="_blank" rel="noreferrer">
             <MessageCircle size={20} /> Chat on WhatsApp
-          </a>
+            </a>
+          </div>
         </div>
 
         <div className="encouragement">

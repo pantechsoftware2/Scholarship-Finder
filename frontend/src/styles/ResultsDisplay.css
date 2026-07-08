@@ -208,49 +208,87 @@
 }
 
 .locked-card {
-  padding: 24px;
+  padding: 22px 24px;
   margin-bottom: 0;
-  border-style: dashed;
-  opacity: 0.8;
+  border-style: solid;
+  border-color: rgba(161, 161, 170, 0.12);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03)),
+    rgba(24, 24, 27, 0.72);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  overflow: hidden;
+  opacity: 1;
 }
 
 .locked-card:hover {
-  opacity: 1;
-  border-color: var(--text-muted);
+  border-color: rgba(52, 211, 153, 0.28);
+  transform: translateY(-1px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
 }
 
 .card-blur-content {
-  filter: blur(4px);
-  opacity: 0.6;
+  filter: blur(8px);
+  opacity: 0.72;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  pointer-events: none;
 }
 
 .blurred-text {
-  height: 16px;
-  background: var(--border-light);
-  border-radius: 4px;
-  width: 70%;
+  height: 18px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.08), rgba(255,255,255,0.18), rgba(255,255,255,0.08));
+  border-radius: 999px;
+  width: 72%;
 }
 
 .blurred-text.short {
   width: 40%;
 }
 
+.blurred-text.shimmer {
+  width: 68%;
+}
+
 .locked-card .match-score-badge {
   position: absolute;
-  top: 50%;
+  top: 22px;
   right: 24px;
-  transform: translateY(-50%);
-  background: var(--bg-dark);
-  border: 1px solid var(--border-light);
-  padding: 8px 16px;
-  border-radius: 8px;
+  transform: none;
+  background: rgba(9, 9, 11, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 8px 14px;
+  border-radius: 999px;
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 0.95rem;
   filter: none;
   color: var(--text-secondary);
+  z-index: 2;
+}
+
+.locked-card-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.2)),
+    radial-gradient(circle at top right, rgba(16, 185, 129, 0.16), transparent 38%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.locked-preview-chip {
+  position: absolute;
+  left: 20px;
+  top: 18px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(250, 250, 250, 0.92);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 /* Minimalist Modal */

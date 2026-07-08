@@ -10,6 +10,43 @@
   padding: 40px 0;
 }
 
+.top-toast {
+  position: fixed;
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: min(520px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(127, 29, 29, 0.96), rgba(69, 10, 10, 0.96));
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+  color: #fff7f7;
+  animation: slideToastDown 0.35s ease-out;
+}
+
+.top-toast span {
+  color: inherit;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+@keyframes slideToastDown {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -18px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
 /* Hero Section (Left Column) */
 .hero-section {
   display: flex;
@@ -19,6 +56,27 @@
   position: sticky;
   top: 60px;
   padding-top: 20px;
+}
+
+.home-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  margin-bottom: 20px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(24, 24, 27, 0.88);
+  border: 1px solid rgba(52, 211, 153, 0.24);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.home-button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(52, 211, 153, 0.45);
+  background: rgba(16, 34, 28, 0.96);
 }
 
 .badge-pill {
@@ -115,6 +173,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  position: relative;
 }
 
 .form-group label {
@@ -169,6 +228,11 @@
   min-height: 100px;
 }
 
+.field-help {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
 /* Hide number arrows */
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
@@ -221,6 +285,10 @@ input[type=number] {
   padding-right: 12px;
 }
 
+.custom-country-input {
+  margin-top: 8px;
+}
+
 /* Toggle Checkbox */
 .toggle-label {
   display: flex;
@@ -233,6 +301,12 @@ input[type=number] {
   background: var(--bg-dark);
   border-radius: 8px;
   border: 1px solid var(--border-light);
+}
+
+.toggle-copy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* Custom Checkbox */
@@ -274,6 +348,53 @@ input[type=number] {
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.major-group {
+  z-index: 5;
+}
+
+.major-toggle {
+  position: absolute;
+  right: 12px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.major-suggestions {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: rgba(29, 24, 27, 0.98);
+  border: 1px solid rgba(52, 211, 153, 0.16);
+  border-radius: 14px;
+  padding: 8px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.major-suggestion-item {
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.major-suggestion-item:hover {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--primary-light);
 }
 
 /* Character Count */
@@ -324,6 +445,10 @@ input[type=number] {
     align-items: center;
     position: static;
   }
+
+  .home-button {
+    align-self: center;
+  }
   
   .hero-subtitle {
     max-width: 100%;
@@ -338,4 +463,5 @@ input[type=number] {
   .form-row { grid-template-columns: 1fr; gap: 16px; }
   .form-wrapper { padding: 24px 16px; }
   .hero-title { font-size: 2.5rem; }
+  .top-toast { min-width: calc(100vw - 24px); top: 14px; }
 }

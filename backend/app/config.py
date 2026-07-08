@@ -18,10 +18,10 @@ class Settings(BaseSettings):
     google_api_key: str = ""
     
     # Google Sheets
-    google_sheets_id: str
-    google_service_account_email: str
-    google_private_key: str
-    google_apps_script_url: str
+    google_sheets_id: str = ""
+    google_service_account_email: str = ""
+    google_private_key: str = ""
+    google_apps_script_url: str = ""
     
     # Email Configuration
     smtp_user: str

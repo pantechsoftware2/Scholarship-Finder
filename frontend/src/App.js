@@ -80,7 +80,16 @@ function App() {
         />
       )}
 
-      {currentStage === 'thankyou' && <ThankYou />}
+      {currentStage === 'thankyou' && (
+        <ThankYou
+          onGoHome={() => {
+            setCurrentStage('input');
+            setUserProfile(null);
+            setScholarshipResults(null);
+            setError(null);
+          }}
+        />
+      )}
     </div>
   );
 }

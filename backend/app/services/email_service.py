@@ -1,110 +1,268 @@
-# Filename: backend/app/services/email_service.py
-# Fix: Completed the truncated strategy_tip in HTML.
-
-import smtplib
+import io
 import logging
-from email.mime.text import MIMEText
+import smtplib
+from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+from reportlab.lib import colors
+from reportlab.lib.enums import TA_CENTER
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.lib.units import inch
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+
 from app.config import settings
 from app.models import ScholarshipResult
-import json
-from email.mime.application import MIMEApplication
 
 logger = logging.getLogger(__name__)
 
+
 class EmailService:
     @staticmethod
-    def send_scholarship_report(recipient_email: str, recipient_name: str, 
-                               scholarships: ScholarshipResult) -> bool:
+    def send_scholarship_report(
+        recipient_email: str,
+        recipient_name: str,
+        scholarships: ScholarshipResult,
+    ) -> bool:
         """
-        Send scholarship report to user via email
+        Send scholarship report to user via email with a polished PDF attachment.
         """
         try:
-            # Create message
-            msg = MIMEMultipart('alternative')
-            msg['Subject'] = "🎓 Your Personalized Scholarship Report - Scholarship Finder"
-            msg['From'] = settings.smtp_user
-            msg['To'] = recipient_email
-            
-            # Create HTML content
-            html_content = EmailService._generate_html_report(recipient_name, scholarships)
-            
-            # Attach HTML
-            msg.attach(MIMEText(html_content, 'html'))
+            msg = MIMEMultipart("alternative")
+            msg["Subject"] = "Your Personalized Scholarship Report - Scholarship Finder"
+            msg["From"] = settings.smtp_user
+            msg["To"] = recipient_email
 
-            # Also attach the raw JSON report as a file for the user (full JSON content)
-            try:
-                json_bytes = json.dumps(scholarships.model_dump(), indent=2).encode('utf-8')
-                json_part = MIMEApplication(json_bytes, Name='scholarship_report.json')
-                json_part['Content-Disposition'] = 'attachment; filename="scholarship_report.json"'
-                msg.attach(json_part)
-            except Exception as e:
-                logger.exception("Failed to attach JSON report: %s", e)
-            
-            # Send email
+            html_content = EmailService._generate_html_report(recipient_name, scholarships)
+            msg.attach(MIMEText(html_content, "html"))
+
+            pdf_bytes = EmailService._generate_pdf_report(recipient_name, scholarships)
+            pdf_part = MIMEApplication(pdf_bytes, Name="scholarship_report.pdf")
+            pdf_part["Content-Disposition"] = 'attachment; filename="scholarship_report.pdf"'
+            msg.attach(pdf_part)
+
             with smtplib.SMTP(settings.smtp_host, settings.smtp_port) as server:
                 server.starttls()
                 server.login(settings.smtp_user, settings.smtp_password)
                 server.send_message(msg)
-            
+
             return True
-        
         except Exception as e:
             logger.exception("Email service error: %s", e)
             return False
-    
+
     @staticmethod
     def _generate_html_report(name: str, scholarships: ScholarshipResult) -> str:
-        """Generate simple HTML email notification with JSON attachment"""
+        scholarship_count = len(scholarships.scholarships)
+        top_pick = scholarships.scholarships[0].name if scholarships.scholarships else "your top scholarship matches"
         html = f"""
         <html>
-        <body style="font-family: Arial, sans-serif; color: #333; margin: 0; padding: 0;">
-            <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-                <h2 style="color: #4CAF50;">Hi {name},</h2>
-                <p>Your personalized scholarship report is ready! 🎓</p>
-                
-                <div style="background: #f0f7ff; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center;">
-                    <h3 style="color: #667eea; margin: 0;">Success Probability: <strong>{scholarships.summary_probability}%</strong></h3>
-                    <p style="margin: 10px 0 0 0; color: #666;">Check the attached JSON file for your complete scholarship matches, amounts, deadlines, and strategy tips.</p>
+        <body style="font-family: Arial, sans-serif; color: #1f2937; margin: 0; padding: 0; background: #f8fafc;">
+            <div style="max-width: 640px; margin: 0 auto; padding: 24px;">
+                <div style="background: #ffffff; border-radius: 18px; padding: 28px; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);">
+                    <h1 style="margin: 0 0 12px 0; color: #2563eb; font-size: 28px;">Your Scholarship Report Is Ready</h1>
+                    <p style="margin: 0 0 18px 0; font-size: 16px;">Hi {name},</p>
+                    <p style="margin: 0 0 18px 0; line-height: 1.7;">
+                        We prepared a personalized scholarship report for you. Your attached PDF includes your
+                        success probability, top matches, deadlines, and strategy tips in a clean printable format.
+                    </p>
+
+                    <div style="background: linear-gradient(135deg, #eff6ff, #ecfeff); border-radius: 14px; padding: 20px; margin: 20px 0;">
+                        <p style="margin: 0; font-size: 14px; color: #475569;">Estimated Success Probability</p>
+                        <p style="margin: 8px 0 0 0; font-size: 36px; color: #16a34a; font-weight: bold;">{scholarships.summary_probability}%</p>
+                        <p style="margin: 12px 0 0 0; font-size: 14px; color: #334155;">
+                            {scholarship_count} scholarships shortlisted. Top pick: <strong>{top_pick}</strong>
+                        </p>
+                    </div>
+
+                    <p style="margin: 0 0 12px 0; line-height: 1.7;">
+                        Open the attached <strong>scholarship_report.pdf</strong> for the complete formatted report.
+                    </p>
+
+                    <div style="background: #f8fafc; border-radius: 12px; padding: 18px; margin-top: 20px;">
+                        <p style="margin: 0 0 8px 0; font-weight: bold;">Suggested next steps</p>
+                        <p style="margin: 0; line-height: 1.7;">
+                            1. Review the top scholarships and deadlines.<br/>
+                            2. Shortlist your strongest two or three applications.<br/>
+                            3. Start your SOP, essays, and supporting documents early.
+                        </p>
+                    </div>
                 </div>
-                
-                <p style="line-height: 1.6;">
-                    The attached <strong>scholarship_report.json</strong> file contains:
-                </p>
-                <ul style="line-height: 1.8;">
-                    <li>Scholarship names and amounts</li>
-                    <li>Application deadlines</li>
-                    <li>Match scores for your profile</li>
-                    <li>Personalized strategy tips for each scholarship</li>
-                </ul>
-                
-                <p style="margin-top: 30px; padding: 20px; background: #e8f5e9; border-radius: 10px; text-align: center;">
-                    <strong>Next Steps:</strong><br/>
-                    1. Download the attached JSON file<br/>
-                    2. Review all scholarship details<br/>
-                    3. Start your applications today!
-                </p>
-                
-                <p style="color: #999; font-size: 12px; margin-top: 20px; text-align: center;">
-                    Questions? Reply to this email or visit our website.
-                </p>
             </div>
         </body>
         </html>
         """
-        
         return html
+
+    @staticmethod
+    def _generate_pdf_report(name: str, scholarships: ScholarshipResult) -> bytes:
+        buffer = io.BytesIO()
+        doc = SimpleDocTemplate(
+            buffer,
+            pagesize=A4,
+            rightMargin=40,
+            leftMargin=40,
+            topMargin=40,
+            bottomMargin=40,
+        )
+
+        styles = getSampleStyleSheet()
+        title_style = ParagraphStyle(
+            "TitleStyle",
+            parent=styles["Title"],
+            fontName="Helvetica-Bold",
+            fontSize=22,
+            leading=28,
+            textColor=colors.HexColor("#1d4ed8"),
+            alignment=TA_CENTER,
+            spaceAfter=14,
+        )
+        subtitle_style = ParagraphStyle(
+            "SubtitleStyle",
+            parent=styles["BodyText"],
+            fontName="Helvetica",
+            fontSize=11,
+            leading=16,
+            textColor=colors.HexColor("#334155"),
+            spaceAfter=10,
+        )
+        section_style = ParagraphStyle(
+            "SectionStyle",
+            parent=styles["Heading2"],
+            fontName="Helvetica-Bold",
+            fontSize=14,
+            leading=18,
+            textColor=colors.HexColor("#0f172a"),
+            spaceAfter=10,
+        )
+        body_style = ParagraphStyle(
+            "BodyStyle",
+            parent=styles["BodyText"],
+            fontName="Helvetica",
+            fontSize=10,
+            leading=14,
+            textColor=colors.HexColor("#334155"),
+        )
+        small_style = ParagraphStyle(
+            "SmallStyle",
+            parent=styles["BodyText"],
+            fontName="Helvetica",
+            fontSize=9,
+            leading=13,
+            textColor=colors.HexColor("#475569"),
+        )
+
+        story = [
+            Paragraph("Scholarship Finder Report", title_style),
+            Paragraph(
+                EmailService._safe_pdf_text(
+                    f"Prepared for {name} | Estimated success probability: {scholarships.summary_probability}%"
+                ),
+                subtitle_style,
+            ),
+            Spacer(1, 0.15 * inch),
+        ]
+
+        summary_table = Table(
+            [
+                ["Candidate", EmailService._safe_pdf_text(name)],
+                ["Shortlisted Scholarships", str(len(scholarships.scholarships))],
+                ["Success Probability", f"{scholarships.summary_probability}%"],
+            ],
+            colWidths=[2.0 * inch, 4.3 * inch],
+        )
+        summary_table.setStyle(
+            TableStyle(
+                [
+                    ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#eff6ff")),
+                    ("TEXTCOLOR", (0, 0), (-1, -1), colors.HexColor("#0f172a")),
+                    ("FONTNAME", (0, 0), (0, -1), "Helvetica-Bold"),
+                    ("FONTNAME", (1, 0), (1, -1), "Helvetica"),
+                    ("BOX", (0, 0), (-1, -1), 0.5, colors.HexColor("#bfdbfe")),
+                    ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#bfdbfe")),
+                    ("PADDING", (0, 0), (-1, -1), 8),
+                ]
+            )
+        )
+        story.extend([summary_table, Spacer(1, 0.25 * inch), Paragraph("Top Scholarship Matches", section_style)])
+
+        for index, scholarship in enumerate(scholarships.scholarships, start=1):
+            card_rows = [
+                [f"{index}. {EmailService._safe_pdf_text(scholarship.name)}"],
+                [
+                    EmailService._safe_pdf_text(
+                        f"Amount: {scholarship.amount} | Deadline: {scholarship.deadline} | Match Score: {scholarship.match_score}%"
+                    )
+                ],
+                [Paragraph(f"<b>Why it fits:</b> {EmailService._safe_pdf_text(scholarship.one_liner_reason)}", body_style)],
+                [Paragraph(f"<b>Strategy tip:</b> {EmailService._safe_pdf_text(scholarship.strategy_tip)}", body_style)],
+            ]
+            card = Table(card_rows, colWidths=[6.3 * inch])
+            card.setStyle(
+                TableStyle(
+                    [
+                        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#dbeafe")),
+                        ("TEXTCOLOR", (0, 0), (-1, 0), colors.HexColor("#1e3a8a")),
+                        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                        ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
+                        ("BOX", (0, 0), (-1, -1), 0.6, colors.HexColor("#cbd5e1")),
+                        ("INNERGRID", (0, 0), (-1, -1), 0.3, colors.HexColor("#e2e8f0")),
+                        ("BACKGROUND", (0, 1), (-1, -1), colors.white),
+                        ("PADDING", (0, 0), (-1, -1), 8),
+                        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                    ]
+                )
+            )
+            story.extend([card, Spacer(1, 0.18 * inch)])
+
+        story.extend(
+            [
+                Spacer(1, 0.15 * inch),
+                Paragraph("Recommended Next Steps", section_style),
+                Paragraph(
+                    EmailService._safe_pdf_text(
+                        "1. Prioritize the scholarships with the highest match and earliest deadlines. "
+                        "2. Prepare application essays and documents before the next deadline window. "
+                        "3. Tailor each application to the scholarship's academic and leadership expectations."
+                    ),
+                    small_style,
+                ),
+            ]
+        )
+
+        doc.build(story)
+        pdf_bytes = buffer.getvalue()
+        buffer.close()
+        return pdf_bytes
+
+    @staticmethod
+    def _safe_pdf_text(text: str) -> str:
+        replacements = {
+            "₹": "INR ",
+            "£": "GBP ",
+            "€": "EUR ",
+            "—": "-",
+            "–": "-",
+            "’": "'",
+            "“": '"',
+            "”": '"',
+        }
+        safe_text = text or ""
+        for original, replacement in replacements.items():
+            safe_text = safe_text.replace(original, replacement)
+        return safe_text
 
     @staticmethod
     def send_consultation_invite(recipient_email: str, recipient_name: str) -> bool:
         """
-        Send a consultation invite when AI couldn't find direct scholarship matches
+        Send a consultation invite when AI couldn't find direct scholarship matches.
         """
         try:
-            msg = MIMEMultipart('alternative')
-            msg['Subject'] = "🎓 Let's evaluate your profile — Consultation Invite"
-            msg['From'] = settings.smtp_user
-            msg['To'] = recipient_email
+            msg = MIMEMultipart("alternative")
+            msg["Subject"] = "Let's evaluate your profile - Consultation Invite"
+            msg["From"] = settings.smtp_user
+            msg["To"] = recipient_email
 
             html = f"""
             <html>
@@ -120,7 +278,7 @@ class EmailService:
             </html>
             """
 
-            msg.attach(MIMEText(html, 'html'))
+            msg.attach(MIMEText(html, "html"))
 
             with smtplib.SMTP(settings.smtp_host, settings.smtp_port) as server:
                 server.starttls()

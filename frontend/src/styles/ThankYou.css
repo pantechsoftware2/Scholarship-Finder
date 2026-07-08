@@ -117,6 +117,13 @@
   margin-bottom: 24px;
 }
 
+.cta-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 .cta-text {
   font-size: 0.95rem;
   color: var(--text-secondary);
@@ -127,19 +134,41 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: transparent;
-  color: var(--text-primary);
-  border: 1px solid var(--border-light);
+  background: linear-gradient(135deg, #0f7a47, #10b981);
+  color: #f0fdf4;
+  border: 1px solid rgba(110, 231, 183, 0.32);
   padding: 12px 24px;
   border-radius: 8px;
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 1rem;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 
 .btn-contact:hover {
-  background: var(--border-light);
+  transform: translateY(-1px);
+  filter: brightness(1.04);
+  box-shadow: 0 12px 26px rgba(16, 185, 129, 0.18);
+}
+
+.btn-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-home:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(52, 211, 153, 0.28);
+  transform: translateY(-1px);
 }
 
 .encouragement {
