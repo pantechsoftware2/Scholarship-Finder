@@ -22,7 +22,7 @@ class SheetsService:
     3. Local JSON backup fallback
     """
 
-    SHEET_RANGE = "Sheet1!A:Z"
+    SHEET_RANGE = "Sheet1!A:AC"
     SHEETS_SCOPE = ["https://www.googleapis.com/auth/spreadsheets"]
 
     def __init__(self):
@@ -89,6 +89,22 @@ class SheetsService:
             f"IELTS: {test_scores.get('IELTS', '') or test_scores.get('ielts', '')}" if (test_scores.get("IELTS", "") or test_scores.get("ielts", "")) else "",
         ]
         compact_test_scores = ", ".join(part for part in test_score_parts if part)
+        compact_test_scores = ", ".join(
+            part
+            for part in [
+                compact_test_scores,
+                f"TOEFL: {test_scores.get('TOEFL', '') or test_scores.get('toefl', '')}"
+                if (test_scores.get("TOEFL", "") or test_scores.get("toefl", ""))
+                else "",
+                f"PTE: {test_scores.get('PTE', '') or test_scores.get('pte', '')}"
+                if (test_scores.get("PTE", "") or test_scores.get("pte", ""))
+                else "",
+                f"DUOLINGO: {test_scores.get('DUOLINGO', '') or test_scores.get('duolingo', '')}"
+                if (test_scores.get("DUOLINGO", "") or test_scores.get("duolingo", ""))
+                else "",
+            ]
+            if part
+        )
         top_scholarship = scholarships[0] if scholarships else {}
         scholarship_summary = " | ".join(
             f"{entry['name']} ({entry['deadline']})"
@@ -101,8 +117,11 @@ class SheetsService:
             "email": lead.email,
             "phone": lead.phone,
             "target_degree": lead.user_profile.degree_level,
+            "current_degree": lead.user_profile.current_degree or "",
             "gpa": str(lead.user_profile.gpa or ""),
+            "nationality": lead.user_profile.nationality or "",
             "countries": countries,
+            "intended_intake": lead.user_profile.intended_intake or "",
             "major": lead.user_profile.major,
             "work_experience": str(
                 int(lead.user_profile.work_experience_years)
@@ -111,9 +130,13 @@ class SheetsService:
             ),
             "profile_highlight": lead.user_profile.profile_highlight or "",
             "test_scores_provided": "Yes" if test_scores else "No",
+            "english_test_taken": "Yes" if test_scores else "No",
             "gre": str(test_scores.get("GRE", "") or test_scores.get("gre", "")),
             "gmat": str(test_scores.get("GMAT", "") or test_scores.get("gmat", "")),
             "ielts": str(test_scores.get("IELTS", "") or test_scores.get("ielts", "")),
+            "toefl": str(test_scores.get("TOEFL", "") or test_scores.get("toefl", "")),
+            "pte": str(test_scores.get("PTE", "") or test_scores.get("pte", "")),
+            "duolingo": str(test_scores.get("DUOLINGO", "") or test_scores.get("duolingo", "")),
             "test_scores": compact_test_scores,
             "ai_summary_probability": int(lead.scholarship_results.summary_probability)
             if lead.scholarship_results
@@ -192,6 +215,14 @@ class SheetsService:
             payload.get("top_scholarships_summary", ""),
             payload.get("profile_highlight", ""),
             json.dumps(payload.get("scholarships", []), ensure_ascii=False),
+            payload.get("current_degree", ""),
+            payload.get("nationality", ""),
+            payload.get("intended_intake", ""),
+            payload.get("english_test_taken", ""),
+            payload.get("ielts", ""),
+            payload.get("toefl", ""),
+            payload.get("pte", ""),
+            payload.get("duolingo", ""),
         ]
 
     async def _append_via_apps_script(self, payload: Dict[str, Any]) -> bool:

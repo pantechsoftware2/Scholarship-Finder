@@ -6,6 +6,12 @@ function ThankYou({ onGoHome }) {
   return (
     <div className="thankyou-container">
       <div className="thankyou-content">
+        <div className="thankyou-topbar">
+          <button type="button" className="btn-home btn-home-top" onClick={onGoHome}>
+            <Home size={18} /> Back to Home
+          </button>
+        </div>
+
         <div className="success-animation">
           <Check size={40} className="checkmark" />
         </div>
@@ -43,9 +49,6 @@ function ThankYou({ onGoHome }) {
         <div className="cta-section">
           <p className="cta-text">Need help with your applications?</p>
           <div className="cta-actions">
-            <button type="button" className="btn-home" onClick={onGoHome}>
-              <Home size={18} /> Back to Home
-            </button>
             <a href="https://wa.me/+917044490574" className="btn-contact" target="_blank" rel="noreferrer">
             <MessageCircle size={20} /> Chat on WhatsApp
             </a>

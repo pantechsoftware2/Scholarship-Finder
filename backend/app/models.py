@@ -6,11 +6,16 @@ from typing import List, Optional
 
 class UserProfile(BaseModel):
     degree_level: str  # Undergrad, Masters, PhD, MBA
+    current_degree: Optional[str] = None
     gpa: float
     gpa_scale: str  # "10" or "100"
+    nationality: Optional[str] = None
     target_countries: List[str]
+    intended_intake: Optional[str] = None
     major: str
     test_scores: Optional[dict] = None
+    english_test_type: Optional[str] = None
+    english_test_score: Optional[float] = None
     work_experience_years: int = 0
     profile_highlight: str
     
@@ -18,11 +23,16 @@ class UserProfile(BaseModel):
         json_schema_extra = {
             "example": {
                 "degree_level": "Masters",
+                "current_degree": "B.Tech",
                 "gpa": 8.5,
                 "gpa_scale": "10",
+                "nationality": "India",
                 "target_countries": ["USA", "Canada"],
+                "intended_intake": "Fall 2027",
                 "major": "Computer Science",
-                "test_scores": {"gre": 320},
+                "test_scores": {"ielts": 7.5},
+                "english_test_type": "IELTS",
+                "english_test_score": 7.5,
                 "work_experience_years": 2,
                 "profile_highlight": "Published research paper, 2 years IT experience"
             }

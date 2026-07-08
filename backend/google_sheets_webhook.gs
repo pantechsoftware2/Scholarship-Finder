@@ -42,7 +42,15 @@ function doPost(e) {
       data.top_scholarship_strategy_tip || "",
       data.top_scholarships_summary || "",
       data.profile_highlight || "",
-      JSON.stringify(data.scholarships || [])
+      JSON.stringify(data.scholarships || []),
+      data.current_degree || "",
+      data.nationality || "",
+      data.intended_intake || "",
+      data.english_test_taken || "",
+      data.ielts || "",
+      data.toefl || "",
+      data.pte || "",
+      data.duolingo || ""
     ];
 
     sheet.appendRow(row);

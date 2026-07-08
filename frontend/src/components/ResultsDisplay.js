@@ -1,7 +1,20 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import LeadCaptureModal from './LeadCaptureModal';
 import '../styles/ResultsDisplay.css';
-import { DollarSign, Calendar, Lock, Unlock, Zap, Target, ArrowLeft } from 'lucide-react';
+import {
+  DollarSign,
+  Calendar,
+  Lock,
+  Unlock,
+  Zap,
+  Target,
+  ArrowLeft,
+  Globe,
+  GraduationCap,
+  Briefcase,
+  Sparkles,
+  Clock3,
+} from 'lucide-react';
 
 function ResultsDisplay({ scholarshipResults, userProfile, onUnlock, onBack }) {
   const [showUnlockModal, setShowUnlockModal] = useState(false);
@@ -19,15 +32,111 @@ function ResultsDisplay({ scholarshipResults, userProfile, onUnlock, onBack }) {
     }
   };
 
-  if (!scholarshipResults || !scholarshipResults.scholarships) {
-    return <div>Loading results...</div>;
-  }
-
-  const topScholarship = scholarshipResults.scholarships[0];
-  const lockedScholarships = scholarshipResults.scholarships.slice(1);
+  const scholarships = scholarshipResults?.scholarships || [];
+  const topScholarship = scholarships[0];
+  const lockedScholarships = scholarships.slice(1);
   const isFreshDataUnavailable =
     topScholarship &&
     topScholarship.name === 'Fresh live scholarship data temporarily unavailable';
+
+  const profileHighlights = useMemo(() => {
+    const items = [];
+    const filledEnglishTests = userProfile?.test_scores
+      ? Object.entries(userProfile.test_scores)
+          .filter(([, value]) => value !== null && value !== undefined && String(value).trim() !== '')
+          .map(([exam, value]) => `${String(exam).toUpperCase()} ${value}`)
+      : [];
+
+    if (userProfile?.nationality) {
+      items.push({
+        icon: <Globe size={14} />,
+        label: 'Nationality',
+        value: userProfile.nationality,
+      });
+    }
+
+    if (userProfile?.degree_level) {
+      items.push({
+        icon: <GraduationCap size={14} />,
+        label: 'Degree Level',
+        value: userProfile.degree_level,
+      });
+    }
+
+    if (userProfile?.major) {
+      items.push({
+        icon: <Sparkles size={14} />,
+        label: 'Major',
+        value: userProfile.major,
+      });
+    }
+
+    if (userProfile?.work_experience_years !== undefined && userProfile?.work_experience_years !== '') {
+      items.push({
+        icon: <Briefcase size={14} />,
+        label: 'Experience',
+        value: `${userProfile.work_experience_years} year${String(userProfile.work_experience_years) === '1' ? '' : 's'}`,
+      });
+    }
+
+    if (userProfile?.intended_intake) {
+      items.push({
+        icon: <Calendar size={14} />,
+        label: 'Intake',
+        value: userProfile.intended_intake,
+      });
+    }
+
+    if (filledEnglishTests.length > 0) {
+      items.push({
+        icon: <Target size={14} />,
+        label: 'English Test',
+        value: filledEnglishTests.join(' | '),
+      });
+    }
+
+    return items.slice(0, 6);
+  }, [userProfile]);
+
+  const deadlineInsight = useMemo(() => {
+    const rawDeadline = topScholarship?.deadline;
+    if (!rawDeadline) {
+      return 'Deadline information is being verified.';
+    }
+
+    const parsed = new Date(rawDeadline);
+    if (Number.isNaN(parsed.getTime())) {
+      return `Application timeline: ${rawDeadline}.`;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const target = new Date(parsed);
+    target.setHours(0, 0, 0, 0);
+    const diffDays = Math.round((target - today) / 86400000);
+
+    if (diffDays < 0) {
+      return 'Deadline has passed and should be refreshed.';
+    }
+    if (diffDays === 0) {
+      return 'Deadline is today. Submit immediately if this cycle is still open.';
+    }
+    if (diffDays <= 14) {
+      return `${diffDays} day${diffDays === 1 ? '' : 's'} left. This one should be prioritized first.`;
+    }
+    if (diffDays <= 45) {
+      return `${diffDays} days left. Start documents and essays now to stay ahead.`;
+    }
+    return `${diffDays} days left. Good time to prepare a stronger, higher-quality application.`;
+  }, [topScholarship]);
+
+  const targetCountriesLabel = Array.isArray(userProfile?.target_countries) && userProfile.target_countries.length
+    ? userProfile.target_countries.join(', ')
+    : null;
+
+  if (!scholarshipResults || !scholarshipResults.scholarships) {
+    return <div>Loading results...</div>;
+  }
 
   return (
     <div className="results-container">
@@ -81,6 +190,50 @@ function ResultsDisplay({ scholarshipResults, userProfile, onUnlock, onBack }) {
             <strong><Zap size={16} style={{display: 'inline', verticalAlign: 'text-bottom', marginRight: '6px'}}/>{isFreshDataUnavailable ? 'What happened:' : "Why you'll win:"}</strong>{' '}
             {topScholarship.one_liner_reason}
           </p>
+
+          {!isFreshDataUnavailable && (
+            <>
+              <div className="detail-grid">
+                <div className="detail-panel">
+                  <p className="detail-panel-label">
+                    <Clock3 size={15} />
+                    Application Timing
+                  </p>
+                  <p className="detail-panel-text">{deadlineInsight}</p>
+                </div>
+
+                <div className="detail-panel">
+                  <p className="detail-panel-label">
+                    <Sparkles size={15} />
+                    AI Strategy Tip
+                  </p>
+                  <p className="detail-panel-text">{topScholarship.strategy_tip}</p>
+                </div>
+              </div>
+
+              {profileHighlights.length > 0 && (
+                <div className="profile-fit-section">
+                  <p className="profile-fit-title">Why this matches your profile</p>
+                  <div className="profile-fit-list">
+                    {profileHighlights.map((item) => (
+                      <div className="profile-fit-chip" key={`${item.label}-${item.value}`}>
+                        <span className="chip-icon">{item.icon}</span>
+                        <span className="chip-label">{item.label}</span>
+                        <span className="chip-value">{item.value}</span>
+                      </div>
+                    ))}
+                    {targetCountriesLabel && (
+                      <div className="profile-fit-chip">
+                        <span className="chip-icon"><Globe size={14} /></span>
+                        <span className="chip-label">Targets</span>
+                        <span className="chip-value">{targetCountriesLabel}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
 
@@ -109,6 +262,10 @@ function ResultsDisplay({ scholarshipResults, userProfile, onUnlock, onBack }) {
                   <div className="blurred-text shimmer"></div>
                   <div className="blurred-text"></div>
                   <div className="blurred-text short"></div>
+                  <div className="blurred-meta-row">
+                    <div className="blurred-pill"></div>
+                    <div className="blurred-pill short"></div>
+                  </div>
                   <div className="match-score-badge">
                     <Lock size={14} style={{display: 'inline', verticalAlign: 'text-bottom', marginRight: '6px'}}/>
                     <span>{scholarship.match_score}%</span>

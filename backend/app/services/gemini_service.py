@@ -45,18 +45,42 @@ class GeminiService:
 
     @staticmethod
     def _build_prompt(user_profile: Dict[str, Any]) -> str:
-        user_profile_str = json.dumps(user_profile, indent=2)
-        return f"""Analyze this Indian student profile and find 5 REAL, ACTIVE scholarships as of {TODAY.isoformat()} for the current or next active admissions cycle:
+        normalized_profile = GeminiService._normalize_user_profile(user_profile)
+        user_profile_str = json.dumps(normalized_profile, indent=2)
+        nationality = normalized_profile.get("nationality") or "the student's"
+        target_countries = ", ".join(normalized_profile.get("target_countries", [])) or "the stated target countries"
+        english_test = normalized_profile.get("english_test_summary") or "Not taken yet"
+        intake = normalized_profile.get("intended_intake") or "current / next available intake"
+
+        return f"""Analyze this student profile and find 5 REAL, ACTIVE scholarships as of {TODAY.isoformat()} for the current or next active admissions cycle.
+
+PROFILE TO MATCH:
+- Nationality / citizenship: {nationality}
+- Target countries: {target_countries}
+- Degree level sought: {normalized_profile.get("degree_level")}
+- Current / last degree: {normalized_profile.get("current_degree") or "Not specified"}
+- Major / field: {normalized_profile.get("major")}
+- GPA: {normalized_profile.get("gpa")} on {normalized_profile.get("gpa_scale")} scale ({normalized_profile.get("gpa_percentage")} percent equivalent)
+- Intended intake: {intake}
+- English test status: {english_test}
+- Work experience: {normalized_profile.get("work_experience_years", 0)} years
+- Extra context: {normalized_profile.get("profile_highlight") or "None provided"}
+
+RAW PROFILE JSON:
 
 {user_profile_str}
 
 INSTRUCTIONS:
 1. Verify each scholarship is real and currently active before including it
 2. Only include scholarships with deadlines on or after {TODAY.isoformat()}, or clearly marked as rolling/opening soon for the next active cycle
-3. Match scholarships to the student's GPA, target countries, field of study, and experience
-4. Return ONLY verifiable scholarships
-5. Never return scholarships from closed or expired cycles
-6. Return ONLY valid JSON with no markdown
+3. Match scholarships to the student's nationality, target countries, degree level, current degree background, field of study, GPA, English-test status, intended intake, and work experience
+4. Exclude scholarships that clearly do not fit the target countries, degree level, field, or applicant nationality rules
+5. If a scholarship is country-specific or nationality-specific, only include it when this profile actually qualifies
+6. Prefer scholarships whose deadlines and cycle timing make sense for {intake}
+7. If the student has not taken an English test, avoid scholarships that require an already-submitted IELTS/TOEFL/PTE/Duolingo score unless the score can clearly be submitted later
+8. Return ONLY verifiable scholarships
+9. Never return scholarships from closed or expired cycles
+10. Return ONLY valid JSON with no markdown
 
 Return ONLY this JSON format:
 {{
@@ -115,7 +139,7 @@ Return ONLY this JSON format:
                     "role": "system",
                     "content": (
                         "You are an elite financial aid consultant specializing in scholarships "
-                        "for Indian students applying internationally. Only return real, active "
+                        "for international students applying globally. Only return real, active "
                         "scholarships and output strict JSON."
                     ),
                 },
@@ -176,7 +200,7 @@ Return ONLY this JSON format:
                 model_name="gemini-2.0-flash",
                 system_instruction=(
                     "You are an elite financial aid consultant specializing in scholarships "
-                    "for Indian students applying internationally. Only return real, active "
+                    "for international students applying globally. Only return real, active "
                     "scholarships and output strict JSON."
                 ),
             )
@@ -262,18 +286,19 @@ Return ONLY this JSON format:
     @staticmethod
     def _score_local_match(item: Dict[str, Any], user_profile: Dict[str, Any]) -> int:
         score = 0
-        degree_level = str(user_profile.get("degree_level", "")).strip()
-        target_countries = [str(country).strip() for country in user_profile.get("target_countries", [])]
+        normalized_profile = GeminiService._normalize_user_profile(user_profile)
+        degree_level = str(normalized_profile.get("degree_level", "")).strip()
+        target_countries = [str(country).strip() for country in normalized_profile.get("target_countries", [])]
         major = str(user_profile.get("major", "")).strip().lower()
-        work_experience = int(user_profile.get("work_experience_years", 0) or 0)
-        test_scores = user_profile.get("test_scores") or {}
+        work_experience = int(normalized_profile.get("work_experience_years", 0) or 0)
+        test_scores = normalized_profile.get("test_scores") or {}
+        user_percentage = normalized_profile.get("gpa_percentage", 0)
+        scholarship_degree_levels = [
+            GeminiService._normalize_degree_level(level)
+            for level in item.get("degreeLevels", [])
+        ]
 
-        user_percentage = GeminiService._normalize_to_percentage(
-            user_profile.get("gpa"),
-            user_profile.get("gpa_scale"),
-        )
-
-        if degree_level in item.get("degreeLevels", []):
+        if degree_level in scholarship_degree_levels:
             score += 25
         else:
             score -= 20
@@ -281,12 +306,14 @@ Return ONLY this JSON format:
         country = item.get("country", "")
         if country == "Anywhere" or country in target_countries:
             score += 20
+        elif target_countries:
+            score -= 15
 
         majors = [str(entry).lower() for entry in item.get("majors", [])]
         if "any" in majors:
             score += 15
-        elif any(option in major or major in option for option in majors):
-            score += 15
+        else:
+            score += GeminiService._score_major_match(major, majors)
 
         min_percentage = item.get("minGPAPercentage", 0)
         if user_percentage >= min_percentage:
@@ -314,12 +341,125 @@ Return ONLY this JSON format:
                         test_match_points = max(test_match_points, 5)
                 except (TypeError, ValueError):
                     continue
+            if not test_match_points and normalized_profile.get("english_test_type"):
+                test_match_points = 2
             score += test_match_points
 
-        if user_profile.get("profile_highlight"):
+        intake_bonus = GeminiService._score_intake_fit(item, normalized_profile.get("intended_intake"))
+        score += intake_bonus
+
+        if normalized_profile.get("profile_highlight"):
             score += 5
 
         return max(0, min(98, score))
+
+    @staticmethod
+    def _normalize_user_profile(user_profile: Dict[str, Any]) -> Dict[str, Any]:
+        normalized = dict(user_profile)
+        normalized["degree_level"] = GeminiService._normalize_degree_level(
+            normalized.get("degree_level", "")
+        )
+        normalized["gpa_percentage"] = GeminiService._normalize_to_percentage(
+            normalized.get("gpa"),
+            normalized.get("gpa_scale"),
+        )
+
+        test_scores = dict(normalized.get("test_scores") or {})
+        english_test_type = normalized.get("english_test_type")
+        english_test_score = normalized.get("english_test_score")
+        if english_test_type and english_test_score is not None:
+            test_scores[str(english_test_type).lower()] = english_test_score
+        normalized["test_scores"] = test_scores
+
+        if english_test_type and english_test_score is not None:
+            normalized["english_test_summary"] = f"{english_test_type} {english_test_score}"
+        elif english_test_type:
+            normalized["english_test_summary"] = str(english_test_type)
+        elif test_scores:
+            normalized["english_test_summary"] = ", ".join(
+                f"{str(exam).upper()} {score}" for exam, score in test_scores.items()
+            )
+        else:
+            normalized["english_test_summary"] = None
+
+        return normalized
+
+    @staticmethod
+    def _normalize_degree_level(value: Any) -> str:
+        text = str(value or "").strip().lower()
+        mapping = {
+            "undergrad": "Bachelor's",
+            "undergraduate": "Bachelor's",
+            "bachelor": "Bachelor's",
+            "bachelor's": "Bachelor's",
+            "masters": "Master's",
+            "master": "Master's",
+            "master's": "Master's",
+            "phd": "PhD",
+            "doctorate": "PhD",
+            "doctoral": "PhD",
+        }
+        return mapping.get(text, str(value or "").strip())
+
+    @staticmethod
+    def _score_major_match(user_major: str, scholarship_majors: list[str]) -> int:
+        if not user_major or not scholarship_majors:
+            return 0
+
+        normalized_user_major = user_major.lower()
+        major_aliases = {
+            "computer science": ["computer science", "software", "technology", "data science", "artificial intelligence", "cybersecurity"],
+            "business administration": ["business", "management", "finance", "economics"],
+            "management": ["business", "management", "finance", "economics"],
+            "medicine": ["medicine", "medical science", "biotechnology"],
+            "medical science": ["medicine", "medical science", "biotechnology"],
+            "mechanical engineering": ["mechanical engineering", "engineering", "technology"],
+            "electrical engineering": ["electrical engineering", "engineering", "technology"],
+            "civil engineering": ["civil engineering", "engineering", "technology"],
+            "law": ["law"],
+        }
+
+        expanded_terms = {normalized_user_major}
+        for canonical, aliases in major_aliases.items():
+            if canonical in normalized_user_major or normalized_user_major in aliases:
+                expanded_terms.update(aliases)
+                expanded_terms.add(canonical)
+
+        if any(term in scholarship_major or scholarship_major in term for term in expanded_terms for scholarship_major in scholarship_majors):
+            return 15
+
+        if any("engineering" in scholarship_major for scholarship_major in scholarship_majors) and "engineering" in normalized_user_major:
+            return 12
+        if any("science" in scholarship_major for scholarship_major in scholarship_majors) and "science" in normalized_user_major:
+            return 10
+
+        return 0
+
+    @staticmethod
+    def _score_intake_fit(item: Dict[str, Any], intended_intake: Any) -> int:
+        if not intended_intake:
+            return 0
+
+        intake_text = str(intended_intake).strip().lower()
+        deadline = item.get("deadline")
+        if not deadline:
+            return 0
+
+        if str(deadline).strip().lower() in {"rolling", "rolling deadlines", "tba", "open soon"}:
+            return 6
+
+        try:
+            deadline_date = date.fromisoformat(str(deadline))
+        except ValueError:
+            return 0
+
+        if "fall" in intake_text and deadline_date.month <= 12:
+            return 6
+        if "spring" in intake_text and deadline_date.month <= 10:
+            return 4
+        if "any" in intake_text:
+            return 3
+        return 0
 
     @staticmethod
     def _normalize_to_percentage(gpa: Any, scale: Any) -> float:
@@ -361,18 +501,27 @@ Return ONLY this JSON format:
 
     @staticmethod
     def _build_local_reason(item: Dict[str, Any], user_profile: Dict[str, Any], score: int) -> str:
+        normalized_profile = GeminiService._normalize_user_profile(user_profile)
         reasons = []
-        if item.get("country") in user_profile.get("target_countries", []) or item.get("country") == "Anywhere":
+        if item.get("country") in normalized_profile.get("target_countries", []) or item.get("country") == "Anywhere":
             reasons.append("it matches your target destination")
-        if str(user_profile.get("degree_level", "")) in item.get("degreeLevels", []):
+        if normalized_profile.get("degree_level") in [
+            GeminiService._normalize_degree_level(level)
+            for level in item.get("degreeLevels", [])
+        ]:
             reasons.append("your degree level is eligible")
 
-        user_percentage = GeminiService._normalize_to_percentage(
-            user_profile.get("gpa"),
-            user_profile.get("gpa_scale"),
-        )
+        user_percentage = normalized_profile.get("gpa_percentage", 0)
         if user_percentage >= item.get("minGPAPercentage", 0):
             reasons.append("your academics clear the typical cutoff")
+        if normalized_profile.get("major") and any(
+            str(option).lower() in str(normalized_profile.get("major", "")).lower()
+            or str(normalized_profile.get("major", "")).lower() in str(option).lower()
+            for option in item.get("majors", [])
+        ):
+            reasons.append("your major is closely aligned")
+        if normalized_profile.get("english_test_type") and item.get("testScores"):
+            reasons.append("your English-test profile supports eligibility")
 
         if not reasons:
             reasons.append("your profile aligns with several base eligibility criteria")
@@ -381,13 +530,21 @@ Return ONLY this JSON format:
 
     @staticmethod
     def _build_local_strategy(item: Dict[str, Any], user_profile: Dict[str, Any]) -> str:
+        normalized_profile = GeminiService._normalize_user_profile(user_profile)
         strategies = []
         if item.get("essayRequired"):
             strategies.append("prepare a focused statement of purpose tied to impact and leadership")
-        if user_profile.get("profile_highlight"):
+        if normalized_profile.get("profile_highlight"):
             strategies.append("highlight your strongest achievement early in the application")
         if item.get("testScores"):
-            strategies.append("submit your strongest standardized test evidence where accepted")
+            if normalized_profile.get("english_test_type"):
+                strategies.append("submit your English test score prominently anywhere the application allows supporting evidence")
+            else:
+                strategies.append("shortlist scholarships where English scores can be submitted later or are waived, then plan the test early")
+        if normalized_profile.get("intended_intake"):
+            strategies.append(f"prioritize applications that fit your {normalized_profile.get('intended_intake')} intake plan")
+        if normalized_profile.get("current_degree"):
+            strategies.append(f"use your {normalized_profile.get('current_degree')} background to explain academic readiness")
         if not strategies:
             strategies.append("apply early and tailor your application to the program's priorities")
 

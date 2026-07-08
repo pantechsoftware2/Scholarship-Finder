@@ -21,5 +21,13 @@ A professional compact header row for `Sheet1`:
 `S1` `Top 5 Scholarships Summary`
 `T1` `Profile Highlight`
 `U1` `Raw Scholarships JSON`
+`V1` `Current Degree`
+`W1` `Nationality`
+`X1` `Intended Intake`
+`Y1` `English Test Taken`
+`Z1` `IELTS`
+`AA1` `TOEFL`
+`AB1` `PTE`
+`AC1` `Duolingo`
 
 Use [backend/google_sheets_webhook.gs](</C:/Users/User/Pictures/New folder/Scholarship-Finder/backend/google_sheets_webhook.gs>) as the matching Apps Script webhook implementation.

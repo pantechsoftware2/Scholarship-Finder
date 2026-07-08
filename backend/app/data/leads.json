@@ -732,5 +732,154 @@
       }
     ],
     "local_backup_time": "2026-07-08T14:58:46.224467"
+  },
+  {
+    "timestamp": "2026-07-08 17:26:53",
+    "name": "Rupam Das",
+    "email": "rupam.abroadeduversity@gmail.com",
+    "phone": "9876543211",
+    "target_degree": "Master's",
+    "gpa": "8.0",
+    "countries": [
+      "UK"
+    ],
+    "major": "Finance",
+    "work_experience": "1",
+    "profile_highlight": "",
+    "test_scores_provided": "No",
+    "gre": "",
+    "gmat": "",
+    "ielts": "",
+    "test_scores": "",
+    "ai_summary_probability": 75,
+    "scholarships_count": 5,
+    "top_scholarship_name": "University of Manchester Global Futures Scholarship (India)",
+    "top_scholarship_amount": "£10,000 tuition waiver",
+    "top_scholarship_deadline": "2026-08-31",
+    "top_scholarship_match_score": 75,
+    "top_scholarship_reason": "Indian students with 8.0/10 GPA entering Master's in Finance at Manchester are eligible",
+    "top_scholarship_strategy_tip": "Apply early via the university offer holder scholarship portal and highlight academic consistency",
+    "top_scholarships_summary": "University of Manchester Global Futures Scholarship (India) (2026-08-31) | British Council GREAT Scholarship India (Finance/Business) (2026-09-15) | Imperial College Business School Scholarship (MSc Finance) (2026-09-30) | University of Edinburgh India Scholarship (Business School) (2026-10-15) | Chevening Scholarship (2026-11-03)",
+    "scholarships": [
+      {
+        "name": "University of Manchester Global Futures Scholarship (India)",
+        "amount": "£10,000 tuition waiver",
+        "deadline": "2026-08-31",
+        "match_score": 75,
+        "one_liner_reason": "Indian students with 8.0/10 GPA entering Master's in Finance at Manchester are eligible",
+        "strategy_tip": "Apply early via the university offer holder scholarship portal and highlight academic consistency"
+      },
+      {
+        "name": "British Council GREAT Scholarship India (Finance/Business)",
+        "amount": "£10,000 tuition fee waiver",
+        "deadline": "2026-09-15",
+        "match_score": 68,
+        "one_liner_reason": "GREAT Scholarships include India and UK universities offering Finance Master's for 2027 entry",
+        "strategy_tip": "Apply to participating UK universities early and select GREAT Scholarship option in application"
+      },
+      {
+        "name": "Imperial College Business School Scholarship (MSc Finance)",
+        "amount": "Up to £15,000 tuition reduction",
+        "deadline": "2026-09-30",
+        "match_score": 70,
+        "one_liner_reason": "Automatic consideration for Indian offer holders in MSc Finance with strong academics",
+        "strategy_tip": "Secure admission offer first; no separate form needed but strong SOP boosts award level"
+      },
+      {
+        "name": "University of Edinburgh India Scholarship (Business School)",
+        "amount": "£5,000–£10,000 tuition fee reduction",
+        "deadline": "2026-10-15",
+        "match_score": 72,
+        "one_liner_reason": "Open to Indian nationals with offer for Finance-related Master's at Edinburgh",
+        "strategy_tip": "Submit program application before scholarship deadline and note relevant finance work experience"
+      },
+      {
+        "name": "Chevening Scholarship",
+        "amount": "Full tuition + living stipend (~£18,000 living allowance)",
+        "deadline": "2026-11-03",
+        "match_score": 80,
+        "one_liner_reason": "UK Master's in Finance with 1 year work experience fits Chevening's leadership and experience criteria",
+        "strategy_tip": "Emphasize leadership potential and career impact in Finance through the 2 required essays and references"
+      }
+    ],
+    "local_backup_time": "2026-07-08T17:26:57.484787"
+  },
+  {
+    "timestamp": "2026-07-08 18:05:10",
+    "name": "Rupam Das",
+    "email": "rupam.abroadeduversity@gmail.com",
+    "phone": "9876543211",
+    "target_degree": "Bachelor's",
+    "current_degree": "M.Tech",
+    "gpa": "9.0",
+    "nationality": "India",
+    "countries": [
+      "Canada"
+    ],
+    "intended_intake": "Fall 2027",
+    "major": "Electrical Engineering",
+    "work_experience": "0",
+    "profile_highlight": "research paper and volunteer",
+    "test_scores_provided": "Yes",
+    "english_test_taken": "Yes",
+    "gre": "",
+    "gmat": "",
+    "ielts": "45",
+    "toefl": "25",
+    "pte": "",
+    "duolingo": "",
+    "test_scores": "IELTS: 45, TOEFL: 25",
+    "ai_summary_probability": 75,
+    "scholarships_count": 5,
+    "top_scholarship_name": "Lester B. Pearson International Scholarship",
+    "top_scholarship_amount": "Full tuition + living expenses",
+    "top_scholarship_deadline": "2026-11-30",
+    "top_scholarship_match_score": 85,
+    "top_scholarship_reason": "University of Toronto merit scholarship for international undergraduates including Indians with high academic standing and leadership",
+    "top_scholarship_strategy_tip": "Secure school nomination from a partner Indian school or apply via UofT admission and highlight research paper and volunteer leadership",
+    "top_scholarships_summary": "Lester B. Pearson International Scholarship (2026-11-30) | University of British Columbia International Scholars Program (2026-12-01) | University of Alberta International Admission Scholarship (2027-01-15) | York University Global Leader of Tomorrow Award (2027-02-01) | Carleton University Prestige Scholarships (Richard Lewar Scholarship) (2027-03-01)",
+    "scholarships": [
+      {
+        "name": "Lester B. Pearson International Scholarship",
+        "amount": "Full tuition + living expenses",
+        "deadline": "2026-11-30",
+        "match_score": 85,
+        "one_liner_reason": "University of Toronto merit scholarship for international undergraduates including Indians with high academic standing and leadership",
+        "strategy_tip": "Secure school nomination from a partner Indian school or apply via UofT admission and highlight research paper and volunteer leadership"
+      },
+      {
+        "name": "University of British Columbia International Scholars Program",
+        "amount": "Full tuition + fees for 4 years",
+        "deadline": "2026-12-01",
+        "match_score": 80,
+        "one_liner_reason": "UBC need-and-merit scholarship for international bachelor's students; Indian nationals with 90% eligible",
+        "strategy_tip": "Emphasize academic excellence (9.0/10) and volunteer work; submit IELTS/TOEFL scores with Fall 2027 application"
+      },
+      {
+        "name": "University of Alberta International Admission Scholarship",
+        "amount": "CAD 5,000 one-time",
+        "deadline": "2027-01-15",
+        "match_score": 75,
+        "one_liner_reason": "Automatic consideration for Indian students with high admission average entering bachelor's programs",
+        "strategy_tip": "Apply for BSc Electrical Engineering Fall 2027; ensure IELTS/TOEFL sent and highlight 90% average"
+      },
+      {
+        "name": "York University Global Leader of Tomorrow Award",
+        "amount": "CAD 20,000 per year",
+        "deadline": "2027-02-01",
+        "match_score": 82,
+        "one_liner_reason": "Renewable entrance award for international undergrads with academic and leadership profile; open to Indian students",
+        "strategy_tip": "Show volunteer impact and research experience; maintain GPA and apply early for Fall 2027"
+      },
+      {
+        "name": "Carleton University Prestige Scholarships (Richard Lewar Scholarship)",
+        "amount": "CAD 20,000 per year",
+        "deadline": "2027-03-01",
+        "match_score": 78,
+        "one_liner_reason": "Carleton prestige award for international students entering bachelor's with top grades and extracurriculars",
+        "strategy_tip": "Apply to Electrical Engineering at Carleton and submit evidence of research paper and volunteering by deadline"
+      }
+    ],
+    "local_backup_time": "2026-07-08T18:05:14.122113"
   }
 ]
