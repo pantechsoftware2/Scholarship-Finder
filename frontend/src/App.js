@@ -6,6 +6,7 @@ import InputForm from './components/InputForm';
 import Results from './pages/Results';
 import ThankYou from './pages/ThankYou';
 import './styles/App.css';
+import { getApiBaseUrl } from './config';
 
 function App() {
   const [currentStage, setCurrentStage] = useState('input');
@@ -13,11 +14,13 @@ function App() {
   const [scholarshipResults, setScholarshipResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+  const apiUrl = getApiBaseUrl();
 
   const handleCalculate = async (profile) => {
     setLoading(true);
     setError(null);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 60000);
 
     try {
       const response = await fetch(
@@ -27,15 +30,19 @@ function App() {
           headers: {
             'Content-Type': 'application/json',
           },
+          signal: controller.signal,
           body: JSON.stringify(profile),
         }
       );
 
-      const result = await response.json();
+      const contentType = response.headers.get('content-type') || '';
+      const result = contentType.includes('application/json')
+        ? await response.json()
+        : null;
 
       if (!response.ok) {
         // Extract error message from backend response
-        let errorMessage = 'Validation failed';
+        let errorMessage = 'Unable to calculate scholarships right now.';
         
         if (result && typeof result.detail === 'string') {
           errorMessage = result.detail;
@@ -50,13 +57,22 @@ function App() {
         throw new Error(errorMessage);
       }
 
+      if (!result || !result.data) {
+        throw new Error('The server returned an unexpected response. Please try again.');
+      }
+
       setUserProfile(profile);
       setScholarshipResults(result.data);
       setCurrentStage('results');
     } catch (err) {
-      setError(err.message || 'Failed to calculate scholarships.');
+      if (err.name === 'AbortError') {
+        setError('The request took too long. Please try again in a moment.');
+      } else {
+        setError(err.message || 'Failed to calculate scholarships.');
+      }
       console.error('Error:', err);
     } finally {
+      clearTimeout(timeout);
       setLoading(false);
     }
   };
