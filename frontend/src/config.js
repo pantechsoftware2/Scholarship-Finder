@@ -1,5 +1,5 @@
 const LOCAL_API_URL = 'http://localhost:5000';
-const PRODUCTION_API_URL = 'https://scholarship-finder-backend-seven.vercel.app';
+const PRODUCTION_API_URL = 'https://scholarship-finder-backend-peach.vercel.app';
 
 function normalizeUrl(value) {
   return String(value || '').trim().replace(/\/+$/, '');
@@ -19,4 +19,3 @@ export function getApiBaseUrl() {
 
   return isLocalhost ? LOCAL_API_URL : PRODUCTION_API_URL;
 }
-

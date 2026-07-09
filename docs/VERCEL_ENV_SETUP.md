@@ -10,7 +10,7 @@ You need to add the following environment variables to your **Vercel Backend Pro
 
 #### 1. **Google Apps Script URL** (REQUIRED for Google Sheets)
 ```
-GOOGLE_APPS_SCRIPT_URL=https://script.google.com/macros/s/AKfycbwf6kDzsLDZu8oqBih_QAPuNm1McG4O0P0LBb5k2Mvmf5gtUDa8RwgAOQ7XEQogrTLS/exec
+GOOGLE_APPS_SCRIPT_URL=https://script.google.com/macros/s/AKfycbyZPwAAeVZ_C34ybkfi6NcDa9dPUDTi5tm4857x8w5_dWJorLrbY0uEjxk1do5dlBrf/exec
 ```
 
 #### 2. **Google Gemini API Key** (REQUIRED for Scholarship Calculation)
@@ -36,7 +36,7 @@ SMTP_PORT=587
 ```
 PORT=5000
 NODE_ENV=production
-FRONTEND_URL=https://scholarship-finder-rouge.vercel.app
+FRONTEND_URL=https://scholarship-finder-frontend.vercel.app
 ```
 
 ## Steps to Add Environment Variables to Vercel
@@ -44,7 +44,7 @@ FRONTEND_URL=https://scholarship-finder-rouge.vercel.app
 ### Method 1: Via Vercel Dashboard (Recommended)
 
 1. Go to [vercel.com](https://vercel.com)
-2. Select your **Backend Project** (`scholarship-finder-backend-seven`)
+2. Select your **Backend Project** (`scholarship-finder-backend`)
 3. Click **Settings** → **Environment Variables**
 4. Add each variable one by one:
    - Click **Add New**

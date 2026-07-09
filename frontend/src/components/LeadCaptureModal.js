@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import '../styles/LeadCaptureModal.css';
 import { User, Mail, Phone, Lock, Send } from 'lucide-react';
+import { getApiBaseUrl } from '../config';
 
 function LeadCaptureModal({ scholarships, profile, onClose, onSuccess }) {
+  const apiUrl = getApiBaseUrl();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -39,7 +41,6 @@ function LeadCaptureModal({ scholarships, profile, onClose, onSuccess }) {
         scholarship_results: scholarships
       };
 
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
       const response = await fetch(`${apiUrl}/api/submit-lead`, {
         method: 'POST',
         headers: {
