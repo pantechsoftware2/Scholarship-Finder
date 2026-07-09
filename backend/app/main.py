@@ -17,6 +17,17 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+allowed_origins = list(
+    dict.fromkeys(
+        [
+            settings.frontend_url,
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+            "https://scholarship-finder-frontend.vercel.app",
+        ]
+    )
+)
+
 app = FastAPI(
     title="Scholarship Finder API",
     description="AI-powered scholarship calculator for Indian students",
@@ -26,13 +37,7 @@ app = FastAPI(
 # -------------------- CORS --------------------
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        settings.frontend_url,
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "https://scholarship-finder-rouge.vercel.app",  # Frontend Vercel deployment
-        "https://scholarship-finder-backend-seven.vercel.app"  # Backend Vercel deployment
-    ],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
