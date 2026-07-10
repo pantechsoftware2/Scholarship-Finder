@@ -1,8 +1,6 @@
-# Filename: backend/app/models.py
-# No changes.
-
-from pydantic import BaseModel, EmailStr
 from typing import List, Optional
+
+from pydantic import BaseModel, EmailStr, Field, field_validator
 
 class UserProfile(BaseModel):
     degree_level: str  # Undergrad, Masters, PhD, MBA
@@ -42,7 +40,7 @@ class Scholarship(BaseModel):
     name: str
     amount: str
     deadline: str
-    match_score: int
+    match_score: int = Field(ge=0, le=100)
     one_liner_reason: str
     strategy_tip: str
 
@@ -51,11 +49,34 @@ class ScholarshipResult(BaseModel):
     scholarships: List[Scholarship]
 
 class LeadCapture(BaseModel):
-    name: str
+    name: str = Field(min_length=2, max_length=80)
     email: EmailStr
-    phone: str
+    phone: str = Field(min_length=7, max_length=20)
+    website: str = ""
     user_profile: UserProfile
     scholarship_results: ScholarshipResult
+
+    @field_validator("name")
+    @classmethod
+    def validate_name(cls, value: str) -> str:
+        cleaned = " ".join(str(value).strip().split())
+        if len(cleaned) < 2:
+            raise ValueError("Name must be at least 2 characters long")
+        return cleaned
+
+    @field_validator("phone")
+    @classmethod
+    def validate_phone(cls, value: str) -> str:
+        cleaned = str(value).strip()
+        allowed_chars = set("+0123456789 -()")
+        if any(char not in allowed_chars for char in cleaned):
+            raise ValueError("Phone number contains invalid characters")
+
+        digit_count = sum(char.isdigit() for char in cleaned)
+        if digit_count < 7:
+            raise ValueError("Phone number must contain at least 7 digits")
+
+        return cleaned
 
 class EmailRequest(BaseModel):
     recipient_email: str

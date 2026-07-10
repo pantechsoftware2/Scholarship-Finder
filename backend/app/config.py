@@ -4,7 +4,6 @@
 from pydantic_settings import BaseSettings
 from pydantic import ConfigDict
 from dotenv import load_dotenv
-import os
 
 # Load .env file explicitly
 load_dotenv()
@@ -33,6 +32,7 @@ class Settings(BaseSettings):
     port: int = 5000
     node_env: str = "development"
     frontend_url: str = "https://scholarship-finder-frontend.vercel.app"
+    allow_local_backup: bool = False
     
     model_config = ConfigDict(env_file=".env", case_sensitive=False, extra="ignore")
 

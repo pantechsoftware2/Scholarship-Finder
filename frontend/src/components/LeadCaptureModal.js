@@ -8,7 +8,8 @@ function LeadCaptureModal({ scholarships, profile, onClose, onSuccess }) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    phone: ''
+    phone: '',
+    website: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -29,6 +30,13 @@ function LeadCaptureModal({ scholarships, profile, onClose, onSuccess }) {
       return;
     }
 
+    const sanitizedPhone = formData.phone.trim();
+    const digitCount = sanitizedPhone.replace(/\D/g, '').length;
+    if (digitCount < 7) {
+      setError('Please enter a valid WhatsApp number.');
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -37,6 +45,7 @@ function LeadCaptureModal({ scholarships, profile, onClose, onSuccess }) {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
+        website: formData.website,
         user_profile: profile,
         scholarship_results: scholarships
       };
@@ -55,14 +64,15 @@ function LeadCaptureModal({ scholarships, profile, onClose, onSuccess }) {
       }
 
       const result = await response.json();
-      console.log('✅ Lead submitted successfully:', result);
-      
-      // Call success callback
+      if (!result.email_sent) {
+        setError(result.message || 'We saved your details, but could not send the email right now.');
+        return;
+      }
+
       if (onSuccess) {
         onSuccess();
       }
     } catch (err) {
-      console.error('❌ Error submitting lead:', err);
       setError(err.message || 'Failed to submit form. Please try again.');
     } finally {
       setLoading(false);
@@ -137,6 +147,17 @@ function LeadCaptureModal({ scholarships, profile, onClose, onSuccess }) {
               disabled={loading}
             />
           </div>
+
+          <input
+            name="website"
+            type="text"
+            value={formData.website}
+            onChange={handleInputChange}
+            tabIndex="-1"
+            autoComplete="off"
+            aria-hidden="true"
+            className="visually-hidden-honeypot"
+          />
 
           <button 
             type="submit" 

@@ -122,9 +122,11 @@ Return ONLY this JSON format:
             logger.warning("AI provider returned only stale or expired scholarships")
             return GeminiService._get_no_fresh_data_result()
 
+        scholarships.sort(key=lambda scholarship: (-scholarship.match_score, scholarship.deadline))
+
         result = ScholarshipResult(
             summary_probability=data.get("summary_probability", 0),
-            scholarships=GeminiService._sort_by_deadline(scholarships)[:5],
+            scholarships=scholarships[:5],
         )
         logger.info("Successfully found %s scholarships", len(result.scholarships))
         return result

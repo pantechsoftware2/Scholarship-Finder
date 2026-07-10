@@ -1,14 +1,18 @@
 # Filename: backend/app/main.py
 # No changes.
 
+import asyncio
 import logging
 
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from app.models import UserProfile, LeadCapture, ScholarshipResult
+from fastapi.responses import JSONResponse
+
+from app.models import UserProfile, LeadCapture, ScholarshipResult, EmailRequest
 from app.services.gemini_service import GeminiService
 from app.services.sheets_service import SheetsService
 from app.services.email_service import EmailService
+from app.services.rate_limiter import rate_limiter
 from app.config import settings
 
 logging.basicConfig(
@@ -34,6 +38,25 @@ app = FastAPI(
     version="1.0.0"
 )
 
+
+def _get_client_ip(request: Request) -> str:
+    forwarded_for = request.headers.get("x-forwarded-for", "")
+    if forwarded_for:
+        return forwarded_for.split(",")[0].strip()
+    return request.client.host if request.client else "unknown"
+
+
+def _enforce_rate_limit(request: Request, scope: str, limit: int, window_seconds: int, key_suffix: str = "") -> None:
+    client_ip = _get_client_ip(request)
+    composed_key = f"{scope}:{client_ip}:{key_suffix}".rstrip(":")
+    retry_after = rate_limiter.check(composed_key, limit, window_seconds)
+    if retry_after:
+        raise HTTPException(
+            status_code=429,
+            detail=f"Too many requests. Please try again in {retry_after} seconds.",
+            headers={"Retry-After": str(retry_after)},
+        )
+
 # -------------------- CORS --------------------
 app.add_middleware(
     CORSMiddleware,
@@ -53,11 +76,12 @@ def health_check():
 
 # -------------------- CALCULATE --------------------
 @app.post("/api/calculate-scholarships")
-def calculate_scholarships(profile: UserProfile):
+def calculate_scholarships(profile: UserProfile, request: Request):
     """
     Calculate scholarships using Gemini + Google Search grounding
     """
     try:
+        _enforce_rate_limit(request, "calculate", limit=20, window_seconds=60)
         profile_dict = profile.model_dump()
 
         result = GeminiService.get_scholarships(profile_dict)
@@ -85,32 +109,59 @@ def calculate_scholarships(profile: UserProfile):
 
 # -------------------- LEAD SUBMIT --------------------
 @app.post("/api/submit-lead")
-async def submit_lead(lead: LeadCapture, background_tasks: BackgroundTasks):
+async def submit_lead(lead: LeadCapture, request: Request):
     """
     Save lead → Google Sheets → Send email
     """
     try:
+        _enforce_rate_limit(request, "submit-lead-ip", limit=5, window_seconds=900)
+        _enforce_rate_limit(request, "submit-lead-email", limit=3, window_seconds=1800, key_suffix=lead.email.lower())
+
+        if lead.website.strip():
+            raise HTTPException(status_code=400, detail="Unable to process submission.")
+
         logger.info("Lead received for %s", lead.email)
         
         # Save to Google Sheets
         logger.info("Saving lead to Google Sheets")
         sheets_result = await SheetsService.save_lead(lead)
         logger.info("Google Sheets save result: %s", sheets_result)
+        if not sheets_result:
+            raise HTTPException(
+                status_code=503,
+                detail="We could not save your details securely right now. Please try again in a few minutes.",
+            )
 
-        # Queue email notification
-        logger.info("Queueing email to %s", lead.email)
-        background_tasks.add_task(
+        logger.info("Sending report email to %s", lead.email)
+        email_sent = await asyncio.to_thread(
             EmailService.send_scholarship_report,
             lead.email,
             lead.name,
-            lead.scholarship_results
+            lead.scholarship_results,
         )
+
+        if not email_sent:
+            return JSONResponse(
+                status_code=202,
+                content={
+                    "success": True,
+                    "message": (
+                        "Your details were saved, but we could not send the report email right now. "
+                        "Please try again shortly or contact support if the issue continues."
+                    ),
+                    "email": lead.email,
+                    "email_sent": False,
+                    "lead_saved": True,
+                },
+            )
 
         return {
             "success": True,
             "message": "Lead submitted successfully. Check your email for the full report!",
             "email": lead.email,
-            "sheets_saved": sheets_result
+            "sheets_saved": sheets_result,
+            "email_sent": True,
+            "lead_saved": True,
         }
 
     except HTTPException:
@@ -124,33 +175,36 @@ async def submit_lead(lead: LeadCapture, background_tasks: BackgroundTasks):
 
 # -------------------- SEND EMAIL (OPTIONAL) --------------------
 @app.post("/api/send-email")
-def send_email(email_data: dict, background_tasks: BackgroundTasks):
+async def send_email(email_data: EmailRequest, request: Request):
     """
     Manually trigger email sending
     """
     try:
-        recipient_email = email_data.get("email")
-        recipient_name = email_data.get("name")
-        scholarships_data = email_data.get("scholarships")
-
-        if not all([recipient_email, recipient_name, scholarships_data]):
-            raise HTTPException(
-                status_code=400,
-                detail="Missing required fields"
-            )
-
-        scholarships = ScholarshipResult(**scholarships_data)
-
-        background_tasks.add_task(
-            EmailService.send_scholarship_report,
-            recipient_email,
-            recipient_name,
-            scholarships
+        _enforce_rate_limit(request, "send-email-ip", limit=3, window_seconds=900)
+        _enforce_rate_limit(
+            request,
+            "send-email-recipient",
+            limit=2,
+            window_seconds=1800,
+            key_suffix=email_data.recipient_email.lower(),
         )
+
+        email_sent = await asyncio.to_thread(
+            EmailService.send_scholarship_report,
+            email_data.recipient_email,
+            email_data.recipient_name,
+            email_data.scholarship_results,
+        )
+
+        if not email_sent:
+            raise HTTPException(
+                status_code=502,
+                detail="Unable to send email right now. Please try again shortly.",
+            )
 
         return {
             "success": True,
-            "message": "Email queued successfully"
+            "message": "Email sent successfully"
         }
 
     except HTTPException:

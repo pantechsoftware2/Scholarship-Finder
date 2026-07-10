@@ -42,23 +42,27 @@ class SheetsService:
 
             saved_to_sheets = await service._append_to_google_sheets(payload)
             if saved_to_sheets:
-                await service._save_locally(payload)
+                if settings.allow_local_backup:
+                    await service._save_locally(payload)
                 return True
 
             saved_via_apps_script = await service._append_via_apps_script(payload)
             if saved_via_apps_script:
-                await service._save_locally(payload)
+                if settings.allow_local_backup:
+                    await service._save_locally(payload)
                 return True
 
-            logger.warning("Google Sheets write failed; saving lead locally only")
-            await service._save_locally(payload)
+            logger.error("Lead persistence failed: no durable storage provider succeeded")
+            if settings.allow_local_backup:
+                await service._save_locally(payload)
             return False
         except Exception as e:
             logger.exception("Sheets service error: %s", e)
-            try:
-                await service._save_locally(payload)
-            except Exception:
-                logger.exception("Failed to save local backup after Sheets error")
+            if settings.allow_local_backup:
+                try:
+                    await service._save_locally(payload)
+                except Exception:
+                    logger.exception("Failed to save local backup after Sheets error")
             return False
 
     def _build_payload(self, lead) -> Dict[str, Any]:

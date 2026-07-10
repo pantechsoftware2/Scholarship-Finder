@@ -54,8 +54,13 @@ class EmailService:
 
     @staticmethod
     def _generate_html_report(name: str, scholarships: ScholarshipResult) -> str:
-        scholarship_count = len(scholarships.scholarships)
-        top_pick = scholarships.scholarships[0].name if scholarships.scholarships else "your top scholarship matches"
+        ranked_scholarships = sorted(
+            scholarships.scholarships,
+            key=lambda scholarship: scholarship.match_score,
+            reverse=True,
+        )
+        scholarship_count = len(ranked_scholarships)
+        top_pick = ranked_scholarships[0].name if ranked_scholarships else "your top scholarship matches"
         html = f"""
         <html>
         <body style="font-family: Arial, sans-serif; color: #1f2937; margin: 0; padding: 0; background: #f8fafc;">
@@ -106,6 +111,11 @@ class EmailService:
             topMargin=40,
             bottomMargin=40,
         )
+        ranked_scholarships = sorted(
+            scholarships.scholarships,
+            key=lambda scholarship: scholarship.match_score,
+            reverse=True,
+        )
 
         styles = getSampleStyleSheet()
         title_style = ParagraphStyle(
@@ -126,6 +136,7 @@ class EmailService:
             leading=16,
             textColor=colors.HexColor("#334155"),
             spaceAfter=10,
+            alignment=TA_CENTER,
         )
         section_style = ParagraphStyle(
             "SectionStyle",
@@ -143,6 +154,7 @@ class EmailService:
             fontSize=10,
             leading=14,
             textColor=colors.HexColor("#334155"),
+            wordWrap="CJK",
         )
         small_style = ParagraphStyle(
             "SmallStyle",
@@ -151,6 +163,34 @@ class EmailService:
             fontSize=9,
             leading=13,
             textColor=colors.HexColor("#475569"),
+            wordWrap="CJK",
+        )
+        card_title_style = ParagraphStyle(
+            "CardTitleStyle",
+            parent=styles["Heading3"],
+            fontName="Helvetica-Bold",
+            fontSize=11,
+            leading=15,
+            textColor=colors.HexColor("#1e3a8a"),
+            wordWrap="CJK",
+        )
+        meta_style = ParagraphStyle(
+            "MetaStyle",
+            parent=styles["BodyText"],
+            fontName="Helvetica",
+            fontSize=9,
+            leading=12,
+            textColor=colors.HexColor("#1f2937"),
+            wordWrap="CJK",
+        )
+        label_style = ParagraphStyle(
+            "LabelStyle",
+            parent=styles["BodyText"],
+            fontName="Helvetica-Bold",
+            fontSize=9,
+            leading=12,
+            textColor=colors.HexColor("#0f172a"),
+            wordWrap="CJK",
         )
 
         story = [
@@ -167,7 +207,7 @@ class EmailService:
         summary_table = Table(
             [
                 ["Candidate", EmailService._safe_pdf_text(name)],
-                ["Shortlisted Scholarships", str(len(scholarships.scholarships))],
+                ["Shortlisted Scholarships", str(len(ranked_scholarships))],
                 ["Success Probability", f"{scholarships.summary_probability}%"],
             ],
             colWidths=[2.0 * inch, 4.3 * inch],
@@ -185,16 +225,86 @@ class EmailService:
                 ]
             )
         )
-        story.extend([summary_table, Spacer(1, 0.25 * inch), Paragraph("Top Scholarship Matches", section_style)])
-
-        for index, scholarship in enumerate(scholarships.scholarships, start=1):
-            card_rows = [
-                [f"{index}. {EmailService._safe_pdf_text(scholarship.name)}"],
+        overview_table = Table(
+            [
                 [
-                    EmailService._safe_pdf_text(
-                        f"Amount: {scholarship.amount} | Deadline: {scholarship.deadline} | Match Score: {scholarship.match_score}%"
+                    Paragraph(
+                        EmailService._safe_pdf_text(
+                            "Scholarship Finder is an AI-assisted scholarship shortlisting platform designed to help students focus on the scholarships they are more likely to win. This report combines your academic fit, intake preference, target country choices, and profile strengths into a practical shortlist."
+                        ),
+                        small_style,
                     )
                 ],
+                [
+                    Paragraph(
+                        EmailService._safe_pdf_text(
+                            "How to use this PDF: Start with the highest match score, compare deadlines carefully, and use the 'Why it fits' and 'Strategy tip' notes to prioritize the scholarships that deserve your immediate effort."
+                        ),
+                        small_style,
+                    )
+                ],
+            ],
+            colWidths=[6.3 * inch],
+        )
+        overview_table.setStyle(
+            TableStyle(
+                [
+                    ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#f8fafc")),
+                    ("BOX", (0, 0), (-1, -1), 0.5, colors.HexColor("#cbd5e1")),
+                    ("INNERGRID", (0, 0), (-1, -1), 0.35, colors.HexColor("#e2e8f0")),
+                    ("PADDING", (0, 0), (-1, -1), 9),
+                    ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ]
+            )
+        )
+        story.extend(
+            [
+                summary_table,
+                Spacer(1, 0.18 * inch),
+                Paragraph("About This Report", section_style),
+                overview_table,
+                Spacer(1, 0.25 * inch),
+                Paragraph("Top Scholarship Matches", section_style),
+            ]
+        )
+
+        for index, scholarship in enumerate(ranked_scholarships, start=1):
+            details_table = Table(
+                [
+                    [
+                        Paragraph("Match Score", label_style),
+                        Paragraph(EmailService._safe_pdf_text(f"{scholarship.match_score}%"), meta_style),
+                    ],
+                    [
+                        Paragraph("Amount", label_style),
+                        Paragraph(EmailService._safe_pdf_text(scholarship.amount), meta_style),
+                    ],
+                    [
+                        Paragraph("Deadline", label_style),
+                        Paragraph(EmailService._safe_pdf_text(scholarship.deadline), meta_style),
+                    ],
+                ],
+                colWidths=[1.15 * inch, 5.15 * inch],
+            )
+            details_table.setStyle(
+                TableStyle(
+                    [
+                        ("BACKGROUND", (0, 0), (-1, -1), colors.white),
+                        ("BOX", (0, 0), (-1, -1), 0.35, colors.HexColor("#e2e8f0")),
+                        ("INNERGRID", (0, 0), (-1, -1), 0.3, colors.HexColor("#e2e8f0")),
+                        ("PADDING", (0, 0), (-1, -1), 6),
+                        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                    ]
+                )
+            )
+            card_rows = [
+                [
+                    Paragraph(
+                        EmailService._safe_pdf_text(f"{index}. {scholarship.name}"),
+                        card_title_style,
+                    )
+                ],
+                [details_table],
                 [Paragraph(f"<b>Why it fits:</b> {EmailService._safe_pdf_text(scholarship.one_liner_reason)}", body_style)],
                 [Paragraph(f"<b>Strategy tip:</b> {EmailService._safe_pdf_text(scholarship.strategy_tip)}", body_style)],
             ]
@@ -204,8 +314,6 @@ class EmailService:
                     [
                         ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#dbeafe")),
                         ("TEXTCOLOR", (0, 0), (-1, 0), colors.HexColor("#1e3a8a")),
-                        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-                        ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
                         ("BOX", (0, 0), (-1, -1), 0.6, colors.HexColor("#cbd5e1")),
                         ("INNERGRID", (0, 0), (-1, -1), 0.3, colors.HexColor("#e2e8f0")),
                         ("BACKGROUND", (0, 1), (-1, -1), colors.white),
@@ -231,7 +339,7 @@ class EmailService:
             ]
         )
 
-        doc.build(story)
+        doc.build(story, onFirstPage=EmailService._add_pdf_footer, onLaterPages=EmailService._add_pdf_footer)
         pdf_bytes = buffer.getvalue()
         buffer.close()
         return pdf_bytes
@@ -252,6 +360,17 @@ class EmailService:
         for original, replacement in replacements.items():
             safe_text = safe_text.replace(original, replacement)
         return safe_text
+
+    @staticmethod
+    def _add_pdf_footer(canvas, doc) -> None:
+        canvas.saveState()
+        canvas.setFont("Helvetica", 8)
+        canvas.setFillColor(colors.HexColor("#64748b"))
+        footer_text = "Scholarship Finder | AI-assisted scholarship shortlisting and application planning"
+        page_text = f"Page {doc.page}"
+        canvas.drawString(doc.leftMargin, 18, footer_text)
+        canvas.drawRightString(A4[0] - doc.rightMargin, 18, page_text)
+        canvas.restoreState()
 
     @staticmethod
     def send_consultation_invite(recipient_email: str, recipient_name: str) -> bool:

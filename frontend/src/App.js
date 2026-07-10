@@ -53,7 +53,6 @@ function App() {
             .join('; ');
         }
         
-        console.error('Backend validation error:', result);
         throw new Error(errorMessage);
       }
 
@@ -70,7 +69,6 @@ function App() {
       } else {
         setError(err.message || 'Failed to calculate scholarships.');
       }
-      console.error('Error:', err);
     } finally {
       clearTimeout(timeout);
       setLoading(false);
