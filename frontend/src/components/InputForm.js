@@ -402,7 +402,9 @@ function InputForm({ onCalculate, loading, error }) {
               <Home size={16} />
               <span>Home</span>
             </button>
+            <a className="hero-anchor-link" href="/how-it-works">How It Works</a>
             <a className="hero-anchor-link" href="#scholarship-faq">FAQ</a>
+            <a className="hero-anchor-link" href="/countries">Countries</a>
           </nav>
 
           <div className="badge-pill">
@@ -476,6 +478,17 @@ function InputForm({ onCalculate, loading, error }) {
                 </p>
               </article>
             </div>
+          </section>
+
+          <section className="seo-copy-card" aria-labelledby="scholarship-types-title">
+            <h2 id="scholarship-types-title">Scholarship types students usually compare</h2>
+            <ul className="seo-list">
+              <li>Fully funded scholarships for international students</li>
+              <li>Master&apos;s scholarships abroad and postgraduate funding</li>
+              <li>Bachelor&apos;s scholarships and undergraduate tuition support</li>
+              <li>PhD scholarships, research funding, and graduate assistantships</li>
+              <li>Merit scholarships, need-based scholarships, and university grants</li>
+            </ul>
           </section>
         </section>
 
@@ -853,6 +866,14 @@ function InputForm({ onCalculate, loading, error }) {
             )}
           </div>
         </section>
+
+        <footer className="seo-footer" aria-label="Scholarship Finder footer links">
+          <a href="#top">Back to top</a>
+          <a href="/how-it-works">How it works</a>
+          <a href="/countries">Countries</a>
+          <a href="#scholarship-faq">FAQ</a>
+          <a href="#scholarship-form">Profile form</a>
+        </footer>
       </main>
     </>
   );

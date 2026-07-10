@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#10b981" />
+    <title>Scholarship Countries Guide | USA, UK, Canada, Australia, Germany</title>
+    <meta
+      name="description"
+      content="Explore popular scholarship destinations including the USA, UK, Canada, Australia, and Germany for international students searching for study abroad funding."
+    />
+    <meta
+      name="keywords"
+      content="scholarships in USA, scholarships in UK, scholarships in Canada, scholarships in Australia, scholarships in Germany, study abroad scholarships by country"
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://scholarship-finder-frontend.vercel.app/countries" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Scholarship Countries Guide" />
+    <meta
+      property="og:description"
+      content="Review top study abroad destinations and the scholarship patterns students commonly compare."
+    />
+    <meta property="og:url" content="https://scholarship-finder-frontend.vercel.app/countries" />
+    <meta property="og:image" content="https://scholarship-finder-frontend.vercel.app/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Scholarship Countries Guide" />
+    <meta
+      name="twitter:description"
+      content="See how students compare scholarships in the USA, UK, Canada, Australia, and Germany."
+    />
+    <meta name="twitter:image" content="https://scholarship-finder-frontend.vercel.app/og-image.svg" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "Scholarship Countries Guide",
+        "url": "https://scholarship-finder-frontend.vercel.app/countries",
+        "description": "Explore popular scholarship destinations including the USA, UK, Canada, Australia, and Germany for international students searching for study abroad funding."
+      }
+    </script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+      :root {
+        --bg-dark: #09090b;
+        --bg-dark-secondary: #18181b;
+        --primary: #10b981;
+        --primary-light: #34d399;
+        --text-primary: #fafafa;
+        --text-secondary: #a1a1aa;
+        --text-muted: #71717a;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background:
+          radial-gradient(ellipse at 50% 0%, rgba(16, 185, 129, 0.12), transparent 60%),
+          linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 100% 100%, 32px 32px, 32px 32px;
+        background-attachment: fixed;
+        background-color: var(--bg-dark);
+        color: var(--text-primary);
+      }
+
+      .shell {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 40px 24px 64px;
+      }
+
+      .nav {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 28px;
+      }
+
+      .nav a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 10px 18px;
+        border-radius: 999px;
+        text-decoration: none;
+        border: 1px solid rgba(52, 211, 153, 0.16);
+        background: rgba(24, 24, 27, 0.88);
+        color: var(--text-secondary);
+        font-weight: 500;
+      }
+
+      .nav a.active,
+      .nav a:hover {
+        border-color: rgba(52, 211, 153, 0.4);
+        color: var(--text-primary);
+        background: rgba(16, 34, 28, 0.82);
+      }
+
+      .hero {
+        background: rgba(24, 24, 27, 0.92);
+        border: 1px solid rgba(52, 211, 153, 0.14);
+        border-radius: 24px;
+        padding: 36px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(24, 24, 27, 0.88);
+        border: 1px solid #27272a;
+        color: var(--primary-light);
+        font-size: 0.88rem;
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        font-size: clamp(2.6rem, 4vw, 4.4rem);
+        line-height: 1.02;
+        margin: 0 0 18px;
+      }
+
+      .highlight { color: var(--primary); }
+
+      p {
+        color: var(--text-secondary);
+        line-height: 1.75;
+        font-size: 1.03rem;
+      }
+
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 12px 20px;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #34d399, #10b981);
+        color: #04110d;
+      }
+
+      .btn-secondary {
+        background: rgba(9, 9, 11, 0.5);
+        color: var(--text-primary);
+        border: 1px solid rgba(52, 211, 153, 0.18);
+      }
+
+      .section {
+        margin-top: 28px;
+      }
+
+      .section h2 {
+        margin: 0 0 10px;
+        font-size: 2rem;
+      }
+
+      .country-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .country-card {
+        background: rgba(24, 24, 27, 0.92);
+        border: 1px solid rgba(52, 211, 153, 0.14);
+        border-radius: 24px;
+        padding: 26px;
+      }
+
+      .country-card h3 {
+        margin: 0 0 10px;
+        font-size: 1.3rem;
+      }
+
+      .country-card ul {
+        margin: 18px 0 0;
+        padding-left: 20px;
+        color: var(--text-secondary);
+        line-height: 1.8;
+      }
+
+      .country-badge {
+        display: inline-flex;
+        margin-bottom: 16px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--primary-light);
+        border: 1px solid rgba(52, 211, 153, 0.18);
+        font-size: 0.82rem;
+        font-weight: 600;
+      }
+
+      .insight-panel {
+        margin-top: 28px;
+        background: rgba(24, 24, 27, 0.92);
+        border: 1px solid rgba(52, 211, 153, 0.14);
+        border-radius: 24px;
+        padding: 28px;
+      }
+
+      .insight-list {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 18px;
+      }
+
+      .insight-tile {
+        padding: 18px;
+        border-radius: 16px;
+        background: rgba(9, 9, 11, 0.45);
+        border: 1px solid rgba(52, 211, 153, 0.08);
+      }
+
+      .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 28px;
+      }
+
+      .footer-links a {
+        color: var(--text-muted);
+        text-decoration: none;
+      }
+
+      .footer-links a:hover { color: var(--primary-light); }
+
+      @media (max-width: 980px) {
+        .country-grid,
+        .insight-list {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <nav class="nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/how-it-works">How It Works</a>
+        <a href="/#scholarship-faq">FAQ</a>
+        <a href="/countries" class="active">Countries</a>
+      </nav>
+
+      <section class="hero">
+        <span class="eyebrow">Scholarships by Destination</span>
+        <h1>Compare the <span class="highlight">most searched scholarship countries</span> in one place.</h1>
+        <p>
+          International students often begin with destination-based scholarship research before narrowing
+          down their shortlist. This countries guide explains the scholarship patterns students commonly
+          compare when targeting the USA, UK, Canada, Australia, and Germany.
+        </p>
+        <p>
+          These summaries are designed to support earlier planning, better targeting, and more focused
+          scholarship applications for bachelor&apos;s, master&apos;s, and PhD study abroad journeys.
+        </p>
+        <div class="cta-row">
+          <a class="btn-primary" href="/#scholarship-form">Check your countries</a>
+          <a class="btn-secondary" href="/how-it-works">See the matching process</a>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Top destination scholarship overview</h2>
+        <p>Use these destination notes to understand how scholarship searches often differ from one country to another.</p>
+        <div class="country-grid">
+          <article class="country-card">
+            <span class="country-badge">USA Scholarships</span>
+            <h3>United States</h3>
+            <p>The USA is one of the most competitive destinations for merit scholarships, graduate assistantships, and university-funded awards.</p>
+            <ul>
+              <li>Strong fit for master&apos;s and PhD applicants</li>
+              <li>High variation across universities and departments</li>
+              <li>Academic profile and overall positioning matter a lot</li>
+            </ul>
+          </article>
+          <article class="country-card">
+            <span class="country-badge">UK Scholarships</span>
+            <h3>United Kingdom</h3>
+            <p>The UK is widely searched for prestigious scholarships, shorter program duration, and scholarship options linked to specific institutions.</p>
+            <ul>
+              <li>Popular for postgraduate study abroad planning</li>
+              <li>Institution-led scholarships are common</li>
+              <li>Deadlines often move quickly across intakes</li>
+            </ul>
+          </article>
+          <article class="country-card">
+            <span class="country-badge">Canada Scholarships</span>
+            <h3>Canada</h3>
+            <p>Canada attracts students looking for strong university outcomes and a mix of research funding, entrance awards, and merit scholarships.</p>
+            <ul>
+              <li>Useful for master&apos;s and research-led applications</li>
+              <li>Program fit and academic consistency are important</li>
+              <li>Popular among international student applicants from South Asia</li>
+            </ul>
+          </article>
+          <article class="country-card">
+            <span class="country-badge">Australia Scholarships</span>
+            <h3>Australia</h3>
+            <p>Australia is often researched for international student funding tied to universities, research routes, and broader scholarship initiatives.</p>
+            <ul>
+              <li>Strong demand for postgraduate scholarships</li>
+              <li>Research profile can improve competitiveness</li>
+              <li>Country preference often overlaps with long-term career planning</li>
+            </ul>
+          </article>
+          <article class="country-card">
+            <span class="country-badge">Germany Scholarships</span>
+            <h3>Germany</h3>
+            <p>Germany is attractive for students comparing lower tuition environments, research pathways, and scholarship-backed higher education options.</p>
+            <ul>
+              <li>Popular for technical, engineering, and research-heavy majors</li>
+              <li>Fit can depend on degree type and target institution</li>
+              <li>Students often compare it with Canada and the UK</li>
+            </ul>
+          </article>
+          <article class="country-card">
+            <span class="country-badge">Country Strategy</span>
+            <h3>How to use this guide</h3>
+            <p>Start with your top destination list, then use the scholarship form to compare multiple countries instead of committing to one too early.</p>
+            <ul>
+              <li>Select multiple target countries for broader coverage</li>
+              <li>Use intake timing to refine your shortlist</li>
+              <li>Prioritize stronger-fit opportunities over broad searching</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="insight-panel">
+        <h2>Country selection tips for scholarship planning</h2>
+        <p>Students usually get better results when destination planning and scholarship fit are considered together.</p>
+        <div class="insight-list">
+          <div class="insight-tile">
+            <h3>Keep multiple options open</h3>
+            <p>Searching more than one country increases the chance of finding realistic scholarship opportunities.</p>
+          </div>
+          <div class="insight-tile">
+            <h3>Match country to degree stage</h3>
+            <p>Some destinations are more attractive for undergraduate funding, others for postgraduate and research routes.</p>
+          </div>
+          <div class="insight-tile">
+            <h3>Let profile strength guide the shortlist</h3>
+            <p>GPA, major, work experience, and test scores can change which countries are strongest for your next cycle.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="footer-links">
+        <a href="/">Scholarship Finder Home</a>
+        <a href="/how-it-works">How it works</a>
+        <a href="/#scholarship-form">Scholarship form</a>
+      </div>
+    </main>
+  </body>
+</html>

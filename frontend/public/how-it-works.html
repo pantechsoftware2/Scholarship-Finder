@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#10b981" />
+    <title>How Scholarship Finder Works | AI Scholarship Matching Process</title>
+    <meta
+      name="description"
+      content="Learn how Scholarship Finder matches students with study abroad scholarships using nationality, degree level, GPA, major, intake, and profile strength."
+    />
+    <meta
+      name="keywords"
+      content="how scholarship finder works, AI scholarship matching, study abroad scholarship process, scholarship matching tool, international scholarship search"
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://scholarship-finder-frontend.vercel.app/how-it-works" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How Scholarship Finder Works" />
+    <meta
+      property="og:description"
+      content="See how our scholarship matching process helps students shortlist stronger study abroad funding opportunities."
+    />
+    <meta property="og:url" content="https://scholarship-finder-frontend.vercel.app/how-it-works" />
+    <meta property="og:image" content="https://scholarship-finder-frontend.vercel.app/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="How Scholarship Finder Works" />
+    <meta
+      name="twitter:description"
+      content="Understand how our AI scholarship finder builds better shortlists for bachelor's, master's, and PhD applicants."
+    />
+    <meta name="twitter:image" content="https://scholarship-finder-frontend.vercel.app/og-image.svg" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "How Scholarship Finder Works",
+        "url": "https://scholarship-finder-frontend.vercel.app/how-it-works",
+        "description": "Learn how Scholarship Finder matches students with study abroad scholarships using nationality, degree level, GPA, major, intake, and profile strength."
+      }
+    </script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+      :root {
+        --bg-dark: #09090b;
+        --bg-dark-secondary: #18181b;
+        --primary: #10b981;
+        --primary-light: #34d399;
+        --text-primary: #fafafa;
+        --text-secondary: #a1a1aa;
+        --text-muted: #71717a;
+        --border-light: #27272a;
+      }
+
+      * { box-sizing: border-box; }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        margin: 0;
+        font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background:
+          radial-gradient(ellipse at 50% 0%, rgba(16, 185, 129, 0.12), transparent 60%),
+          linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 100% 100%, 32px 32px, 32px 32px;
+        background-attachment: fixed;
+        background-color: var(--bg-dark);
+        color: var(--text-primary);
+      }
+
+      .shell {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 40px 24px 64px;
+      }
+
+      .nav {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 28px;
+      }
+
+      .nav a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 10px 18px;
+        border-radius: 999px;
+        text-decoration: none;
+        border: 1px solid rgba(52, 211, 153, 0.16);
+        background: rgba(24, 24, 27, 0.88);
+        color: var(--text-secondary);
+        font-weight: 500;
+      }
+
+      .nav a.active,
+      .nav a:hover {
+        border-color: rgba(52, 211, 153, 0.4);
+        color: var(--text-primary);
+        background: rgba(16, 34, 28, 0.82);
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 28px;
+        align-items: stretch;
+      }
+
+      .hero-card,
+      .panel,
+      .step-card,
+      .audience-card,
+      .cta-card {
+        background: rgba(24, 24, 27, 0.92);
+        border: 1px solid rgba(52, 211, 153, 0.14);
+        border-radius: 24px;
+      }
+
+      .hero-card {
+        padding: 36px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(24, 24, 27, 0.88);
+        border: 1px solid var(--border-light);
+        color: var(--primary-light);
+        font-size: 0.88rem;
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        font-size: clamp(2.6rem, 4vw, 4.5rem);
+        line-height: 1.02;
+        margin: 0 0 18px;
+      }
+
+      .highlight { color: var(--primary); }
+
+      p {
+        color: var(--text-secondary);
+        line-height: 1.75;
+        font-size: 1.03rem;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 12px 20px;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #34d399, #10b981);
+        color: #04110d;
+      }
+
+      .btn-secondary {
+        background: rgba(9, 9, 11, 0.5);
+        color: var(--text-primary);
+        border: 1px solid rgba(52, 211, 153, 0.18);
+      }
+
+      .panel {
+        padding: 28px;
+      }
+
+      .stat {
+        padding: 16px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .stat:last-child { border-bottom: 0; }
+
+      .stat strong {
+        display: block;
+        font-size: 1.7rem;
+        color: var(--text-primary);
+      }
+
+      .section {
+        margin-top: 28px;
+      }
+
+      .section-header {
+        max-width: 760px;
+        margin-bottom: 18px;
+      }
+
+      h2 {
+        margin: 0 0 10px;
+        font-size: 2rem;
+      }
+
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .step-card,
+      .audience-card,
+      .cta-card {
+        padding: 24px;
+      }
+
+      .step-number {
+        color: var(--primary-light);
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      h3 {
+        margin: 12px 0 10px;
+        font-size: 1.15rem;
+      }
+
+      .audience-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .cta-card {
+        margin-top: 28px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 28px;
+      }
+
+      .footer-links a {
+        color: var(--text-muted);
+        text-decoration: none;
+      }
+
+      .footer-links a:hover { color: var(--primary-light); }
+
+      @media (max-width: 980px) {
+        .hero,
+        .steps,
+        .audience-grid,
+        .cta-card {
+          grid-template-columns: 1fr;
+          display: grid;
+        }
+
+        .cta-card {
+          align-items: start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <nav class="nav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/how-it-works" class="active">How It Works</a>
+        <a href="/#scholarship-faq">FAQ</a>
+        <a href="/countries">Countries</a>
+      </nav>
+
+      <section class="hero">
+        <article class="hero-card">
+          <span class="eyebrow">AI Scholarship Matching Process</span>
+          <h1>How we turn student profiles into <span class="highlight">stronger scholarship shortlists</span>.</h1>
+          <p>
+            Scholarship Finder is built to help students avoid random scholarship applications and
+            focus on better-fit study abroad funding opportunities. We organize your academic and
+            application data in a way that is closer to how admissions teams and scholarship committees
+            evaluate candidates.
+          </p>
+          <p>
+            Instead of searching hundreds of low-relevance opportunities manually, you get a cleaner
+            view of scholarships that align with your nationality, degree level, major, target study
+            destination, intake window, and profile strength.
+          </p>
+          <div class="hero-actions">
+            <a class="btn-primary" href="/#scholarship-form">Start your scholarship match</a>
+            <a class="btn-secondary" href="/countries">Explore destination pages</a>
+          </div>
+        </article>
+
+        <aside class="panel">
+          <div class="stat">
+            <strong>Nationality-aware</strong>
+            <p>Some scholarships are country-specific, so citizenship is weighted early in the process.</p>
+          </div>
+          <div class="stat">
+            <strong>Profile-based</strong>
+            <p>GPA, degree stage, major, and work experience help improve scholarship relevance.</p>
+          </div>
+          <div class="stat">
+            <strong>Intake-focused</strong>
+            <p>Your target application cycle helps prioritize scholarships with better timing.</p>
+          </div>
+        </aside>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <h2>Our 4-step scholarship matching workflow</h2>
+          <p>
+            This page explains the exact logic students should understand before using the scholarship
+            finder for bachelor's scholarships, master's scholarships abroad, PhD funding, or fully funded scholarships.
+          </p>
+        </div>
+        <div class="steps">
+          <article class="step-card">
+            <span class="step-number">Step 01</span>
+            <h3>Collect student profile signals</h3>
+            <p>We capture your degree level, current qualification, GPA, major, nationality, target countries, English scores, and work experience.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-number">Step 02</span>
+            <h3>Filter for eligibility and context</h3>
+            <p>Scholarships that do not fit your degree stage, country focus, or likely profile range are deprioritized to reduce noise.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-number">Step 03</span>
+            <h3>Rank by fit and timing</h3>
+            <p>We look at profile strength and intake timing so your shortlist is more realistic, useful, and easier to act on.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-number">Step 04</span>
+            <h3>Return actionable scholarship options</h3>
+            <p>You receive a shortlist designed to help you prioritize stronger opportunities before writing essays or preparing documents.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <h2>Who should use this page</h2>
+          <p>This guide is especially useful for students who want clarity before applying to international scholarships.</p>
+        </div>
+        <div class="audience-grid">
+          <article class="audience-card">
+            <h3>Bachelor&apos;s applicants</h3>
+            <p>Students planning undergraduate study abroad and comparing early-stage scholarship opportunities.</p>
+          </article>
+          <article class="audience-card">
+            <h3>Master&apos;s applicants</h3>
+            <p>Students targeting postgraduate funding, merit scholarships, and university-based tuition support.</p>
+          </article>
+          <article class="audience-card">
+            <h3>PhD and research applicants</h3>
+            <p>Students exploring graduate funding, assistantships, and high-competition international scholarships.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="cta-card">
+        <div>
+          <h2>Ready to check your scholarship fit?</h2>
+          <p>Use the main scholarship form to generate a profile-based shortlist for your next study abroad application cycle.</p>
+        </div>
+        <div class="hero-actions">
+          <a class="btn-primary" href="/#scholarship-form">Go to scholarship form</a>
+          <a class="btn-secondary" href="/countries">See destination coverage</a>
+        </div>
+      </section>
+
+      <div class="footer-links">
+        <a href="/">Scholarship Finder Home</a>
+        <a href="/#scholarship-faq">FAQ</a>
+        <a href="/countries">Countries</a>
+      </div>
+    </main>
+  </body>
+</html>

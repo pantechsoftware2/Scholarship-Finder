@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import InputForm from './components/InputForm';
+import CountriesPage from './pages/CountriesPage';
+import HowItWorksPage from './pages/HowItWorksPage';
 import Results from './pages/Results';
 import ThankYou from './pages/ThankYou';
 import './styles/App.css';
@@ -25,6 +27,18 @@ const STAGE_SEO = {
     description:
       'Your scholarship report has been sent. Review your matched scholarships and application strategy from your inbox.',
     robots: 'noindex, nofollow',
+  },
+  howItWorks: {
+    title: 'How Scholarship Finder Works | AI Scholarship Matching Process',
+    description:
+      'Learn how Scholarship Finder matches students with study abroad scholarships using nationality, degree level, GPA, major, intake, and profile strength.',
+    robots: 'index, follow',
+  },
+  countries: {
+    title: 'Scholarship Countries Guide | USA, UK, Canada, Australia, Germany',
+    description:
+      'Explore popular scholarship destinations including the USA, UK, Canada, Australia, and Germany for international students searching for study abroad funding.',
+    robots: 'index, follow',
   },
   notfound: {
     title: 'Page Not Found | Scholarship Finder',
@@ -79,15 +93,27 @@ function App() {
   const apiUrl = getApiBaseUrl();
   const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
   const normalizedPath = currentPath === '/' ? '/' : currentPath.replace(/\/+$/, '');
-  const hasUnsupportedPath = normalizedPath !== '/';
+  const supportedPath = useMemo(() => {
+    if (normalizedPath === '/') return 'home';
+    if (normalizedPath === '/how-it-works') return 'howItWorks';
+    if (normalizedPath === '/countries') return 'countries';
+    return 'notfound';
+  }, [normalizedPath]);
+  const hasUnsupportedPath = supportedPath === 'notfound';
 
   const activeSeoState = useMemo(() => {
+    if (supportedPath === 'howItWorks') {
+      return STAGE_SEO.howItWorks;
+    }
+    if (supportedPath === 'countries') {
+      return STAGE_SEO.countries;
+    }
     if (hasUnsupportedPath) {
       return STAGE_SEO.notfound;
     }
 
     return STAGE_SEO[currentStage] || STAGE_SEO.input;
-  }, [currentStage, hasUnsupportedPath]);
+  }, [currentStage, hasUnsupportedPath, supportedPath]);
 
   const handleCalculate = async (profile) => {
     setLoading(true);
@@ -144,7 +170,9 @@ function App() {
   };
 
   useEffect(() => {
-    const canonicalUrl = `${SITE_URL}/`;
+    const canonicalUrl = supportedPath === 'home'
+      ? `${SITE_URL}/`
+      : `${SITE_URL}${normalizedPath}`;
 
     document.title = activeSeoState.title;
 
@@ -197,6 +225,28 @@ function App() {
       href: canonicalUrl,
     });
 
+    if (supportedPath === 'howItWorks') {
+      upsertStructuredData('schema-homepage', {
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        name: 'How Scholarship Finder Works',
+        url: canonicalUrl,
+        description: activeSeoState.description,
+      });
+      return;
+    }
+
+    if (supportedPath === 'countries') {
+      upsertStructuredData('schema-homepage', {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        name: 'Scholarship Countries Guide',
+        url: canonicalUrl,
+        description: activeSeoState.description,
+      });
+      return;
+    }
+
     if (!hasUnsupportedPath && currentStage === 'input') {
       upsertStructuredData('schema-homepage', {
         '@context': 'https://schema.org',
@@ -228,10 +278,14 @@ function App() {
     if (existingSchema) {
       existingSchema.remove();
     }
-  }, [activeSeoState, currentStage, hasUnsupportedPath]);
+  }, [activeSeoState, currentStage, hasUnsupportedPath, normalizedPath, supportedPath]);
 
   return (
     <div className="app">
+      {supportedPath === 'howItWorks' && <HowItWorksPage />}
+
+      {supportedPath === 'countries' && <CountriesPage />}
+
       {hasUnsupportedPath && (
         <main className="not-found-state" aria-labelledby="not-found-title">
           <p className="not-found-eyebrow">404</p>
@@ -246,7 +300,7 @@ function App() {
         </main>
       )}
 
-      {!hasUnsupportedPath && currentStage === 'input' && (
+      {supportedPath === 'home' && currentStage === 'input' && (
         <InputForm
           onCalculate={handleCalculate}
           loading={loading}
@@ -254,7 +308,7 @@ function App() {
         />
       )}
 
-      {!hasUnsupportedPath && currentStage === 'results' && (
+      {supportedPath === 'home' && currentStage === 'results' && (
         <Results
           results={scholarshipResults}
           profile={userProfile}
@@ -263,7 +317,7 @@ function App() {
         />
       )}
 
-      {!hasUnsupportedPath && currentStage === 'thankyou' && (
+      {supportedPath === 'home' && currentStage === 'thankyou' && (
         <ThankYou
           onGoHome={() => {
             setCurrentStage('input');
