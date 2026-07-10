@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import '../styles/InputForm.css';
 import ProgressLog from './ProgressLog';
 import {
@@ -40,25 +40,62 @@ const MAJOR_SUGGESTIONS = [
   'Education',
 ];
 
-const CURRENT_DEGREES = [
-  'B.Tech',
-  'B.E.',
-  'B.Sc',
-  'B.Com',
-  'BBA',
-  'BA',
-  'MBBS',
-  'BCA',
-  'M.Tech',
-  'M.Sc',
-  'MBA',
-  'LLB',
-];
+const OTHER_CURRENT_DEGREE = '__other_current_degree__';
+
+const CURRENT_DEGREE_OPTIONS = {
+  "Bachelor's": [
+    'Class 12 / Higher Secondary',
+    'A-Levels',
+    'International Baccalaureate (IB)',
+    'Polytechnic Diploma',
+    'Associate Degree',
+    'Foundation Program',
+    'Other',
+  ],
+  "Master's": [
+    'B.Tech / B.E.',
+    'B.Sc',
+    'B.Com',
+    'BBA',
+    'BA',
+    'BCA',
+    'MBBS',
+    'B.Arch',
+    'LLB',
+    'Other',
+  ],
+  PhD: [
+    'M.Tech / M.E.',
+    'M.Sc',
+    'MBA',
+    'MA',
+    'M.Com',
+    'MCA',
+    'LLM',
+    'Master of Public Health (MPH)',
+    'Other',
+  ],
+};
 
 const NATIONALITIES = ['India', 'Bangladesh', 'Nepal', 'Pakistan', 'Sri Lanka', 'UAE', 'Nigeria', 'Kenya'];
-const INTAKES = ['Fall 2027', 'Spring 2028', 'Any'];
+const INTAKES = [
+  'Spring 2027',
+  'Summer 2027',
+  'Fall 2027',
+  'Winter 2028',
+  'Spring 2028',
+  'Summer 2028',
+  'Fall 2028',
+  'Any Upcoming Intake',
+];
 const ENGLISH_TEST_FIELDS = ['IELTS', 'TOEFL', 'PTE', 'Duolingo'];
-const WORK_EXPERIENCE_OPTIONS = ['0', '1', '2', '3', '4+'];
+const WORK_EXPERIENCE_OPTIONS = [
+  { value: '0', label: '0 years' },
+  { value: '1', label: '1 year' },
+  { value: '2', label: '2 years' },
+  { value: '3', label: '3 years' },
+  { value: '4+', label: '4+ years' },
+];
 
 function InputForm({ onCalculate, loading, error }) {
   const [formData, setFormData] = useState({
@@ -85,6 +122,8 @@ function InputForm({ onCalculate, loading, error }) {
   const [useCustomCountry, setUseCustomCountry] = useState(false);
   const [showMajorSuggestions, setShowMajorSuggestions] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [currentDegreeSelection, setCurrentDegreeSelection] = useState('');
+  const majorGroupRef = useRef(null);
 
   const popularCountries = ['USA', 'UK', 'Canada', 'Australia', 'Germany'];
   const degreeLevels = ["Bachelor's", "Master's", 'PhD'];
@@ -105,6 +144,47 @@ function InputForm({ onCalculate, loading, error }) {
     if (!query) return MAJOR_SUGGESTIONS.slice(0, 8);
     return MAJOR_SUGGESTIONS.filter((major) => major.toLowerCase().includes(query)).slice(0, 8);
   }, [formData.major]);
+
+  const currentDegreeOptions = useMemo(() => {
+    return CURRENT_DEGREE_OPTIONS[formData.degree_level] || [];
+  }, [formData.degree_level]);
+
+  useEffect(() => {
+    const handlePointerDown = (event) => {
+      if (majorGroupRef.current && !majorGroupRef.current.contains(event.target)) {
+        setShowMajorSuggestions(false);
+      }
+    };
+
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        setShowMajorSuggestions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('touchstart', handlePointerDown);
+    document.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('touchstart', handlePointerDown);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (currentDegreeSelection && currentDegreeSelection !== OTHER_CURRENT_DEGREE) {
+      const isStillValid = currentDegreeOptions.some((option) => option === currentDegreeSelection);
+      if (!isStillValid) {
+        setCurrentDegreeSelection('');
+        setFormData((prev) => ({
+          ...prev,
+          current_degree: '',
+        }));
+      }
+    }
+  }, [currentDegreeOptions, currentDegreeSelection]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -136,15 +216,36 @@ function InputForm({ onCalculate, loading, error }) {
   const handleCustomCountryKeyDown = (e) => {
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
-      const value = customCountry.trim();
-      if (value && !formData.target_countries.includes(value)) {
-        setFormData((prev) => ({
-          ...prev,
-          target_countries: [...prev.target_countries, value],
-        }));
-      }
-      setCustomCountry('');
+      addCustomCountries();
     }
+  };
+
+  const addCustomCountries = () => {
+    const entries = customCountry
+      .split(',')
+      .map((entry) => entry.trim())
+      .filter(Boolean);
+
+    if (!entries.length) return;
+
+    setFormData((prev) => {
+      const existing = new Set(prev.target_countries.map((country) => country.toLowerCase()));
+      const nextCountries = [...prev.target_countries];
+
+      entries.forEach((country) => {
+        if (!existing.has(country.toLowerCase())) {
+          nextCountries.push(country);
+          existing.add(country.toLowerCase());
+        }
+      });
+
+      return {
+        ...prev,
+        target_countries: nextCountries,
+      };
+    });
+
+    setCustomCountry('');
   };
 
   const handleCustomCountryRemove = (country) => {
@@ -160,6 +261,24 @@ function InputForm({ onCalculate, loading, error }) {
       major,
     }));
     setShowMajorSuggestions(false);
+  };
+
+  const handleMajorChange = (e) => {
+    const { value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      major: value,
+    }));
+    setShowMajorSuggestions(true);
+  };
+
+  const handleCurrentDegreeSelection = (e) => {
+    const { value } = e.target;
+    setCurrentDegreeSelection(value);
+    setFormData((prev) => ({
+      ...prev,
+      current_degree: value === OTHER_CURRENT_DEGREE ? '' : value,
+    }));
   };
 
   const handleEnglishTestTakenChange = (value) => {
@@ -190,12 +309,20 @@ function InputForm({ onCalculate, loading, error }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const finalTargetCountries = [...formData.target_countries];
-    const trimmedCustomCountry = customCountry.trim();
+    const pendingCustomCountries = customCountry
+      .split(',')
+      .map((entry) => entry.trim())
+      .filter(Boolean);
 
-    if (useCustomCountry && trimmedCustomCountry && !finalTargetCountries.includes(trimmedCustomCountry)) {
-      finalTargetCountries.push(trimmedCustomCountry);
-    }
+    const finalTargetCountries = [...formData.target_countries];
+    const existingCountries = new Set(finalTargetCountries.map((country) => country.toLowerCase()));
+
+    pendingCustomCountries.forEach((country) => {
+      if (!existingCountries.has(country.toLowerCase())) {
+        finalTargetCountries.push(country);
+        existingCountries.add(country.toLowerCase());
+      }
+    });
 
     if (
       !formData.current_degree.trim() ||
@@ -208,8 +335,8 @@ function InputForm({ onCalculate, loading, error }) {
       return;
     }
 
-    if (useCustomCountry && !trimmedCustomCountry) {
-      setToastMessage('Please enter your target country in the Other field.');
+    if (useCustomCountry && finalTargetCountries.length === 0) {
+      setToastMessage('Please add at least one target country. You can choose multiple countries here.');
       return;
     }
 
@@ -343,27 +470,49 @@ function InputForm({ onCalculate, loading, error }) {
                   <label htmlFor="current_degree">
                     <School size={16} /> Current / Last Degree *
                   </label>
-                  <div className="input-with-icon">
-                    <input
+                  <div className="input-with-icon select-shell">
+                    <select
                       id="current_degree"
-                      name="current_degree"
-                      type="text"
-                      list="current-degree-options"
-                      placeholder="e.g., B.Tech"
-                      value={formData.current_degree}
-                      onChange={handleInputChange}
-                      className="form-input"
+                      name="current_degree_select"
+                      value={currentDegreeSelection}
+                      onChange={handleCurrentDegreeSelection}
+                      className="form-select"
                       required
-                    />
-                    <datalist id="current-degree-options">
-                      {CURRENT_DEGREES.map((degree) => (
-                        <option key={degree} value={degree} />
+                    >
+                      <option value="" disabled>
+                        Select your most recent qualification
+                      </option>
+                      {currentDegreeOptions.map((degree) => (
+                        <option
+                          key={degree}
+                          value={degree === 'Other' ? OTHER_CURRENT_DEGREE : degree}
+                        >
+                          {degree}
+                        </option>
                       ))}
-                    </datalist>
+                    </select>
+                    <ChevronDown size={16} className="select-chevron" aria-hidden="true" />
                   </div>
+                  {currentDegreeSelection === OTHER_CURRENT_DEGREE && (
+                    <div className="input-with-icon stacked-field">
+                      <input
+                        id="current_degree_custom"
+                        name="current_degree"
+                        type="text"
+                        placeholder="Enter your degree name"
+                        value={formData.current_degree}
+                        onChange={handleInputChange}
+                        className="form-input"
+                        required
+                      />
+                    </div>
+                  )}
+                  <span className="field-help">
+                    Tailored to your selected study level for faster, cleaner profile capture.
+                  </span>
                 </div>
 
-                <div className="form-group major-group">
+                <div className="form-group major-group" ref={majorGroupRef}>
                   <label htmlFor="major">
                     <BookOpen size={16} /> Major *
                   </label>
@@ -374,7 +523,7 @@ function InputForm({ onCalculate, loading, error }) {
                       type="text"
                       placeholder="e.g., Computer Science"
                       value={formData.major}
-                      onChange={handleInputChange}
+                      onChange={handleMajorChange}
                       onFocus={() => setShowMajorSuggestions(true)}
                       className="form-input"
                       autoComplete="off"
@@ -382,9 +531,10 @@ function InputForm({ onCalculate, loading, error }) {
                     />
                     <button
                       type="button"
-                      className="major-toggle"
+                      className={`major-toggle ${showMajorSuggestions ? 'open' : ''}`}
                       onClick={() => setShowMajorSuggestions((prev) => !prev)}
                       aria-label="Toggle major suggestions"
+                      aria-expanded={showMajorSuggestions}
                     >
                       <ChevronDown size={16} />
                     </button>
@@ -476,6 +626,9 @@ function InputForm({ onCalculate, loading, error }) {
                   <label>
                     <MapPin size={16} /> Target Countries *
                   </label>
+                  <span className="field-help">
+                    Multi-select enabled. Choose as many countries as you want, including multiple custom countries.
+                  </span>
                   <div className="country-chips">
                     {popularCountries.map((country) => (
                       <button
@@ -509,15 +662,28 @@ function InputForm({ onCalculate, loading, error }) {
                       ))}
                   </div>
                   {useCustomCountry && (
-                    <div className="input-with-icon custom-country-input">
-                      <input
-                        type="text"
-                        placeholder="Enter another target country"
-                        value={customCountry}
-                        onChange={(e) => setCustomCountry(e.target.value)}
-                        onKeyDown={handleCustomCountryKeyDown}
-                        className="form-input"
-                      />
+                    <div className="custom-country-input">
+                      <div className="input-with-icon">
+                        <input
+                          type="text"
+                          placeholder="Enter one or more countries, separated by commas"
+                          value={customCountry}
+                          onChange={(e) => setCustomCountry(e.target.value)}
+                          onKeyDown={handleCustomCountryKeyDown}
+                          className="form-input"
+                        />
+                        <button
+                          type="button"
+                          className="inline-action-button"
+                          onClick={addCustomCountries}
+                          disabled={!customCountry.trim()}
+                        >
+                          Add
+                        </button>
+                      </div>
+                      <span className="field-help">
+                        Example: `India, New Zealand` and click `Add` or press `Enter`.
+                      </span>
                     </div>
                   )}
                 </div>
@@ -541,6 +707,9 @@ function InputForm({ onCalculate, loading, error }) {
                       ))}
                     </select>
                   </div>
+                  <span className="field-help">
+                    Choose the application cycle you want us to prioritize while matching scholarships.
+                  </span>
                 </div>
 
                 <div className="form-group">
@@ -591,7 +760,7 @@ function InputForm({ onCalculate, loading, error }) {
 
                 <div className="form-group">
                   <label htmlFor="work_experience_years">
-                    <Briefcase size={16} /> Work Experience
+                    <Briefcase size={16} /> Work Experience (Years)
                   </label>
                   <div className="input-with-icon">
                     <select
@@ -602,12 +771,15 @@ function InputForm({ onCalculate, loading, error }) {
                       className="form-select"
                     >
                       {WORK_EXPERIENCE_OPTIONS.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
+                        <option key={option.value} value={option.value}>
+                          {option.label}
                         </option>
                       ))}
                     </select>
                   </div>
+                  <span className="field-help">
+                    Select your full-time professional experience in years.
+                  </span>
                 </div>
 
                 <div className="form-group">

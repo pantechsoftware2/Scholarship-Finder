@@ -205,6 +205,11 @@
   color: var(--text-primary);
 }
 
+.form-select {
+  appearance: none;
+  padding-right: 42px;
+}
+
 .form-input::placeholder,
 .form-textarea::placeholder {
   color: var(--text-muted);
@@ -315,6 +320,35 @@ input[type=number] {
 
 .custom-country-input {
   margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inline-action-button {
+  position: absolute;
+  right: 8px;
+  padding: 8px 14px;
+  border: 1px solid rgba(52, 211, 153, 0.28);
+  border-radius: 10px;
+  background: rgba(16, 185, 129, 0.14);
+  color: var(--primary-light);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.inline-action-button:hover:not(:disabled) {
+  background: rgba(16, 185, 129, 0.22);
+  border-color: rgba(52, 211, 153, 0.42);
+  color: var(--text-primary);
+}
+
+.inline-action-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 /* Toggle Checkbox */
@@ -392,6 +426,22 @@ input[type=number] {
   z-index: 5;
 }
 
+.select-shell,
+.major-group .input-with-icon {
+  position: relative;
+}
+
+.select-chevron {
+  position: absolute;
+  right: 14px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.stacked-field {
+  margin-top: 10px;
+}
+
 .major-toggle {
   position: absolute;
   right: 12px;
@@ -402,6 +452,15 @@ input[type=number] {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.major-toggle:hover {
+  color: var(--text-primary);
+}
+
+.major-toggle.open {
+  transform: rotate(180deg);
 }
 
 .major-suggestions {
@@ -417,6 +476,9 @@ input[type=number] {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  max-height: 280px;
+  overflow-y: auto;
+  z-index: 20;
 }
 
 .major-suggestion-item {
