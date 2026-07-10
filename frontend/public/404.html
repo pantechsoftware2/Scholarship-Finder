@@ -4,7 +4,11 @@
     <meta charset="utf-8" />
     <meta name="robots" content="noindex, nofollow" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#10b981" />
     <title>Page Not Found | Scholarship Finder</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
     <style>
       body {
         margin: 0;
@@ -18,32 +22,114 @@
       }
 
       main {
-        max-width: 640px;
-        text-align: center;
+        width: min(760px, 100%);
         background: rgba(24, 24, 27, 0.92);
         border: 1px solid rgba(52, 211, 153, 0.14);
-        border-radius: 20px;
-        padding: 40px 28px;
+        border-radius: 24px;
+        padding: 40px 32px;
       }
 
-      a {
-        display: inline-block;
-        margin-top: 18px;
-        padding: 12px 18px;
+      .eyebrow {
+        color: #6ee7b7;
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+
+      h1 {
+        margin: 0 0 14px;
+        font-size: clamp(2rem, 4vw, 3.4rem);
+      }
+
+      p {
+        color: #a1a1aa;
+        line-height: 1.7;
+      }
+
+      .nav-links,
+      .quick-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .nav-links {
+        margin-bottom: 28px;
+      }
+
+      .nav-links a,
+      .quick-links a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 10px 18px;
         border-radius: 999px;
+        text-decoration: none;
+        border: 1px solid rgba(52, 211, 153, 0.16);
+        background: rgba(24, 24, 27, 0.88);
+        color: #a1a1aa;
+        font-weight: 500;
+      }
+
+      .quick-links {
+        margin-top: 22px;
+      }
+
+      .primary-link {
         background: #10b981;
         color: #09090b;
-        text-decoration: none;
         font-weight: 700;
+        border-color: transparent;
+      }
+
+      .helper-card {
+        margin-top: 28px;
+        padding: 22px;
+        border-radius: 18px;
+        background: rgba(9, 9, 11, 0.48);
+        border: 1px solid rgba(52, 211, 153, 0.08);
+      }
+
+      .helper-card h2 {
+        margin: 0 0 10px;
+        font-size: 1.2rem;
+      }
+
+      ul {
+        margin: 14px 0 0;
+        padding-left: 18px;
+        color: #a1a1aa;
+        line-height: 1.8;
       }
     </style>
   </head>
   <body>
     <main>
-      <p>404</p>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/how-it-works">How It Works</a>
+        <a href="/countries">Countries</a>
+      </div>
+      <p class="eyebrow">404 Error</p>
       <h1>This page does not exist.</h1>
       <p>Return to Scholarship Finder to explore international scholarships and study abroad funding opportunities.</p>
-      <a href="/">Go to homepage</a>
+      <div class="quick-links">
+        <a class="primary-link" href="/">Go to homepage</a>
+        <a href="/how-it-works">Learn how it works</a>
+        <a href="/countries">Browse countries</a>
+      </div>
+      <section class="helper-card">
+        <h2>Helpful next steps</h2>
+        <p>If you were looking for a scholarship resource, these pages are the best place to continue.</p>
+        <ul>
+          <li>Start the scholarship matching form on the homepage</li>
+          <li>Review the scholarship matching process</li>
+          <li>Compare popular study abroad scholarship destinations</li>
+        </ul>
+      </section>
     </main>
   </body>
 </html>

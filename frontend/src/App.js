@@ -100,6 +100,7 @@ function App() {
     return 'notfound';
   }, [normalizedPath]);
   const hasUnsupportedPath = supportedPath === 'notfound';
+  const gaMeasurementId = (process.env.REACT_APP_GA_MEASUREMENT_ID || '').trim();
 
   const activeSeoState = useMemo(() => {
     if (supportedPath === 'howItWorks') {
@@ -279,6 +280,41 @@ function App() {
       existingSchema.remove();
     }
   }, [activeSeoState, currentStage, hasUnsupportedPath, normalizedPath, supportedPath]);
+
+  useEffect(() => {
+    if (!gaMeasurementId || typeof window === 'undefined') {
+      return undefined;
+    }
+
+    if (!window.dataLayer) {
+      window.dataLayer = [];
+    }
+
+    window.gtag = window.gtag || function gtag() {
+      window.dataLayer.push(arguments);
+    };
+
+    const existingScript = document.querySelector('script[data-ga-loader="true"]');
+    if (existingScript) {
+      window.gtag('config', gaMeasurementId, {
+        page_path: window.location.pathname + window.location.search,
+      });
+      return undefined;
+    }
+
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`;
+    script.dataset.gaLoader = 'true';
+    document.head.appendChild(script);
+
+    window.gtag('js', new Date());
+    window.gtag('config', gaMeasurementId, {
+      page_path: window.location.pathname + window.location.search,
+    });
+
+    return undefined;
+  }, [gaMeasurementId, supportedPath, currentStage]);
 
   return (
     <div className="app">
