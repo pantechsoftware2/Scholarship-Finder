@@ -139,10 +139,14 @@
 
 .form-wrapper {
   background: var(--bg-dark-secondary);
-  border: 1px solid var(--border-light);
+  border: 2.5px solid rgba(52, 211, 153, 0.22);
   border-radius: 20px;
   padding: 40px;
   box-shadow: var(--shadow-lg);
+  box-shadow:
+    0 0 0 1px rgba(16, 185, 129, 0.08),
+    0 0 14px rgba(16, 185, 129, 0.09),
+    var(--shadow-lg);
 }
 
 .form-header-small {
