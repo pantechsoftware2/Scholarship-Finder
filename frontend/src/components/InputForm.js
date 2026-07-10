@@ -391,48 +391,95 @@ function InputForm({ onCalculate, loading, error }) {
         </div>
       )}
 
-      <div className="landing-container">
-        <div className="hero-section">
-          <button
-            type="button"
-            className="home-button"
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          >
-            <Home size={16} />
-            <span>Home</span>
-          </button>
+      <main className="landing-container" id="top">
+        <section className="hero-section" aria-labelledby="hero-title">
+          <nav className="hero-nav" aria-label="Scholarship Finder sections">
+            <button
+              type="button"
+              className="home-button"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
+              <Home size={16} />
+              <span>Home</span>
+            </button>
+            <a className="hero-anchor-link" href="#scholarship-faq">FAQ</a>
+          </nav>
 
           <div className="badge-pill">
             <Sparkles size={14} color="var(--primary)" />
             <span>AI-Powered Matching Engine</span>
           </div>
-          <h1 className="hero-title">
-            Discover Scholarships
+          <h1 className="hero-title" id="hero-title">
+            Scholarship Finder for
             <br />
-            <span className="text-highlight">You Can Actually Win.</span>
+            <span className="text-highlight">Study Abroad Funding.</span>
           </h1>
           <p className="hero-subtitle">
-            Stop wasting time on weak-fit applications. We structure your academic profile the way
-            admissions and scholarship teams actually evaluate it.
+            Discover study abroad scholarships, fully funded scholarships, merit scholarships, and
+            international student grants that match your nationality, degree level, GPA, major, and
+            target country.
           </p>
 
           <div className="feature-list">
             <div className="feature-item">
               <CheckCircle2 size={20} color="var(--primary)" />
-              <span>Citizenship-aware scholarship matching</span>
+              <span>Citizenship-aware scholarship matching for international students</span>
             </div>
             <div className="feature-item">
               <CheckCircle2 size={20} color="var(--primary)" />
-              <span>Intake-specific opportunity targeting</span>
+              <span>Intake-specific targeting for bachelor, master, and PhD scholarships</span>
             </div>
             <div className="feature-item">
               <CheckCircle2 size={20} color="var(--primary)" />
-              <span>Cleaner profile capture for better results</span>
+              <span>Cleaner academic profile capture for better scholarship recommendations</span>
             </div>
           </div>
-        </div>
 
-        <div className="form-section fade-in">
+          <section className="seo-copy-card" aria-labelledby="why-use-finder">
+            <h2 id="why-use-finder">How this scholarship search tool helps</h2>
+            <p>
+              Scholarship Finder is built for students searching for international scholarships,
+              university scholarships, and country-specific scholarship opportunities without sorting
+              through weak-fit programs manually.
+            </p>
+            <p>
+              Use it to shortlist scholarships for Indian students, scholarships for master&apos;s
+              programs abroad, undergraduate scholarships, and funding options for competitive global
+              admissions cycles.
+            </p>
+          </section>
+
+          <section className="seo-copy-card" id="scholarship-faq" aria-labelledby="faq-title">
+            <h2 id="faq-title">Scholarship FAQ</h2>
+            <div className="faq-list">
+              <article className="faq-item">
+                <h3>What scholarships can I find here?</h3>
+                <p>
+                  You can explore study abroad scholarships, fully funded scholarships, partial
+                  scholarships, tuition waivers, merit-based scholarships, and country-specific
+                  scholarships for international students.
+                </p>
+              </article>
+              <article className="faq-item">
+                <h3>Who is this scholarship matcher for?</h3>
+                <p>
+                  It is designed for bachelor&apos;s, master&apos;s, and PhD applicants who want a faster
+                  way to identify high-fit scholarship opportunities by profile strength and intended
+                  intake.
+                </p>
+              </article>
+              <article className="faq-item">
+                <h3>What details improve scholarship match quality?</h3>
+                <p>
+                  Your nationality, current degree, GPA, target study country, English test scores,
+                  and work experience all help surface more relevant scholarship programs.
+                </p>
+              </article>
+            </div>
+          </section>
+        </section>
+
+        <section className="form-section fade-in" id="scholarship-form" aria-labelledby="form-title">
           <div className="form-wrapper">
             {loading ? (
               <div className="loading-state">
@@ -441,7 +488,7 @@ function InputForm({ onCalculate, loading, error }) {
             ) : (
               <form onSubmit={handleSubmit} className="form">
                 <div className="form-header-small">
-                  <h3>Your Academic Profile</h3>
+                  <h2 id="form-title">Your Academic Profile</h2>
                   <p>Complete the starred fields to generate your shortlist.</p>
                 </div>
 
@@ -805,8 +852,8 @@ function InputForm({ onCalculate, loading, error }) {
               </form>
             )}
           </div>
-        </div>
-      </div>
+        </section>
+      </main>
     </>
   );
 }

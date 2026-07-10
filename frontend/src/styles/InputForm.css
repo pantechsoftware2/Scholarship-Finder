@@ -58,24 +58,60 @@
   padding-top: 20px;
 }
 
-.home-button {
+.hero-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.home-button,
+.hero-anchor-link {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  width: fit-content;
-  margin-bottom: 20px;
-  padding: 10px 14px;
+  min-height: 44px;
+  padding: 10px 18px;
   border-radius: 999px;
   background: rgba(24, 24, 27, 0.88);
-  border: 1px solid rgba(52, 211, 153, 0.24);
-  color: var(--text-primary);
+  border: 1px solid rgba(52, 211, 153, 0.16);
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
   cursor: pointer;
-  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.home-button {
+  appearance: none;
+}
+
+.home-button svg,
+.hero-anchor-link svg {
+  flex-shrink: 0;
+}
+
+.home-button span,
+.hero-anchor-link span {
+  display: inline-flex;
+  align-items: center;
+}
+
+.home-button:hover,
+.hero-anchor-link:hover {
+  border-color: rgba(52, 211, 153, 0.4);
+  color: var(--text-primary);
+  background: rgba(16, 34, 28, 0.75);
 }
 
 .home-button:hover {
-  transform: translateY(-1px);
-  border-color: rgba(52, 211, 153, 0.45);
   background: rgba(16, 34, 28, 0.96);
 }
 
@@ -130,6 +166,46 @@
   font-weight: 500;
 }
 
+.seo-copy-card {
+  margin-top: 28px;
+  padding: 24px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(24, 24, 27, 0.92), rgba(24, 24, 27, 0.82));
+  border: 1px solid rgba(52, 211, 153, 0.14);
+}
+
+.seo-copy-card h2 {
+  margin-bottom: 12px;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+}
+
+.seo-copy-card p {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+.seo-copy-card p:last-child {
+  margin-bottom: 0;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.faq-item h3 {
+  font-size: 1rem;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.faq-item p {
+  margin-bottom: 0;
+}
+
 /* Form Section (Right Column) */
 .form-section {
   width: 100%;
@@ -155,7 +231,7 @@
   padding-bottom: 20px;
 }
 
-.form-header-small h3 {
+.form-header-small h2 {
   font-size: 1.4rem;
   color: var(--text-primary);
   margin-bottom: 4px;
@@ -551,8 +627,8 @@ input[type=number] {
     position: static;
   }
 
-  .home-button {
-    align-self: center;
+  .hero-nav {
+    justify-content: center;
   }
   
   .hero-subtitle {

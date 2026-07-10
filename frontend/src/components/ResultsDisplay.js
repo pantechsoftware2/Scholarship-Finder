@@ -139,16 +139,20 @@ function ResultsDisplay({ scholarshipResults, userProfile, onUnlock, onBack }) {
   }
 
   return (
-    <div className="results-container">
-      
+    <main className="results-container" aria-labelledby="results-title">
       <div className="results-header-container">
         {onBack && (
-          <button className="btn-back" onClick={onBack} title="Go Back">
+          <button
+            className="btn-back"
+            onClick={onBack}
+            type="button"
+            aria-label="Go back to the scholarship profile form"
+          >
             <ArrowLeft size={20} />
           </button>
         )}
         <div className="results-header">
-          <h1>
+          <h1 id="results-title">
             {isFreshDataUnavailable
               ? 'Data Needs Refresh'
               : `Found ${scholarshipResults.scholarships.length} Matches`}
@@ -163,12 +167,12 @@ function ResultsDisplay({ scholarshipResults, userProfile, onUnlock, onBack }) {
       </div>
 
       {/* Top Pick Card */}
-      <div className="scholarship-card top-pick-card">
+      <section className="scholarship-card top-pick-card" aria-labelledby="top-scholarship-title">
         <div className="top-pick-badge">
           {isFreshDataUnavailable ? 'Status' : 'Top Pick'}
         </div>
         <div className="card-content">
-          <h3 className="scholarship-name">{topScholarship.name}</h3>
+          <h2 className="scholarship-name" id="top-scholarship-title">{topScholarship.name}</h2>
           <div className="card-meta">
             <span className="meta-item amount">
               <DollarSign size={16} />
@@ -235,11 +239,12 @@ function ResultsDisplay({ scholarshipResults, userProfile, onUnlock, onBack }) {
             </>
           )}
         </div>
-      </div>
+      </section>
 
       {/* Locked Cards */}
       {!isFreshDataUnavailable && lockedScholarships.length > 0 && (
-        <div className="locked-section">
+        <section className="locked-section" aria-labelledby="locked-matches-title">
+          <h2 id="locked-matches-title" className="sr-only">More scholarship matches</h2>
           <p className="locked-label">Scroll to unlock more matches</p>
           
           <div 
@@ -277,17 +282,25 @@ function ResultsDisplay({ scholarshipResults, userProfile, onUnlock, onBack }) {
 
           {showUnlockModal && (
             <div className="modal-overlay" onClick={() => setShowUnlockModal(false)}>
-              <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <button 
+              <div
+                className="modal-content"
+                onClick={(e) => e.stopPropagation()}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="unlock-modal-title"
+              >
+                <button
+                  type="button"
                   className="modal-close" 
                   onClick={() => setShowUnlockModal(false)}
+                  aria-label="Close unlock modal"
                 >
                   ✕
                 </button>
                 
                 <div className="unlock-icon"><Unlock size={48} /></div>
                 
-                <h2>Unlock Your Full List</h2>
+                <h2 id="unlock-modal-title">Unlock Your Full List</h2>
                 <p className="unlock-subtitle">+ AI Essay Strategy & Personalized Tips</p>
                 
                 <p className="unlock-description">
@@ -306,7 +319,7 @@ function ResultsDisplay({ scholarshipResults, userProfile, onUnlock, onBack }) {
               </div>
             </div>
           )}
-        </div>
+        </section>
       )}
 
       {/* No Locked Cards Message */}
@@ -314,6 +327,7 @@ function ResultsDisplay({ scholarshipResults, userProfile, onUnlock, onBack }) {
         <div className="no-more-matches">
           <p style={{color: 'var(--text-secondary)', marginBottom: '16px'}}>This is your top match! Enter your details to get personalized strategy tips.</p>
           <button 
+            type="button"
             className="btn-unlock"
             onClick={() => setShowLeadModal(true)}
           >
@@ -328,6 +342,7 @@ function ResultsDisplay({ scholarshipResults, userProfile, onUnlock, onBack }) {
             Live AI providers are not returning current-cycle scholarships right now.
           </p>
           <button
+            type="button"
             className="btn-unlock"
             onClick={() => window.location.reload()}
           >
@@ -348,7 +363,7 @@ function ResultsDisplay({ scholarshipResults, userProfile, onUnlock, onBack }) {
           }}
         />
       )}
-    </div>
+    </main>
   );
 }
 

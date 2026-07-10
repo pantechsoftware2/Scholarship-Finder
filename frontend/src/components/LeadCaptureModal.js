@@ -5,6 +5,7 @@ import { getApiBaseUrl } from '../config';
 
 function LeadCaptureModal({ scholarships, profile, onClose, onSuccess }) {
   const apiUrl = getApiBaseUrl();
+  const scholarshipCount = scholarships?.scholarships?.length || scholarships?.length || 0;
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -81,19 +82,25 @@ function LeadCaptureModal({ scholarships, profile, onClose, onSuccess }) {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>✕</button>
+      <div
+        className="modal-content"
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="lead-capture-title"
+      >
+        <button type="button" className="modal-close" onClick={onClose} aria-label="Close lead form">✕</button>
         
         <div className="modal-header">
           <div className="unlock-icon">
             <Lock size={56} color="var(--primary-light)" />
           </div>
-          <h2>Unlock Your Full List</h2>
+          <h2 id="lead-capture-title">Unlock Your Full List</h2>
           <p className="unlock-subtitle">+ AI Essay Strategy & Personalized Tips</p>
         </div>
 
         <p className="unlock-description">
-          Get instant access to all {scholarships?.length || 0} scholarships, winning strategies for each, and a personalized action plan.
+          Get instant access to all {scholarshipCount} scholarships, winning strategies for each, and a personalized action plan.
         </p>
 
         {error && (

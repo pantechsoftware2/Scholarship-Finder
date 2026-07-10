@@ -1,0 +1,9 @@
+{
+  "name": "Scholarship Finder",
+  "short_name": "Scholarships",
+  "description": "AI-powered scholarship finder for study abroad funding and international scholarships.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#10b981"
+}

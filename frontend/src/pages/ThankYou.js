@@ -4,7 +4,7 @@ import { Check, MessageCircle, List, Home } from 'lucide-react';
 
 function ThankYou({ onGoHome }) {
   return (
-    <div className="thankyou-container">
+    <main className="thankyou-container">
       <div className="thankyou-content">
         <div className="thankyou-topbar">
           <button type="button" className="btn-home btn-home-top" onClick={onGoHome}>
@@ -28,8 +28,8 @@ function ThankYou({ onGoHome }) {
           </p>
         </div>
 
-        <div className="next-steps">
-          <h3><List size={20} /> Next Steps</h3>
+        <section className="next-steps" aria-labelledby="next-steps-title">
+          <h2 id="next-steps-title"><List size={20} /> Next Steps</h2>
           <ol>
             <li>
               <strong>Read the full list</strong> Explore all scholarships with match scores
@@ -44,7 +44,7 @@ function ThankYou({ onGoHome }) {
               <strong>Track progress</strong> Save important dates in your calendar
             </li>
           </ol>
-        </div>
+        </section>
 
         <div className="cta-section">
           <p className="cta-text">Need help with your applications?</p>
@@ -62,7 +62,7 @@ function ThankYou({ onGoHome }) {
           </p>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
 

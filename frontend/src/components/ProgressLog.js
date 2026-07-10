@@ -56,7 +56,15 @@ function ProgressLog() {
         })}
       </div>
 
-      <div className="progress-bar-container" aria-label="Scholarship progress">
+      <div
+        className="progress-bar-container"
+        role="progressbar"
+        aria-label="Scholarship matching progress"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow={Math.round(progress)}
+        aria-valuetext={`${Math.round(progress)} percent complete`}
+      >
         <div className="progress-bar" style={{ width: `${progress}%` }} />
       </div>
 

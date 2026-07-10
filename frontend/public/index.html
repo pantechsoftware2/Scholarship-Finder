@@ -6,23 +6,141 @@
     <meta name="theme-color" content="#10b981" />
     <meta
       name="description"
-      content="Find high-fit international scholarships with AI-powered matching based on nationality, degree level, GPA, field of study, intake, and test profile."
+      content="Find international scholarships, fully funded scholarships, and study abroad funding with AI-powered scholarship matching for bachelor, master, and PhD applicants."
     />
     <meta
       name="keywords"
-      content="scholarship finder, study abroad scholarships, international scholarships, masters scholarships, bachelors scholarships, AI scholarship matching"
+      content="scholarship finder, study abroad scholarships, international scholarships, fully funded scholarships, scholarships for Indian students, masters scholarships abroad, bachelor scholarships, PhD scholarships, merit scholarships, AI scholarship matching"
     />
     <meta name="robots" content="index, follow" />
-    <meta property="og:title" content="Scholarship Finder" />
+    <meta property="og:title" content="Scholarship Finder for Study Abroad Scholarships" />
     <meta
       property="og:description"
-      content="AI-powered scholarship matching for study abroad applicants."
+      content="AI-powered scholarship matching for international students searching for fully funded scholarships, merit scholarships, and study abroad funding."
     />
     <meta property="og:type" content="website" />
-    <title>Scholarship Finder - Find Your Perfect Scholarship</title>
+    <meta property="og:url" content="https://scholarship-finder-frontend.vercel.app/" />
+    <meta property="og:image" content="https://scholarship-finder-frontend.vercel.app/og-image.svg" />
+    <meta property="og:site_name" content="Scholarship Finder" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Scholarship Finder for Study Abroad Scholarships" />
+    <meta
+      name="twitter:description"
+      content="Find high-fit international scholarships, fully funded scholarships, and university funding opportunities with AI-powered matching."
+    />
+    <meta name="twitter:image" content="https://scholarship-finder-frontend.vercel.app/og-image.svg" />
+    <link rel="canonical" href="https://scholarship-finder-frontend.vercel.app/" />
+    <link rel="icon" type="image/svg+xml" href="%PUBLIC_URL%/favicon.svg" />
+    <link rel="manifest" href="%PUBLIC_URL%/site.webmanifest" />
+    <title>Scholarship Finder for Study Abroad Scholarships | AI Scholarship Match Tool</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "name": "Scholarship Finder",
+            "url": "https://scholarship-finder-frontend.vercel.app/",
+            "description": "AI scholarship finder for study abroad scholarships, fully funded scholarships, and international student funding opportunities."
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "What scholarships can I find here?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "You can explore study abroad scholarships, fully funded scholarships, partial scholarships, tuition waivers, and merit-based scholarships for international students."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Who is this scholarship matcher for?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "It is designed for bachelor's, master's, and PhD applicants who want faster scholarship shortlisting based on nationality, degree level, GPA, major, and intake."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #09090b;
+        color: #f4f4f5;
+      }
+
+      .preload-shell {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 48px 20px 24px;
+      }
+
+      .preload-shell h1 {
+        font-size: clamp(2.2rem, 4vw, 4.2rem);
+        line-height: 1.05;
+        margin: 0 0 18px;
+      }
+
+      .preload-shell p,
+      .preload-shell li {
+        color: #d4d4d8;
+        line-height: 1.7;
+      }
+
+      .preload-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 24px;
+      }
+
+      .preload-card {
+        background: rgba(24, 24, 27, 0.92);
+        border: 1px solid rgba(52, 211, 153, 0.14);
+        border-radius: 18px;
+        padding: 24px;
+      }
+
+      @media (max-width: 900px) {
+        .preload-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <noscript>Scholarship Finder requires JavaScript to generate your personalized scholarship matches.</noscript>
+    <div id="root">
+      <main class="preload-shell">
+        <div class="preload-grid">
+          <section>
+            <h1>Find International Scholarships and Study Abroad Funding Faster.</h1>
+            <p>
+              Scholarship Finder helps students compare fully funded scholarships, merit
+              scholarships, and university funding opportunities for bachelor's, master's, and PhD
+              programs abroad.
+            </p>
+            <p>
+              Enter your nationality, degree level, GPA, major, and target countries to discover
+              high-fit scholarship opportunities with AI-powered matching.
+            </p>
+          </section>
+          <aside class="preload-card">
+            <h2>What you can search</h2>
+            <ul>
+              <li>Study abroad scholarships for international students</li>
+              <li>Scholarships for Indian students applying overseas</li>
+              <li>Master's, bachelor's, and PhD scholarships</li>
+              <li>Merit scholarships and fully funded scholarships</li>
+            </ul>
+          </aside>
+        </div>
+      </main>
+    </div>
   </body>
 </html>
