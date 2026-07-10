@@ -400,26 +400,22 @@ function InputForm({ onCalculate, loading, error }) {
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
               <Home size={16} />
-              <span>Home</span>
+              <span>Scholarship Home</span>
             </button>
-            <a className="hero-anchor-link" href="/how-it-works">How It Works</a>
-            <a className="hero-anchor-link" href="#scholarship-faq">FAQ</a>
-            <a className="hero-anchor-link" href="/countries">Countries</a>
+            <a className="hero-anchor-link" href="/how-it-works">How Matching Works</a>
+            <a className="hero-anchor-link" href="#scholarship-faq">Scholarship FAQ</a>
+            <a className="hero-anchor-link" href="/countries">Country Guide</a>
           </nav>
 
           <div className="badge-pill">
             <Sparkles size={14} color="var(--primary)" />
             <span>AI-Powered Matching Engine</span>
           </div>
-          <h1 className="hero-title" id="hero-title">
-            Scholarship Finder for
-            <br />
-            <span className="text-highlight">Study Abroad Funding.</span>
-          </h1>
+          <h1 className="hero-title" id="hero-title">Scholarship Finder for Study Abroad Funding.</h1>
           <p className="hero-subtitle">
-            Discover study abroad scholarships, fully funded scholarships, merit scholarships, and
-            international student grants that match your nationality, degree level, GPA, major, and
-            target country.
+            Discover <strong>study abroad scholarships</strong>, fully funded scholarships, merit
+            scholarships, and international student grants that match your nationality, degree level,
+            GPA, major, and target country.
           </p>
 
           <div className="feature-list">
@@ -869,10 +865,10 @@ function InputForm({ onCalculate, loading, error }) {
 
         <footer className="seo-footer" aria-label="Scholarship Finder footer links">
           <a href="#top">Back to top</a>
-          <a href="/how-it-works">How it works</a>
-          <a href="/countries">Countries</a>
-          <a href="#scholarship-faq">FAQ</a>
-          <a href="#scholarship-form">Profile form</a>
+          <a href="/how-it-works">How matching works</a>
+          <a href="/countries">Country guide</a>
+          <a href="#scholarship-faq">Scholarship FAQ</a>
+          <a href="#scholarship-form">Scholarship profile form</a>
         </footer>
       </main>
     </>

@@ -209,6 +209,14 @@ function App() {
       name: 'twitter:card',
       content: 'summary_large_image',
     });
+    upsertMeta('meta[name="twitter:site"]', {
+      name: 'twitter:site',
+      content: '@scholarshipfinder',
+    });
+    upsertMeta('meta[name="twitter:url"]', {
+      name: 'twitter:url',
+      content: canonicalUrl,
+    });
     upsertMeta('meta[name="twitter:title"]', {
       name: 'twitter:title',
       content: activeSeoState.title,
@@ -220,6 +228,10 @@ function App() {
     upsertMeta('meta[name="twitter:image"]', {
       name: 'twitter:image',
       content: `${SITE_URL}/og-image.svg`,
+    });
+    upsertMeta('meta[name="twitter:image:alt"]', {
+      name: 'twitter:image:alt',
+      content: 'Scholarship Finder study abroad scholarships preview',
     });
     upsertLink('link[rel="canonical"]', {
       rel: 'canonical',

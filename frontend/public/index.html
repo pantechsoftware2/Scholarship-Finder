@@ -23,17 +23,32 @@
     <meta property="og:image" content="https://scholarship-finder-frontend.vercel.app/og-image.svg" />
     <meta property="og:site_name" content="Scholarship Finder" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@scholarshipfinder" />
+    <meta name="twitter:url" content="https://scholarship-finder-frontend.vercel.app/" />
     <meta name="twitter:title" content="Study Abroad Scholarships | Scholarship Finder AI Tool" />
     <meta
       name="twitter:description"
       content="Find study abroad scholarships, fully funded scholarships, and global student funding with AI-powered matching."
     />
     <meta name="twitter:image" content="https://scholarship-finder-frontend.vercel.app/og-image.svg" />
+    <meta name="twitter:image:alt" content="Scholarship Finder study abroad scholarships preview" />
     <link rel="canonical" href="https://scholarship-finder-frontend.vercel.app/" />
     <link rel="icon" type="image/svg+xml" href="%PUBLIC_URL%/favicon.svg" />
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.svg" />
     <link rel="manifest" href="%PUBLIC_URL%/site.webmanifest" />
     <title>Study Abroad Scholarships | Scholarship Finder AI Tool</title>
+    <script>
+      (function () {
+        var gtmId = "%REACT_APP_GTM_ID%";
+        if (!gtmId || gtmId === "%REACT_APP_GTM_ID%") return;
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtm.js?id=' + gtmId;
+        document.head.appendChild(script);
+      })();
+    </script>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -150,34 +165,43 @@
     </style>
   </head>
   <body>
+    <noscript>
+      <iframe
+        src="https://www.googletagmanager.com/ns.html?id=%REACT_APP_GTM_ID%"
+        height="0"
+        width="0"
+        style="display:none;visibility:hidden"
+        title="Google Tag Manager"
+      ></iframe>
+    </noscript>
     <noscript>Scholarship Finder requires JavaScript to generate your personalized scholarship matches.</noscript>
     <div id="root">
       <main class="preload-shell">
         <nav class="preload-nav" aria-label="Scholarship Finder quick links">
-          <a href="/">Home</a>
-          <a href="/how-it-works">How It Works</a>
-          <a href="/countries">Countries</a>
-          <a href="/#scholarship-faq">FAQ</a>
+          <a href="/">Scholarship Home</a>
+          <a href="/how-it-works">How Scholarship Matching Works</a>
+          <a href="/countries">Scholarship Country Guide</a>
+          <a href="/#scholarship-faq">Scholarship FAQ Guide</a>
         </nav>
         <div class="preload-grid">
           <section>
             <h1>Find International Scholarships and Study Abroad Funding Faster.</h1>
             <p>
-              Scholarship Finder helps students compare fully funded scholarships, merit
-              scholarships, and university funding opportunities for bachelor's, master's, and PhD
-              programs abroad.
+              <strong>Scholarship Finder helps students compare fully funded scholarships</strong>,
+              merit scholarships, and university funding opportunities for bachelor&apos;s, master&apos;s,
+              and PhD programs abroad.
             </p>
             <p>
               Enter your nationality, degree level, GPA, major, and target countries to discover
-              high-fit scholarship opportunities with AI-powered matching.
+              <strong>high-fit scholarship opportunities with AI-powered matching</strong>.
             </p>
             <p>
               Compare scholarships for the USA, UK, Canada, Australia, Germany, and other study
               abroad destinations for bachelor&apos;s, master&apos;s, and PhD programs.
             </p>
             <div class="preload-links">
-              <a href="/how-it-works">See how matching works</a>
-              <a href="/countries">Browse scholarship countries</a>
+              <a href="/how-it-works">See how scholarship matching works</a>
+              <a href="/countries">Browse scholarship destination countries</a>
             </div>
           </section>
           <aside class="preload-card">
