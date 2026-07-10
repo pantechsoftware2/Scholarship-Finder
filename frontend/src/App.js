@@ -11,9 +11,9 @@ const SITE_URL = 'https://scholarship-finder-frontend.vercel.app';
 
 const STAGE_SEO = {
   input: {
-    title: 'Scholarship Finder for Study Abroad Scholarships | AI Scholarship Match Tool',
+    title: 'Study Abroad Scholarships | Scholarship Finder AI Tool',
     description:
-      'Find international scholarships, fully funded scholarships, merit scholarships, and study abroad funding with an AI scholarship finder built for bachelor, master, and PhD applicants.',
+      'Find study abroad scholarships, fully funded scholarships, and global student funding with AI matching for bachelor, master, and PhD applicants.',
     robots: 'index, follow',
   },
   results: {

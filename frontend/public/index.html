@@ -6,34 +6,34 @@
     <meta name="theme-color" content="#10b981" />
     <meta
       name="description"
-      content="Find international scholarships, fully funded scholarships, and study abroad funding with AI-powered scholarship matching for bachelor, master, and PhD applicants."
+      content="Find study abroad scholarships, fully funded scholarships, and global student funding with AI matching for bachelor's, master's, and PhD applicants."
     />
     <meta
       name="keywords"
       content="scholarship finder, study abroad scholarships, international scholarships, fully funded scholarships, scholarships for Indian students, masters scholarships abroad, bachelor scholarships, PhD scholarships, merit scholarships, AI scholarship matching"
     />
     <meta name="robots" content="index, follow" />
-    <meta property="og:title" content="Scholarship Finder for Study Abroad Scholarships" />
+    <meta property="og:title" content="Study Abroad Scholarships | Scholarship Finder AI Tool" />
     <meta
       property="og:description"
-      content="AI-powered scholarship matching for international students searching for fully funded scholarships, merit scholarships, and study abroad funding."
+      content="Find study abroad scholarships, fully funded scholarships, and global student funding with AI-powered scholarship matching."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://scholarship-finder-frontend.vercel.app/" />
     <meta property="og:image" content="https://scholarship-finder-frontend.vercel.app/og-image.svg" />
     <meta property="og:site_name" content="Scholarship Finder" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Scholarship Finder for Study Abroad Scholarships" />
+    <meta name="twitter:title" content="Study Abroad Scholarships | Scholarship Finder AI Tool" />
     <meta
       name="twitter:description"
-      content="Find high-fit international scholarships, fully funded scholarships, and university funding opportunities with AI-powered matching."
+      content="Find study abroad scholarships, fully funded scholarships, and global student funding with AI-powered matching."
     />
     <meta name="twitter:image" content="https://scholarship-finder-frontend.vercel.app/og-image.svg" />
     <link rel="canonical" href="https://scholarship-finder-frontend.vercel.app/" />
     <link rel="icon" type="image/svg+xml" href="%PUBLIC_URL%/favicon.svg" />
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.svg" />
     <link rel="manifest" href="%PUBLIC_URL%/site.webmanifest" />
-    <title>Scholarship Finder for Study Abroad Scholarships | AI Scholarship Match Tool</title>
+    <title>Study Abroad Scholarships | Scholarship Finder AI Tool</title>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -100,11 +100,46 @@
         gap: 24px;
       }
 
+      .preload-nav,
+      .preload-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .preload-nav {
+        margin-bottom: 24px;
+      }
+
+      .preload-nav a,
+      .preload-links a,
+      .resource-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        padding: 10px 16px;
+        border-radius: 999px;
+        text-decoration: none;
+        border: 1px solid rgba(52, 211, 153, 0.16);
+        background: rgba(24, 24, 27, 0.88);
+        color: #d4d4d8;
+        font-weight: 600;
+      }
+
+      .preload-links {
+        margin-top: 22px;
+      }
+
       .preload-card {
         background: rgba(24, 24, 27, 0.92);
         border: 1px solid rgba(52, 211, 153, 0.14);
         border-radius: 18px;
         padding: 24px;
+      }
+
+      .resource-row {
+        margin-top: 18px;
       }
 
       @media (max-width: 900px) {
@@ -118,6 +153,12 @@
     <noscript>Scholarship Finder requires JavaScript to generate your personalized scholarship matches.</noscript>
     <div id="root">
       <main class="preload-shell">
+        <nav class="preload-nav" aria-label="Scholarship Finder quick links">
+          <a href="/">Home</a>
+          <a href="/how-it-works">How It Works</a>
+          <a href="/countries">Countries</a>
+          <a href="/#scholarship-faq">FAQ</a>
+        </nav>
         <div class="preload-grid">
           <section>
             <h1>Find International Scholarships and Study Abroad Funding Faster.</h1>
@@ -134,6 +175,10 @@
               Compare scholarships for the USA, UK, Canada, Australia, Germany, and other study
               abroad destinations for bachelor&apos;s, master&apos;s, and PhD programs.
             </p>
+            <div class="preload-links">
+              <a href="/how-it-works">See how matching works</a>
+              <a href="/countries">Browse scholarship countries</a>
+            </div>
           </section>
           <aside class="preload-card">
             <h2>What you can search</h2>
@@ -144,6 +189,16 @@
               <li>Merit scholarships and fully funded scholarships</li>
               <li>Country-specific scholarship opportunities by intake</li>
             </ul>
+            <div class="resource-row">
+              <a
+                class="resource-link"
+                href="https://erasmus-plus.ec.europa.eu/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Official Erasmus+ resource
+              </a>
+            </div>
           </aside>
         </div>
       </main>
