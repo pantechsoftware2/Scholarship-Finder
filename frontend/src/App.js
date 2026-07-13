@@ -7,7 +7,7 @@ import ThankYou from './pages/ThankYou';
 import './styles/App.css';
 import { getApiBaseUrl } from './config';
 
-const SITE_URL = 'https://scholarship-finder-frontend.vercel.app';
+const SITE_URL = 'https://www.fundmystudyabroad.com';
 
 const STAGE_SEO = {
   input: {

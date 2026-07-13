@@ -31,7 +31,7 @@ class Settings(BaseSettings):
     # Server Configuration
     port: int = 5000
     node_env: str = "development"
-    frontend_url: str = "https://scholarship-finder-frontend.vercel.app"
+    frontend_url: str = "https://www.fundmystudyabroad.com"
     allow_local_backup: bool = False
     
     model_config = ConfigDict(env_file=".env", case_sensitive=False, extra="ignore")
