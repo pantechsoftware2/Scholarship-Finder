@@ -4,6 +4,13 @@
   "description": "AI-powered scholarship finder for study abroad funding and international scholarships.",
   "start_url": "/",
   "display": "standalone",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
   "background_color": "#09090b",
   "theme_color": "#10b981"
 }
