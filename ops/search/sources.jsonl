@@ -1,0 +1,5 @@
+{"observed_at":"2026-10-01","source_type":"local_file","path":"frontend/public/index.html","notes":"Homepage metadata, structured data, and static fallback HTML."}
+{"observed_at":"2026-10-01","source_type":"local_file","path":"frontend/public/how-it-works.html","notes":"Static server-delivered how-it-works page."}
+{"observed_at":"2026-10-01","source_type":"local_file","path":"frontend/public/countries.html","notes":"Static server-delivered countries page."}
+{"observed_at":"2026-10-01","source_type":"local_file","path":"frontend/vercel.json","notes":"Frontend route handling for static pages and 404 fallback."}
+{"observed_at":"2026-10-01","source_type":"live_url","url":"https://www.fundmystudyabroad.com/","notes":"Production homepage header and raw body spot check."}

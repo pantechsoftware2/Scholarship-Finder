@@ -38,6 +38,123 @@
     <link rel="shortcut icon" type="image/png" href="%PUBLIC_URL%/favicon.png" />
     <link rel="manifest" href="%PUBLIC_URL%/site.webmanifest" />
     <title>Study Abroad Scholarships | Scholarship Finder AI Tool</title>
+    <style>
+      body {
+        background-color: #09090b;
+        background-image:
+          radial-gradient(ellipse at 50% 0%, rgba(16, 185, 129, 0.12), transparent 60%),
+          linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 100% 100%, 32px 32px, 32px 32px;
+        background-attachment: fixed;
+      }
+
+      .static-seo-fallback {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 40px 24px 64px;
+        font-family: 'Segoe UI Variable', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+        color: #fafafa;
+      }
+
+      .static-seo-nav,
+      .static-seo-actions,
+      .static-seo-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .static-seo-nav {
+        margin-bottom: 28px;
+      }
+
+      .static-seo-nav a,
+      .static-seo-actions a,
+      .static-seo-links a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 10px 18px;
+        border-radius: 999px;
+        text-decoration: none;
+        border: 1px solid rgba(52, 211, 153, 0.18);
+        background: rgba(24, 24, 27, 0.88);
+        color: #d4d4d8;
+        font-weight: 600;
+      }
+
+      .static-seo-hero,
+      .static-seo-section {
+        border: 1px solid rgba(52, 211, 153, 0.16);
+        border-radius: 8px;
+        background: rgba(24, 24, 27, 0.92);
+        padding: 30px;
+        margin-bottom: 24px;
+      }
+
+      .static-seo-eyebrow {
+        color: #6ee7b7;
+        font-weight: 700;
+        margin: 0 0 12px;
+      }
+
+      .static-seo-fallback h1 {
+        margin: 0 0 18px;
+        font-size: clamp(2.3rem, 4vw, 4rem);
+        line-height: 1.05;
+      }
+
+      .static-seo-fallback h2 {
+        margin: 0 0 12px;
+        font-size: 1.5rem;
+      }
+
+      .static-seo-fallback h3 {
+        margin: 0 0 8px;
+        font-size: 1.08rem;
+      }
+
+      .static-seo-fallback p,
+      .static-seo-fallback li {
+        color: #d4d4d8;
+        line-height: 1.75;
+      }
+
+      .static-seo-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .static-seo-card {
+        border: 1px solid rgba(52, 211, 153, 0.12);
+        border-radius: 8px;
+        background: rgba(9, 9, 11, 0.42);
+        padding: 18px;
+      }
+
+      .static-seo-actions {
+        margin-top: 22px;
+      }
+
+      .static-seo-actions a:first-child {
+        background: #10b981;
+        color: #04110d;
+        border-color: transparent;
+      }
+
+      .static-seo-links {
+        margin-top: 18px;
+      }
+
+      @media (max-width: 800px) {
+        .static-seo-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
     <script>
       (function () {
         var gtmId = "%REACT_APP_GTM_ID%";
@@ -96,6 +213,83 @@
       ></iframe>
     </noscript>
     <noscript>Scholarship Finder requires JavaScript to generate your personalized scholarship matches.</noscript>
-    <div id="root"></div>
+    <div id="root">
+      <main class="static-seo-fallback">
+        <nav class="static-seo-nav" aria-label="Scholarship Finder pages">
+          <a href="/">Scholarship Home</a>
+          <a href="/how-it-works">How Matching Works</a>
+          <a href="/countries">Country Guide</a>
+          <a href="#scholarship-faq">Scholarship FAQ</a>
+        </nav>
+
+        <section class="static-seo-hero" aria-labelledby="static-home-title">
+          <p class="static-seo-eyebrow">AI scholarship matching for study abroad applicants</p>
+          <h1 id="static-home-title">Scholarship Finder for study abroad funding</h1>
+          <p>
+            Scholarship Finder helps bachelor's, master's, and PhD applicants discover study abroad
+            scholarships, fully funded scholarships, merit scholarships, university scholarships, and
+            international student grants that fit their profile.
+          </p>
+          <p>
+            The matching form uses academic level, current qualification, GPA, nationality, target
+            countries, intended intake, major, English test profile, work experience, and profile
+            highlights to build a more relevant scholarship shortlist.
+          </p>
+          <div class="static-seo-actions">
+            <a href="#scholarship-form">Start scholarship matching</a>
+            <a href="/how-it-works">See how matching works</a>
+            <a href="/countries">Compare scholarship countries</a>
+          </div>
+        </section>
+
+        <section class="static-seo-section" aria-labelledby="scholarship-form">
+          <h2 id="scholarship-form">What the scholarship profile form checks</h2>
+          <div class="static-seo-grid">
+            <article class="static-seo-card">
+              <h3>Academic fit</h3>
+              <p>Degree level, current qualification, GPA scale, and major help estimate which awards may fit your study plan.</p>
+            </article>
+            <article class="static-seo-card">
+              <h3>Country and nationality fit</h3>
+              <p>Citizenship and destination choices matter because many international scholarships are country-specific.</p>
+            </article>
+            <article class="static-seo-card">
+              <h3>Timing and readiness</h3>
+              <p>Intake, English test scores, work experience, and achievements help prioritize more realistic scholarship options.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="static-seo-section" id="scholarship-faq" aria-labelledby="static-faq-title">
+          <h2 id="static-faq-title">Scholarship Finder FAQ</h2>
+          <article>
+            <h3>What scholarships can I find here?</h3>
+            <p>
+              You can explore study abroad scholarships, fully funded scholarships, partial
+              scholarships, tuition waivers, merit scholarships, and country-specific scholarships
+              for international students.
+            </p>
+          </article>
+          <article>
+            <h3>Who is this scholarship matcher for?</h3>
+            <p>
+              It is designed for bachelor's, master's, and PhD applicants who want faster scholarship
+              shortlisting based on nationality, degree level, GPA, major, target country, and intake.
+            </p>
+          </article>
+          <article>
+            <h3>Which countries are covered?</h3>
+            <p>
+              Students commonly use the matcher for the USA, UK, Canada, Australia, Germany, and
+              other study abroad destinations selected in the form.
+            </p>
+          </article>
+          <div class="static-seo-links">
+            <a href="/how-it-works">How Scholarship Finder works</a>
+            <a href="/countries">Scholarship countries guide</a>
+          </div>
+        </section>
+      </main>
+    </div>
   </body>
 </html>

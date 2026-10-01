@@ -1,0 +1,4 @@
+id,affected_urls_or_template,observation,severity,status,verification
+SEO-001,/,Homepage source body lacked meaningful crawlable content before JavaScript,P1,fixed_pending_deploy,Local build and generated index inspection required
+SEO-002,unknown paths,Unknown path returned HTTP 200 instead of 404,P1,fixed_pending_deploy,Post-deploy curl should return 404
+SEO-003,ops/search,Playbook state was not initialized,P2,fixed,Files created locally

@@ -1,0 +1,42 @@
+{
+  "created_at": "2026-10-01",
+  "status": "draft",
+  "notes": "Run manually only where AI/search tools are authorized. Do not count direct URL retrieval prompts as neutral discovery.",
+  "prompts": [
+    {
+      "id": "DISCOVERY-001",
+      "intent_group": "neutral_discovery",
+      "market": "India",
+      "language": "en",
+      "prompt": "Which tools can help an Indian student find study abroad scholarships for a master's degree?"
+    },
+    {
+      "id": "DISCOVERY-002",
+      "intent_group": "neutral_discovery",
+      "market": "international",
+      "language": "en",
+      "prompt": "How can an international student shortlist scholarships for the USA, UK, Canada, Australia, and Germany?"
+    },
+    {
+      "id": "EVALUATION-001",
+      "intent_group": "evaluation",
+      "market": "international",
+      "language": "en",
+      "prompt": "What information should a scholarship matching tool ask for before recommending study abroad scholarships?"
+    },
+    {
+      "id": "BRAND-001",
+      "intent_group": "branded_identity",
+      "market": "international",
+      "language": "en",
+      "prompt": "What does Scholarship Finder at fundmystudyabroad.com do?"
+    },
+    {
+      "id": "DIRECT-001",
+      "intent_group": "direct_url_retrieval",
+      "market": "international",
+      "language": "en",
+      "prompt": "Read https://www.fundmystudyabroad.com/ and identify what student profile details the scholarship matcher uses."
+    }
+  ]
+}

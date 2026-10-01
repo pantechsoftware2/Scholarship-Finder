@@ -1,0 +1,7 @@
+{
+  "status": "not_deployed_from_workspace",
+  "production_url": "https://www.fundmystudyabroad.com/",
+  "deployment_id": null,
+  "rollback_reference": null,
+  "notes": "Repository changes are ready for the existing frontend deployment workflow. Production verification remains pending until deployment."
+}

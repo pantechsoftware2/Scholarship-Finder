@@ -1,0 +1,9 @@
+{
+  "schedule_status": "not_active",
+  "cadence": "monthly",
+  "preferred_time": "09:00",
+  "timezone": "Asia/Calcutta",
+  "runner": null,
+  "next_run": null,
+  "reason": "No scheduler or hosting automation access was available in this workspace."
+}

@@ -1,0 +1,4 @@
+id,url,type,status,primary_intent,last_substantive_update,notes
+HOME,https://www.fundmystudyabroad.com/,homepage,fixed_pending_deploy,find study abroad scholarships and generate matched shortlist,2026-10-01,Added server-delivered fallback content and internal links.
+HOW,https://www.fundmystudyabroad.com/how-it-works,static_page,verified,understand scholarship matching process,2026-10-01,Existing static HTML page reviewed.
+COUNTRIES,https://www.fundmystudyabroad.com/countries,static_page,verified,compare popular scholarship destination countries,2026-10-01,Existing static HTML page reviewed.

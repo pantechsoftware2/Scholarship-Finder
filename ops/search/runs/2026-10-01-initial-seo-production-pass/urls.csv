@@ -1,0 +1,5 @@
+url,discovery_source,page_type,intended_indexability,http_status,canonical,meta_robots,main_content_present,schema_types,observed_at,evidence_path
+https://www.fundmystudyabroad.com/,sitemap,homepage,index,200,https://www.fundmystudyabroad.com/,"index, follow",fixed_pending_deploy,"WebSite, FAQPage, Organization",2026-10-01,frontend/public/index.html
+https://www.fundmystudyabroad.com/how-it-works,sitemap,info_page,index,not_live_verified,https://www.fundmystudyabroad.com/how-it-works,"index, follow",yes,WebPage,2026-10-01,frontend/public/how-it-works.html
+https://www.fundmystudyabroad.com/countries,sitemap,collection_page,index,not_live_verified,https://www.fundmystudyabroad.com/countries,"index, follow",yes,CollectionPage,2026-10-01,frontend/public/countries.html
+https://www.fundmystudyabroad.com/definitely-not-real-seo-check,manual,error_page,noindex,200_before_fix,,,"no",,2026-10-01,frontend/vercel.json

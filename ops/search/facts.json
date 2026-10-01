@@ -1,0 +1,30 @@
+{
+  "observed_at": "2026-10-01",
+  "facts": [
+    {
+      "fact": "The canonical production host is https://www.fundmystudyabroad.com/.",
+      "source": "curl header checks and existing metadata",
+      "confidence": "high"
+    },
+    {
+      "fact": "https://fundmystudyabroad.com/ redirects to https://www.fundmystudyabroad.com/ with HTTP 308.",
+      "source": "curl -I https://fundmystudyabroad.com/",
+      "confidence": "high"
+    },
+    {
+      "fact": "The homepage live HTML previously returned only a JavaScript-required body and an empty root container.",
+      "source": "live fetch on 2026-10-01",
+      "confidence": "high"
+    },
+    {
+      "fact": "robots.txt resolves as text/plain on the www production host.",
+      "source": "curl -I https://www.fundmystudyabroad.com/robots.txt",
+      "confidence": "high"
+    },
+    {
+      "fact": "An arbitrary unknown path returned the homepage with HTTP 200 before this change.",
+      "source": "curl -I https://www.fundmystudyabroad.com/definitely-not-real-seo-check",
+      "confidence": "high"
+    }
+  ]
+}
