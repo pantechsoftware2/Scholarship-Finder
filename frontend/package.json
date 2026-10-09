@@ -13,6 +13,7 @@
     "dev": "react-scripts start",
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "seo:check": "node scripts/check-seo.js",
     "serve": "npx serve -s build",
     "browserslist:update": "npx update-browserslist-db@latest",
     "test": "react-scripts test",

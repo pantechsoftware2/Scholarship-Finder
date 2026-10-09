@@ -23,7 +23,6 @@
     <meta property="og:image" content="https://www.fundmystudyabroad.com/og-image.svg" />
     <meta property="og:site_name" content="Scholarship Finder" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@scholarshipfinder" />
     <meta name="twitter:url" content="https://www.fundmystudyabroad.com/" />
     <meta name="twitter:title" content="Study Abroad Scholarships | Scholarship Finder AI Tool" />
     <meta
@@ -167,7 +166,7 @@
         document.head.appendChild(script);
       })();
     </script>
-    <script type="application/ld+json">
+    <script type="application/ld+json" id="schema-homepage">
       {
         "@context": "https://schema.org",
         "@graph": [
@@ -176,6 +175,12 @@
             "name": "Scholarship Finder",
             "url": "https://www.fundmystudyabroad.com/",
             "description": "AI scholarship finder for study abroad scholarships, fully funded scholarships, and international student funding opportunities."
+          },
+          {
+            "@type": "Organization",
+            "name": "Scholarship Finder",
+            "url": "https://www.fundmystudyabroad.com/",
+            "logo": "https://www.fundmystudyabroad.com/favicon.png"
           },
           {
             "@type": "FAQPage",
@@ -194,6 +199,14 @@
                 "acceptedAnswer": {
                   "@type": "Answer",
                   "text": "It is designed for bachelor's, master's, and PhD applicants who want faster scholarship shortlisting based on nationality, degree level, GPA, major, and intake."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What details improve scholarship match quality?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Nationality, current degree, GPA, target study country, English test scores, and work experience help surface more relevant scholarship programs."
                 }
               }
             ]
@@ -220,25 +233,70 @@
           <a href="/how-it-works">How Matching Works</a>
           <a href="/countries">Country Guide</a>
           <a href="#scholarship-faq">Scholarship FAQ</a>
+          <a href="#official-scholarship-resources">Official Resources</a>
         </nav>
 
         <section class="static-seo-hero" aria-labelledby="static-home-title">
           <p class="static-seo-eyebrow">AI scholarship matching for study abroad applicants</p>
           <h1 id="static-home-title">Scholarship Finder for study abroad funding</h1>
           <p>
-            Scholarship Finder helps bachelor's, master's, and PhD applicants discover study abroad
-            scholarships, fully funded scholarships, merit scholarships, university scholarships, and
-            international student grants that fit their profile.
+            This Scholarship Finder for study abroad funding is an AI tool for bachelor's, master's,
+            and PhD applicants. It helps students discover study abroad scholarships, fully funded
+            scholarships, merit scholarships, university scholarships, and international student
+            grants that fit their profile.
           </p>
           <p>
             The matching form uses academic level, current qualification, GPA, nationality, target
             countries, intended intake, major, English test profile, work experience, and profile
             highlights to build a more relevant scholarship shortlist.
           </p>
+          <p>
+            Matches are a starting point for research, not an admission or funding guarantee. Always
+            confirm eligibility, deadlines, award value, and application instructions on the official
+            scholarship provider's website before applying.
+          </p>
           <div class="static-seo-actions">
             <a href="#scholarship-form">Start scholarship matching</a>
             <a href="/how-it-works">See how matching works</a>
             <a href="/countries">Compare scholarship countries</a>
+          </div>
+        </section>
+
+        <section
+          class="static-seo-section"
+          id="scholarship-types"
+          aria-labelledby="static-types-title"
+        >
+          <h2 id="static-types-title">Study Abroad Scholarships and funding types to compare</h2>
+          <p>
+            Applicants can compare fully funded scholarships, partial tuition awards, merit
+            scholarships, need-based grants, university funding, research assistantships, and
+            country-specific programs. The right option depends on degree level, academic record,
+            citizenship, subject, destination, and intake deadline.
+          </p>
+          <div class="static-seo-links">
+            <a href="#scholarship-form">Build your scholarship profile</a>
+            <a href="/how-it-works">Review the matching process</a>
+            <a href="/countries">Explore funding by country</a>
+          </div>
+        </section>
+
+        <section
+          class="static-seo-section"
+          id="official-scholarship-resources"
+          aria-labelledby="static-resources-title"
+        >
+          <h2 id="static-resources-title">Official study abroad scholarship resources</h2>
+          <p>
+            Verify every opportunity with trusted primary sources. Review funding guidance from
+            EducationUSA, search German scholarship information through the German Academic Exchange
+            Service, and explore UK funding guidance from Study UK by the British Council before you
+            submit an application.
+          </p>
+          <div class="static-seo-links">
+            <a href="https://educationusa.state.gov/your-5-steps-us-study/finance-your-studies">EducationUSA funding guidance</a>
+            <a href="https://www.daad.de/en/studying-in-germany/scholarships/">DAAD scholarship information</a>
+            <a href="https://study-uk.britishcouncil.org/scholarships-funding">Study UK scholarships and funding</a>
           </div>
         </section>
 
@@ -287,6 +345,8 @@
           <div class="static-seo-links">
             <a href="/how-it-works">How Scholarship Finder works</a>
             <a href="/countries">Scholarship countries guide</a>
+            <a href="#scholarship-types">Compare scholarship types</a>
+            <a href="#official-scholarship-resources">Official funding resources</a>
           </div>
         </section>
       </main>

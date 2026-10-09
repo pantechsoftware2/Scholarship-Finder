@@ -405,6 +405,7 @@ function InputForm({ onCalculate, loading, error }) {
             <a className="hero-anchor-link" href="/how-it-works">How Matching Works</a>
             <a className="hero-anchor-link" href="#scholarship-faq">Scholarship FAQ</a>
             <a className="hero-anchor-link" href="/countries">Country Guide</a>
+            <a className="hero-anchor-link" href="#official-scholarship-resources">Official Resources</a>
           </nav>
 
           <div className="badge-pill">
@@ -413,9 +414,10 @@ function InputForm({ onCalculate, loading, error }) {
           </div>
           <h1 className="hero-title" id="hero-title">Scholarship Finder for Study Abroad Funding.</h1>
           <p className="hero-subtitle">
-            Discover <strong>study abroad scholarships</strong>, fully funded scholarships, merit
-            scholarships, and international student grants that match your nationality, degree level,
-            GPA, major, and target country.
+            This <strong>Scholarship Finder for study abroad funding</strong> is an AI tool that helps
+            you discover study abroad scholarships, fully funded scholarships, merit scholarships,
+            and international student grants matched to your nationality, degree level, GPA, major,
+            and target country.
           </p>
 
           <div className="feature-list">
@@ -444,6 +446,11 @@ function InputForm({ onCalculate, loading, error }) {
               Use it to shortlist scholarships for Indian students, scholarships for master&apos;s
               programs abroad, undergraduate scholarships, and funding options for competitive global
               admissions cycles.
+            </p>
+            <p>
+              Each result is a starting point for research, not an admission or funding guarantee.
+              Always confirm eligibility, deadlines, award value, and application instructions on the
+              official scholarship provider&apos;s website before you apply.
             </p>
           </section>
 
@@ -476,7 +483,7 @@ function InputForm({ onCalculate, loading, error }) {
             </div>
           </section>
 
-          <section className="seo-copy-card" aria-labelledby="scholarship-types-title">
+          <section className="seo-copy-card" id="scholarship-types" aria-labelledby="scholarship-types-title">
             <h2 id="scholarship-types-title">Scholarship types students usually compare</h2>
             <ul className="seo-list">
               <li>Fully funded scholarships for international students</li>
@@ -485,6 +492,29 @@ function InputForm({ onCalculate, loading, error }) {
               <li>PhD scholarships, research funding, and graduate assistantships</li>
               <li>Merit scholarships, need-based scholarships, and university grants</li>
             </ul>
+          </section>
+
+          <section
+            className="seo-copy-card"
+            id="official-scholarship-resources"
+            aria-labelledby="official-resources-title"
+          >
+            <h2 id="official-resources-title">Official study abroad scholarship resources</h2>
+            <p>
+              Verify opportunities with trusted primary sources. Review funding guidance from{' '}
+              <a href="https://educationusa.state.gov/your-5-steps-us-study/finance-your-studies">
+                EducationUSA
+              </a>
+              , search German scholarship information through the{' '}
+              <a href="https://www.daad.de/en/studying-in-germany/scholarships/">
+                German Academic Exchange Service (DAAD)
+              </a>
+              , and explore UK funding guidance from{' '}
+              <a href="https://study-uk.britishcouncil.org/scholarships-funding">
+                Study UK by the British Council
+              </a>
+              . These official resources help you validate requirements before submitting an application.
+            </p>
           </section>
         </section>
 
@@ -868,6 +898,8 @@ function InputForm({ onCalculate, loading, error }) {
           <a href="/how-it-works">How matching works</a>
           <a href="/countries">Country guide</a>
           <a href="#scholarship-faq">Scholarship FAQ</a>
+          <a href="#scholarship-types">Compare scholarship types</a>
+          <a href="#official-scholarship-resources">Official funding resources</a>
           <a href="#scholarship-form">Scholarship profile form</a>
         </footer>
       </main>

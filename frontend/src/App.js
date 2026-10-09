@@ -209,10 +209,6 @@ function App() {
       name: 'twitter:card',
       content: 'summary_large_image',
     });
-    upsertMeta('meta[name="twitter:site"]', {
-      name: 'twitter:site',
-      content: '@scholarshipfinder',
-    });
     upsertMeta('meta[name="twitter:url"]', {
       name: 'twitter:url',
       content: canonicalUrl,
@@ -270,17 +266,44 @@ function App() {
             url: canonicalUrl,
             description:
               'AI scholarship finder for study abroad scholarships, fully funded scholarships, and international student funding opportunities.',
-            potentialAction: {
-              '@type': 'SearchAction',
-              target: `${canonicalUrl}#scholarship-form`,
-              'query-input': 'required name=student scholarship profile',
-            },
           },
           {
             '@type': 'Organization',
             name: 'Scholarship Finder',
             url: canonicalUrl,
-            logo: `${SITE_URL}/favicon.svg`,
+            logo: `${SITE_URL}/favicon.png`,
+          },
+          {
+            '@type': 'FAQPage',
+            mainEntity: [
+              {
+                '@type': 'Question',
+                name: 'What scholarships can I find here?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text:
+                    'You can explore study abroad scholarships, fully funded scholarships, partial scholarships, tuition waivers, merit-based scholarships, and country-specific scholarships for international students.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Who is this scholarship matcher for?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text:
+                    "It is designed for bachelor's, master's, and PhD applicants who want faster scholarship shortlisting based on nationality, degree level, GPA, major, and intake.",
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'What details improve scholarship match quality?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text:
+                    'Nationality, current degree, GPA, target study country, English test scores, and work experience help surface more relevant scholarship programs.',
+                },
+              },
+            ],
           },
         ],
       });

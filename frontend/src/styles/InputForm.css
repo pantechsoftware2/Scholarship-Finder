@@ -189,6 +189,16 @@
   margin-bottom: 0;
 }
 
+.seo-copy-card a {
+  color: var(--primary-light);
+  font-weight: 600;
+  text-underline-offset: 3px;
+}
+
+.seo-copy-card a:hover {
+  color: var(--text-primary);
+}
+
 .faq-list {
   display: flex;
   flex-direction: column;
