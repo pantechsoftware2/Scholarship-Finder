@@ -893,6 +893,88 @@ function InputForm({ onCalculate, loading, error }) {
           </div>
         </section>
 
+        <section className="seo-resource-hub" id="scholarship-application-guide" aria-labelledby="application-guide-title">
+          <div className="seo-resource-intro">
+            <p className="seo-resource-eyebrow">Application guide</p>
+            <h2 id="application-guide-title">How to use your scholarship matches</h2>
+            <p>
+              Start by opening the official provider page for every promising match. Confirm that your
+              citizenship, intended degree, subject, university, and intake satisfy the published
+              eligibility rules. Check whether university admission is required before the funding
+              application, whether a separate scholarship form is needed, and whether institutional
+              nomination is part of the process.
+            </p>
+            <p>
+              Compare the complete value of each award instead of relying on the phrase “fully funded.”
+              A funding package may include tuition, a living stipend, travel, health insurance,
+              research costs, or visa support, but coverage varies. Record exclusions and estimate any
+              remaining costs before deciding where to invest your preparation time.
+            </p>
+            <p>
+              Build a deadline plan working backward from the official closing date. Leave time for
+              transcripts, certified translations, test results, recommendation letters, a statement
+              of purpose, research proposals, and admission documents. Submit early enough to resolve
+              technical problems, and save the final application and confirmation email.
+            </p>
+            <p>
+              Prioritize opportunities by eligibility, funding value, deadline, and the effort required
+              to prepare a competitive application. A focused shortlist is usually more useful than a
+              long list of weak matches. Keep a tracker with the official URL, award amount, required
+              documents, referee status, submission date, and result. Revisit each official page before
+              applying because providers may revise dates, participating universities, or instructions.
+              If a requirement is unclear, contact the named scholarship office through the
+              institution&apos;s own domain. This verification can prevent wasted applications and helps
+              you make decisions using current information.
+            </p>
+          </div>
+
+          <div className="seo-readiness" id="scholarship-readiness">
+            <h2>Scholarship application readiness checklist</h2>
+            <div className="seo-readiness-grid">
+              <article>
+                <h3>Confirm eligibility</h3>
+                <p>
+                  Verify nationality, residency, age, academic level, GPA, subject restrictions,
+                  work-experience rules, and eligible universities on the provider website.
+                </p>
+              </article>
+              <article>
+                <h3>Prepare evidence</h3>
+                <p>
+                  Gather transcripts, certificates, test scores, identification, a focused CV, and
+                  proof for research, leadership, employment, volunteering, or awards.
+                </p>
+              </article>
+              <article>
+                <h3>Tailor the application</h3>
+                <p>
+                  Connect your goals and experience to the scholarship criteria. Use specific examples,
+                  answer every prompt, follow document limits, and request references early.
+                </p>
+              </article>
+            </div>
+            <p className="seo-safety-note">
+              Scholarship information can change between application cycles. Treat every generated
+              match as a research lead, recheck dates and requirements on the official source, and
+              never pay an unofficial agent who promises a guaranteed award. Decisions remain with
+              the university, government, foundation, or named funding organization.
+            </p>
+          </div>
+
+          <div className="share-panel" aria-labelledby="share-title">
+            <div>
+              <h2 id="share-title">Share Scholarship Finder</h2>
+              <p>Help another student start a structured search for international scholarship funding.</p>
+            </div>
+            <div className="share-links">
+              <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fwww.fundmystudyabroad.com%2F" target="_blank" rel="nofollow noopener noreferrer">LinkedIn</a>
+              <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.fundmystudyabroad.com%2F" target="_blank" rel="nofollow noopener noreferrer">Facebook</a>
+              <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.fundmystudyabroad.com%2F&amp;text=Find%20study%20abroad%20scholarships" target="_blank" rel="nofollow noopener noreferrer">X</a>
+              <a href="https://wa.me/?text=Find%20study%20abroad%20scholarships%3A%20https%3A%2F%2Fwww.fundmystudyabroad.com%2F" target="_blank" rel="nofollow noopener noreferrer">WhatsApp</a>
+            </div>
+          </div>
+        </section>
+
         <footer className="seo-footer" aria-label="Scholarship Finder footer links">
           <a href="#top">Back to top</a>
           <a href="/how-it-works">How matching works</a>
@@ -900,6 +982,7 @@ function InputForm({ onCalculate, loading, error }) {
           <a href="#scholarship-faq">Scholarship FAQ</a>
           <a href="#scholarship-types">Compare scholarship types</a>
           <a href="#official-scholarship-resources">Official funding resources</a>
+          <a href="#scholarship-application-guide">Application guide</a>
           <a href="#scholarship-form">Scholarship profile form</a>
           <a href="/sitemap.xml">Sitemap</a>
         </footer>

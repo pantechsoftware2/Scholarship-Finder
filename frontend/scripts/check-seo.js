@@ -5,6 +5,7 @@ const buildDirectory = path.resolve(__dirname, '..', 'build');
 const htmlPath = path.join(buildDirectory, 'index.html');
 const sitemapPath = path.join(buildDirectory, 'sitemap.xml');
 const robotsPath = path.join(buildDirectory, 'robots.txt');
+const appleTouchIconPath = path.join(buildDirectory, 'apple-touch-icon.png');
 const canonicalOrigin = 'https://www.fundmystudyabroad.com';
 const publicPages = [
   { path: '/', file: 'index.html' },
@@ -35,10 +36,12 @@ const visibleText = body
 const wordCount = visibleText.match(/[a-z0-9]+(?:['’-][a-z0-9]+)*/gi)?.length || 0;
 const internalLinkCount = (body.match(/<a\s[^>]*href="(?:\/|#)/gi) || []).length;
 const externalLinkCount = (body.match(/<a\s[^>]*href="https?:\/\//gi) || []).length;
+const socialShareLinkCount = (body.match(/<a\s[^>]*href="https?:\/\/(?:www\.)?(?:linkedin\.com\/sharing|facebook\.com\/sharer|twitter\.com\/intent|wa\.me\/)/gi) || []).length;
 
-if (wordCount < 300) fail(`expected at least 300 visible words, found ${wordCount}`);
+if (wordCount < 800) fail(`expected at least 800 useful visible words, found ${wordCount}`);
 if (internalLinkCount < 10) fail(`expected at least 10 internal links, found ${internalLinkCount}`);
 if (externalLinkCount < 1) fail('expected at least one authoritative external link');
+if (socialShareLinkCount < 3) fail(`expected at least 3 social sharing links, found ${socialShareLinkCount}`);
 if (!visibleText.includes('Study Abroad Scholarships')) {
   fail('page-title phrase is missing from visible content');
 }
@@ -52,6 +55,10 @@ if (html.includes('twitter:site')) fail('unverified twitter:site metadata is pre
 if (html.includes('SearchAction')) fail('unsupported SearchAction structured data is present');
 if (!fs.existsSync(sitemapPath)) fail('build/sitemap.xml is missing');
 if (!fs.existsSync(robotsPath)) fail('build/robots.txt is missing');
+if (!fs.existsSync(appleTouchIconPath)) fail('build/apple-touch-icon.png is missing');
+if (!html.includes('<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"')) {
+  fail('homepage Apple touch icon declaration is missing or incorrect');
+}
 
 if (fs.existsSync(sitemapPath)) {
   const sitemap = fs.readFileSync(sitemapPath, 'utf8');
