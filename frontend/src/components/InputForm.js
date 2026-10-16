@@ -901,6 +901,7 @@ function InputForm({ onCalculate, loading, error }) {
           <a href="#scholarship-types">Compare scholarship types</a>
           <a href="#official-scholarship-resources">Official funding resources</a>
           <a href="#scholarship-form">Scholarship profile form</a>
+          <a href="/sitemap.xml">Sitemap</a>
         </footer>
       </main>
     </>

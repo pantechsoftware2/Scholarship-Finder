@@ -102,6 +102,13 @@ function HowItWorksPage() {
           </article>
         </div>
       </section>
+
+      <footer className="info-footer" aria-label="Scholarship Finder footer links">
+        <a href="/">Scholarship Finder Home</a>
+        <a href="/countries">Countries</a>
+        <a href="/#scholarship-faq">FAQ</a>
+        <a href="/sitemap.xml">Sitemap</a>
+      </footer>
     </main>
   );
 }

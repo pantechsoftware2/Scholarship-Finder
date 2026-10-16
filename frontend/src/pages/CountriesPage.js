@@ -104,6 +104,13 @@ function CountriesPage() {
           </article>
         </div>
       </section>
+
+      <footer className="info-footer" aria-label="Scholarship Finder footer links">
+        <a href="/">Scholarship Finder Home</a>
+        <a href="/how-it-works">How it works</a>
+        <a href="/#scholarship-form">Scholarship form</a>
+        <a href="/sitemap.xml">Sitemap</a>
+      </footer>
     </main>
   );
 }

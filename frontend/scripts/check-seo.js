@@ -4,6 +4,13 @@ const path = require('path');
 const buildDirectory = path.resolve(__dirname, '..', 'build');
 const htmlPath = path.join(buildDirectory, 'index.html');
 const sitemapPath = path.join(buildDirectory, 'sitemap.xml');
+const robotsPath = path.join(buildDirectory, 'robots.txt');
+const canonicalOrigin = 'https://www.fundmystudyabroad.com';
+const publicPages = [
+  { path: '/', file: 'index.html' },
+  { path: '/how-it-works', file: 'how-it-works.html' },
+  { path: '/countries', file: 'countries.html' },
+];
 
 function fail(message) {
   console.error(`SEO check failed: ${message}`);
@@ -44,6 +51,70 @@ if (!html.includes('<link rel="canonical" href="https://www.fundmystudyabroad.co
 if (html.includes('twitter:site')) fail('unverified twitter:site metadata is present');
 if (html.includes('SearchAction')) fail('unsupported SearchAction structured data is present');
 if (!fs.existsSync(sitemapPath)) fail('build/sitemap.xml is missing');
+if (!fs.existsSync(robotsPath)) fail('build/robots.txt is missing');
+
+if (fs.existsSync(sitemapPath)) {
+  const sitemap = fs.readFileSync(sitemapPath, 'utf8');
+  const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+  const expectedUrls = publicPages.map(({ path: pagePath }) => (
+    pagePath === '/' ? `${canonicalOrigin}/` : `${canonicalOrigin}${pagePath}`
+  ));
+  const duplicateUrls = sitemapUrls.filter((url, index) => sitemapUrls.indexOf(url) !== index);
+  const lastModifiedDates = [...sitemap.matchAll(/<lastmod>([^<]+)<\/lastmod>/g)]
+    .map((match) => match[1]);
+
+  if (!sitemap.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')) {
+    fail('sitemap.xml does not use the standard sitemap protocol namespace');
+  }
+  if (sitemapUrls.length !== expectedUrls.length) {
+    fail(`expected ${expectedUrls.length} sitemap URLs, found ${sitemapUrls.length}`);
+  }
+  expectedUrls.forEach((url) => {
+    if (!sitemapUrls.includes(url)) fail(`sitemap.xml is missing canonical URL ${url}`);
+  });
+  sitemapUrls.forEach((url) => {
+    if (!url.startsWith(`${canonicalOrigin}/`)) {
+      fail(`sitemap URL does not use the canonical www HTTPS origin: ${url}`);
+    }
+  });
+  if (duplicateUrls.length) fail(`sitemap.xml contains duplicate URLs: ${duplicateUrls.join(', ')}`);
+  if (/<(?:changefreq|priority)>/i.test(sitemap)) {
+    fail('sitemap.xml includes changefreq or priority values that Google ignores');
+  }
+  if (lastModifiedDates.length !== expectedUrls.length) {
+    fail('every sitemap URL must have an accurate lastmod date');
+  }
+  lastModifiedDates.forEach((date) => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(Date.parse(`${date}T00:00:00Z`))) {
+      fail(`sitemap.xml contains an invalid lastmod date: ${date}`);
+    }
+  });
+}
+
+if (fs.existsSync(robotsPath)) {
+  const robots = fs.readFileSync(robotsPath, 'utf8');
+  if (!robots.includes(`Sitemap: ${canonicalOrigin}/sitemap.xml`)) {
+    fail('robots.txt does not advertise the canonical www sitemap URL');
+  }
+}
+
+publicPages.forEach(({ path: pagePath, file }) => {
+  const pageFile = path.join(buildDirectory, file);
+  const expectedCanonical = pagePath === '/' ? `${canonicalOrigin}/` : `${canonicalOrigin}${pagePath}`;
+
+  if (!fs.existsSync(pageFile)) {
+    fail(`build/${file} is missing`);
+    return;
+  }
+
+  const pageHtml = fs.readFileSync(pageFile, 'utf8');
+  if (!pageHtml.includes(`<link rel="canonical" href="${expectedCanonical}"`)) {
+    fail(`${file} is missing its canonical www URL`);
+  }
+  if (!pageHtml.includes('href="/sitemap.xml"')) {
+    fail(`${file} is missing a visible sitemap link`);
+  }
+});
 
 const homepageSchemas = [
   ...html.matchAll(/<script[^>]*id="schema-homepage"[^>]*>([\s\S]*?)<\/script>/gi),
